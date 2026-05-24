@@ -1,0 +1,4088 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+  SLIDECRAFT — Premium Presentation Design Studio
+  ─────────────────────────────────────────────────────────────────
+  HOW TO CUSTOMIZE THIS SITE — READ THIS FIRST:
+
+  1. BUSINESS INFO     → Search "CUSTOMIZE:" comments below
+  2. PROJECTS/WORK     → Edit the PROJECTS array in the <script>
+  3. VIDEOS            → Add video paths to showcase[] in each project
+  4. PRICING           → Edit the PRICING array in the <script>
+  5. WHY CARDS         → Edit the WHY_CARDS array in the <script>
+  6. COLORS & FONTS    → Edit :root CSS variables in the <style> block
+  7. WHATSAPP NUMBER   → Change WA_NUMBER constant in the <script>
+  8. STATS (hero)      → Edit .hero-stat spans in the HTML below
+  9. MARQUEE TEXT      → Edit .marquee-item spans in the HTML below
+
+  FILE STRUCTURE:
+  ├── index.html          (this file)
+  └── images/             (put your images here)
+      ├── PPT.png
+      ├── Arduino.png
+      ├── Fest.png
+      ├── Report.png
+      ├── Menu.png
+      └── Logo.png
+  └── videos/             (put your showcase videos here)
+      └── example.mp4
+═══════════════════════════════════════════════════════════════ -->
+
+  <title>SlideCraft — Premium Presentation Design Studio</title>
+
+  <!-- ── FONTS ─────────────────────────────────────────────────────
+  CUSTOMIZE: Replace these Google Font imports to change typography.
+  Current pairing: Cormorant Garamond (display) + Jost (body)
+  Good alternatives:
+    Display: Playfair Display, Fraunces, Libre Baskerville
+    Body:    Outfit, Manrope, DM Sans
+──────────────────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@200;300;400;500;600&family=Cinzel:wght@400;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — SITE-WIDE DESIGN TOKENS
+   ─────────────────────────────────────────────────────────────
+   CUSTOMIZE: Change these to retheme the entire site at once.
+   Every color, spacing, and effect references these variables.
+═══════════════════════════════════════════════════════════════ */
+    :root {
+      /* ── Background palette ── */
+      --bg: #f5ede0;
+      /* CUSTOMIZE: main page background */
+      --bg2: #ede3d4;
+      /* slightly darker background */
+      --bg3: #e8dccb;
+      /* darkest background tone */
+
+      /* ── Border colors ── */
+      --border: rgba(139, 100, 60, 0.15);
+      /* subtle borders */
+      --border2: rgba(139, 100, 60, 0.28);
+      /* hover/active borders */
+
+      /* ── Text colors ── */
+      --text: #1a1208;
+      /* CUSTOMIZE: primary text */
+      --muted: #7a6248;
+      /* CUSTOMIZE: secondary/muted text */
+
+      /* ── Brand accent colors ── */
+      --accent: #c0392b;
+      /* CUSTOMIZE: primary accent (red) */
+      --accent2: #962d22;
+      /* darker shade of accent */
+      --navy: #1d2d44;
+      /* CUSTOMIZE: secondary brand color */
+      --navy2: #152233;
+      /* darker navy */
+      --gold: #b8860b;
+      /* CUSTOMIZE: tertiary highlight */
+      --gold2: #d4a017;
+      /* lighter gold */
+
+      /* ── Glass / frosted effects ── */
+      --glass: rgba(255, 252, 245, 0.60);
+      --glass2: rgba(255, 252, 245, 0.78);
+      --glass3: rgba(255, 252, 245, 0.93);
+
+      /* ── Slider / media settings ── */
+      --slider-speed: 0.5s;
+      /* slide transition duration */
+      --slider-ease: cubic-bezier(0.23, 1, 0.32, 1);
+      /* slide easing curve */
+      --slider-thumb-size: 72px;
+      /* thumbnail strip width */
+      --slider-thumb-h: 52px;
+      /* thumbnail strip height */
+    }
+
+    /* ── Reset & base ──────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+      /* custom cursor is rendered via JS below */
+    }
+
+    /* ── Custom cursor ─────────────────────────────────────────
+   CUSTOMIZE: Change cursor colors or remove the #cursor
+   and #cursor-ring divs from HTML to use default cursor.
+──────────────────────────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(192, 57, 43, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform .12s ease, width .25s, height .25s, opacity .25s
+    }
+
+    body:has(a:hover, button:hover, [onclick]:hover, label:hover) #cursor {
+      width: 32px;
+      height: 32px;
+      background: rgba(192, 57, 43, 0.12);
+      border: 1px solid rgba(192, 57, 43, 0.5)
+    }
+
+    body:has(a:hover, button:hover, [onclick]:hover, label:hover) #cursor-ring {
+      opacity: 0
+    }
+
+    /* ── Scrollbar ─────────────────────────────────────────────
+   CUSTOMIZE: Change scrollbar colors or remove for default.
+──────────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 3px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg2)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 2px
+    }
+
+    /* ── Background system ────────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden
+    }
+
+    .bg-layer {
+      position: absolute;
+      inset: 0;
+      /* CUSTOMIZE: Change these radial-gradient colors for a different ambient feel */
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(192, 57, 43, 0.04) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 70% at 80% 80%, rgba(29, 45, 68, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(184, 134, 11, 0.025) 0%, transparent 60%);
+    }
+
+    .bg-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px
+    }
+
+    .bg-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(210, 190, 165, 0.3) 100%)
+    }
+
+    .ambient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      animation: orbDrift 20s ease-in-out infinite alternate
+    }
+
+    .amb1 {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      left: -150px;
+      background: rgba(192, 57, 43, 0.04);
+      animation-delay: 0s
+    }
+
+    .amb2 {
+      width: 500px;
+      height: 500px;
+      top: 30%;
+      right: -200px;
+      background: rgba(29, 45, 68, 0.03);
+      animation-delay: -7s
+    }
+
+    .amb3 {
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      left: 30%;
+      background: rgba(184, 134, 11, 0.03);
+      animation-delay: -14s
+    }
+
+    @keyframes orbDrift {
+      0% {
+        transform: translate(0, 0) scale(1)
+      }
+
+      100% {
+        transform: translate(40px, 30px) scale(1.08)
+      }
+    }
+
+    /* ── Page transition wipe ─────────────────────────────────── */
+    #page-transition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg3), var(--bg2));
+      z-index: 9990;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .45s cubic-bezier(0.76, 0, 0.24, 1);
+      pointer-events: none
+    }
+
+    #page-transition::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(192, 57, 43, 0.08), transparent)
+    }
+
+    #page-transition.entering {
+      transform: scaleX(1);
+      transform-origin: left
+    }
+
+    #page-transition.leaving {
+      transform: scaleX(0);
+      transform-origin: right
+    }
+
+    /* ── Navigation ───────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      padding: 1.25rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(245, 237, 224, 0.8);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      transition: all .3s ease;
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      cursor: pointer
+    }
+
+    .nav-logo .slide {
+      color: var(--navy)
+    }
+
+    .nav-logo .craft {
+      color: var(--accent)
+    }
+
+    /* CUSTOMIZE: Remove the ::before to remove the spinning star from the logo */
+    .nav-logo::before {
+      content: '✦';
+      font-size: .6rem;
+      color: var(--gold);
+      margin-right: .5rem;
+      animation: glitterSpin 4s linear infinite
+    }
+
+    @keyframes glitterSpin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .78rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: color .2s;
+      cursor: pointer
+    }
+
+    .nav-links a:hover {
+      color: var(--navy)
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem
+    }
+
+    .back-btn {
+      display: none;
+      align-items: center;
+      gap: .5rem;
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .5rem 1.1rem;
+      border-radius: 4px;
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      transition: all .2s
+    }
+
+    .back-btn:hover {
+      border-color: var(--border2);
+      background: var(--glass3)
+    }
+
+    .back-btn svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .nav-cta {
+      background: var(--navy);
+      color: #f5ede0;
+      border: none;
+      padding: .55rem 1.5rem;
+      border-radius: 4px;
+      font-size: .78rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 12px rgba(29, 45, 68, .18);
+      transition: all .25s
+    }
+
+    .nav-cta:hover {
+      background: var(--navy2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(29, 45, 68, .3)
+    }
+
+    /* ── View system ──────────────────────────────────────────── */
+    .view {
+      display: none;
+      min-height: 100vh;
+      padding-top: 76px;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .5s ease, transform .5s ease
+    }
+
+    .view.active {
+      display: block
+    }
+
+    .view.visible {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    /* ── Hero section ─────────────────────────────────────────── */
+    .hero {
+      padding: 6rem 3rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: rgba(29, 45, 68, 0.06);
+      border: 1px solid rgba(29, 45, 68, 0.15);
+      color: var(--navy);
+      padding: .45rem 1.3rem;
+      border-radius: 2px;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .7s ease both
+    }
+
+    /* CUSTOMIZE: Change the badge dot color by editing this background */
+    .hero-badge-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: dotPulse 1.8s infinite
+    }
+
+    @keyframes dotPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(1.5)
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 7.5vw, 6.5rem);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -.01em;
+      margin-bottom: 1rem;
+      animation: fadeUp .7s .1s ease both;
+      color: var(--navy)
+    }
+
+    .hero-h1 em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      display: block;
+      font-size: 1.05em
+    }
+
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      margin: 1.5rem auto 1.8rem;
+      animation: fadeUp .7s .15s ease both
+    }
+
+    .hero-divider::before,
+    .hero-divider::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 80px;
+      background: linear-gradient(90deg, transparent, var(--border2))
+    }
+
+    .hero-divider::after {
+      background: linear-gradient(90deg, var(--border2), transparent)
+    }
+
+    .hero-divider-diamond {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg)
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.85;
+      max-width: 520px;
+      margin: 0 auto 3rem;
+      animation: fadeUp .7s .2s ease both;
+      font-weight: 300
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp .7s .3s ease both;
+      margin-bottom: 4rem
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      animation: fadeUp .7s .4s ease both
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .15rem;
+      padding: .8rem 1.5rem;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 4px
+    }
+
+    .hero-stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: var(--navy)
+    }
+
+    .hero-stat-lbl {
+      font-size: .7rem;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .hero-glow {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(80px)
+    }
+
+    .hg1 {
+      width: 500px;
+      height: 500px;
+      top: -150px;
+      left: -100px;
+      background: rgba(192, 57, 43, 0.05)
+    }
+
+    .hg2 {
+      width: 400px;
+      height: 400px;
+      top: 0;
+      right: -80px;
+      background: rgba(29, 45, 68, 0.04)
+    }
+
+    .hg3 {
+      width: 350px;
+      height: 350px;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(184, 134, 11, 0.035)
+    }
+
+    /* ── Buttons ──────────────────────────────────────────────── */
+    .btn-primary {
+      background: var(--navy);
+      color: #f5ede0;
+      border: none;
+      padding: .9rem 2.4rem;
+      border-radius: 4px;
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 20px rgba(29, 45, 68, .22);
+      transition: all .25s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, .06), transparent);
+      opacity: 0;
+      transition: opacity .25s
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(29, 45, 68, .35)
+    }
+
+    .btn-primary:hover::after {
+      opacity: 1
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--navy);
+      border: 1px solid var(--border2);
+      padding: .9rem 2.4rem;
+      border-radius: 4px;
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: all .25s
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--navy);
+      background: rgba(29, 45, 68, .04);
+      transform: translateY(-2px)
+    }
+
+    /* ── Marquee strip ────────────────────────────────────────── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      background: rgba(29, 45, 68, 0.025);
+      position: relative;
+      z-index: 2
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: marqueeScroll 30s linear infinite;
+      white-space: nowrap
+    }
+
+    @keyframes marqueeScroll {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    .marquee-item {
+      font-family: 'Cinzel', serif;
+      font-size: .7rem;
+      font-weight: 400;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 2.5rem
+    }
+
+    .marquee-dot {
+      color: var(--gold);
+      margin-left: 2.5rem
+    }
+
+    /* ── Section labels & headings ────────────────────────────── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .75rem
+    }
+
+    .section-label span {
+      display: block;
+      width: 18px;
+      height: 1px;
+      background: var(--accent)
+    }
+
+    .section-head {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 600;
+      letter-spacing: -.01em;
+      line-height: 1.1;
+      margin-bottom: .5rem;
+      color: var(--navy)
+    }
+
+    .section-head em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--accent);
+      font-size: 1.05em
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 3rem
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    /* ── Portfolio cards grid ─────────────────────────────────── */
+    .portfolio-section {
+      padding: 5rem 3rem 6rem;
+      max-width: 1400px;
+      margin: 0 auto
+    }
+
+    .portfolio-header {
+      margin-bottom: 3.5rem
+    }
+
+    .portfolio-header p {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-top: .5rem;
+      font-weight: 300
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.5rem
+    }
+
+    /* ── Project card ─────────────────────────────────────────── */
+    .project-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .45s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      will-change: transform
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, .06) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform .6s ease;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 6px
+    }
+
+    .project-card:hover::before {
+      transform: translateX(100%)
+    }
+
+    .project-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 6px;
+      box-shadow: inset 0 0 0 1px rgba(192, 57, 43, 0);
+      transition: box-shadow .4s ease;
+      pointer-events: none
+    }
+
+    .project-card:hover {
+      border-color: rgba(192, 57, 43, .2);
+      box-shadow: 0 20px 50px rgba(29, 45, 68, .12), 0 0 30px rgba(192, 57, 43, .04);
+      transform: translateY(-8px)
+    }
+
+    .project-card:hover::after {
+      box-shadow: inset 0 0 0 1px rgba(192, 57, 43, .15)
+    }
+
+    /* ── Card thumbnail / video preview ──────────────────────────
+   The card thumbnail now supports THREE types of media:
+   1. Static image  (thumbnail: 'images/foo.png')
+   2. Video preview (video: 'videos/foo.mp4') — plays on hover
+   3. Placeholder   (neither set)   — shows letter + label
+──────────────────────────────────────────────────────────────  */
+    .card-thumb {
+      height: 250px;
+      position: relative;
+      overflow: hidden
+    }
+
+
+    /* ── VIDEO PREVIEW on card hover ──────────────────────────────
+   The card-video element starts as invisible and crossfades in
+   when the user hovers the card. It autoplays muted & looped.
+   CUSTOMIZE: Change the transition duration by editing opacity .3s
+──────────────────────────────────────────────────────────────  */
+    .card-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      /* hidden at rest */
+      transition: opacity 0.4s ease;
+      /* fade-in on hover */
+      z-index: 2;
+      /* sits above the image */
+    }
+
+    /* When the card is hovered AND a video is present, fade it in */
+    .project-card:hover .card-video {
+      opacity: 1
+    }
+
+    /* ── Video play badge on card thumb ────────────────────────── */
+    .card-video-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: rgba(255, 252, 245, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 252, 245, 0.3);
+      border-radius: 20px;
+      padding: 0.3rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245, 237, 224, 0.9);
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .project-card:hover .card-video-badge {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    .card-video-badge svg {
+      width: 10px;
+      height: 10px
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .45), rgba(0, 0, 0, .05));
+      z-index: 1
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(245, 237, 224, .88);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .65rem;
+      font-weight: 500;
+      padding: .3rem .8rem;
+      border-radius: 2px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      z-index: 4;
+      font-family: 'Jost', sans-serif
+    }
+
+    .card-num {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      opacity: .18;
+      z-index: 4;
+      color: var(--navy)
+    }
+
+    .card-body {
+      padding: 1.4rem 1.5rem 1.6rem
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: .35rem;
+      color: var(--navy);
+      line-height: 1.2
+    }
+
+    .card-desc {
+      font-size: .83rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1.1rem;
+      font-weight: 300
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .card-tags {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap
+    }
+
+    .card-badge {
+      background: rgba(29, 45, 68, .06);
+      border: 1px solid var(--border);
+      color: var(--navy);
+      font-size: .65rem;
+      font-weight: 500;
+      padding: .25rem .65rem;
+      border-radius: 2px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-family: 'Jost', sans-serif
+    }
+
+    .card-arrow {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all .2s;
+      flex-shrink: 0
+    }
+
+    .project-card:hover .card-arrow {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #f5ede0
+    }
+
+    /* The static image inside the card */
+    .card-image {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      transition: transform .6s cubic-bezier(0.23, 1, 0.32, 1);
+
+      z-index: 1;
+    }
+
+    .project-card:hover .card-image {
+      transform: scale(1.08)
+    }
+
+    /* ── Why Us section ───────────────────────────────────────── */
+    .why-section {
+      padding: 5rem 3rem;
+      background: rgba(29, 45, 68, 0.03)
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+      margin-top: 3rem
+    }
+
+    .why-card {
+      padding: 1.8rem;
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all .3s
+    }
+
+    .why-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(29, 45, 68, .08)
+    }
+
+    .why-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(192, 57, 43, .08);
+      border: 1px solid rgba(192, 57, 43, .15);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.1rem
+    }
+
+    .why-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .45rem
+    }
+
+    .why-desc {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300
+    }
+
+    /* ── Pricing section ──────────────────────────────────────── */
+    .pricing-section {
+      padding: 5rem 3rem
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+      margin-top: 3rem
+    }
+
+    .pricing-card {
+      padding: 2rem 1.8rem;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      position: relative;
+      transition: all .35s;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 1.8rem;
+
+      flex: 1;
+    }
+
+    .pricing-card:not(.featured):hover {
+      border-color: var(--border2);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 35px rgba(29, 45, 68, .1)
+    }
+
+    .pricing-card.featured:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(255, 196, 0, 0.489)
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -10px;
+      left: 1.8rem;
+      background: var(--accent);
+      color: #eae9e8;
+      font-size: .65rem;
+      font-weight: 600;
+      padding: .3rem .8rem;
+      border-radius: 2px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-family: 'Jost', sans-serif
+    }
+
+    .pricing-tier {
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+      font-weight: 500
+    }
+
+    .pricing-card.featured .pricing-tier {
+      color: rgba(242, 152, 7, 0.6)
+    }
+
+    .pricing-card:not(.featured) .pricing-tier {
+      color: var(--muted)
+    }
+
+    .pricing-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: .25rem
+    }
+
+    .pricing-card.featured .pricing-price {
+      color: #000000
+    }
+
+    .pricing-cta {
+      margin-top: auto;
+    }
+
+    .pricing-card:not(.featured) .pricing-price {
+      color: var(--navy)
+    }
+
+    .pricing-desc {
+      font-size: .82rem;
+      margin-bottom: 1.5rem;
+      font-weight: 300
+    }
+
+    .pricing-card.featured .pricing-desc {
+      color: rgba(227, 154, 35, 0.65)
+    }
+
+    .pricing-card:not(.featured) .pricing-desc {
+      color: var(--muted)
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 1.8rem
+    }
+
+    .pricing-features li {
+      font-size: .82rem;
+      padding: .45rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+      font-weight: 300
+    }
+
+    .pricing-card.featured .pricing-features li {
+      border-bottom-color: rgba(245, 237, 224, .1);
+      color: rgb(58, 41, 1)
+    }
+
+    .pricing-card:not(.featured) .pricing-features li {
+      color: var(--muted)
+    }
+
+    .pricing-check {
+      color: var(--gold);
+      font-size: .7rem
+    }
+
+    .pricing-card.featured .pricing-check {
+      color: var(--gold2)
+    }
+
+    .pricing-cta {
+      width: 100%;
+      padding: .75rem;
+      border-radius: 4px;
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: all .25s
+    }
+
+    .pricing-card.featured .pricing-cta {
+      background: rgba(255, 149, 0, 0.777);
+      color: var(--navy);
+      border: none
+    }
+
+    .pricing-card.featured .pricing-cta:hover {
+      background: rgba(205, 119, 0, 0.777);
+      transform: translateY(-1px)
+    }
+
+    .pricing-card:not(.featured) .pricing-cta {
+      background: transparent;
+      color: var(--navy);
+      border: 1px solid var(--border2)
+    }
+
+    .pricing-card:not(.featured) .pricing-cta:hover {
+      border-color: var(--navy);
+      background: rgba(29, 45, 68, .04)
+    }
+
+    /* ── CTA banner ───────────────────────────────────────────── */
+    .cta-banner {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3.5rem;
+      text-align: center;
+      background: rgba(29, 45, 68, .03)
+    }
+
+    .cta-banner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .8rem
+    }
+
+    .cta-banner p {
+      color: var(--muted);
+      font-size: .92rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+      font-weight: 300
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    /* ── Contact form ─────────────────────────────────────────── */
+    .contact-section {
+      padding: 5rem 3rem;
+      max-width: 700px;
+      margin: 0 auto
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2.5rem
+    }
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .9rem 1.1rem;
+      font-family: 'Jost', sans-serif;
+      font-size: .88rem;
+      color: var(--text);
+      font-weight: 300;
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none
+    }
+
+    .contact-form input:focus,
+    .contact-form select:focus,
+    .contact-form textarea:focus {
+      border-color: var(--border2)
+    }
+
+    .contact-form textarea {
+      min-height: 120px;
+      resize: vertical
+    }
+
+    /* ── Sticky WhatsApp CTA ──────────────────────────────────── */
+    .sticky-cta {
+      position: fixed;
+      bottom: 4rem;
+      right: 2rem;
+      z-index: 400;
+      background: var(--navy);
+      color: #f5ede0;
+      border: none;
+      padding: .75rem 1.6rem;
+      border-radius: 4px;
+      font-family: 'Jost', sans-serif;
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(66, 68, 29, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all .35s cubic-bezier(0.23, 1, 0.32, 1)
+    }
+
+    .sticky-cta.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .sticky-cta:hover {
+      background: var(--navy2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(29, 45, 68, .4)
+    }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: rgba(29, 45, 68, .02)
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+   PROJECT PAGE STYLES
+══════════════════════════════════════════════════════════════ */
+    .proj-hero {
+      padding: 3rem 3rem 2rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .proj-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .proj-meta {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem
+    }
+
+    .proj-meta-chip {
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: .3rem .75rem;
+      border-radius: 2px;
+      font-family: 'Jost', sans-serif
+    }
+
+    .proj-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: .75rem
+    }
+
+    .proj-tagline {
+      font-size: .95rem;
+      color: var(--muted);
+      max-width: 550px;
+      line-height: 1.7;
+      font-weight: 300
+    }
+
+    .proj-section {
+      padding: 0 3rem 3rem
+    }
+
+    .proj-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1.5rem
+    }
+
+    .proj-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 3rem 3rem
+    }
+
+    .info-box {
+      display: flex;
+      gap: 2rem;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem;
+      margin-top: 1rem;
+      flex-wrap: wrap
+    }
+
+    .info-box-item {
+      flex: 1;
+      min-width: 200px
+    }
+
+    .info-box-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      color: rgba(29, 45, 68, .12);
+      line-height: 1;
+      margin-bottom: .25rem
+    }
+
+    .info-box-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .4rem
+    }
+
+    .info-box-text {
+      font-size: .83rem;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300
+    }
+
+    .info-box-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch
+    }
+
+    /* ── Hero showcase panels ─────────────────────────────────── */
+    .proj-showcase {
+      margin: 0 3rem 3rem;
+      background: linear-gradient(135deg, rgba(29, 45, 68, .04), rgba(184, 134, 11, .03));
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 620px;
+      padding-bottom: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative
+    }
+
+    .showcase-panel-wrap {
+      margin-bottom: 60px;
+    }
+
+    .proj-showcase-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden
+    }
+
+    .proj-showcase-particle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(1px);
+      animation: particleFloat linear infinite;
+      opacity: 0
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(0) translateX(0) scale(.5)
+      }
+
+      15% {
+        opacity: .7
+      }
+
+      85% {
+        opacity: .7
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-120px) translateX(var(--drift)) scale(1)
+      }
+    }
+
+    .proj-showcase-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 5rem 3rem 7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1.5rem
+    }
+
+    .showcase-panel-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .showcase-panel {
+      background: var(--glass2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(29, 45, 68, .12), 0 0 40px rgba(184, 134, 11, .04);
+      transition: transform .1s ease
+    }
+
+    .showcase-panel.main-panel {
+      width: 100%;
+      aspect-ratio: 16/9;
+      position: relative;
+      z-index: 2
+    }
+
+    .showcase-panel.float-left {
+      position: absolute;
+      left: -5%;
+      bottom: -15%;
+      width: 42%;
+      aspect-ratio: 4/3;
+      transform: rotate(-4deg);
+      z-index: 1;
+      opacity: .7
+    }
+
+    .showcase-panel.float-right {
+      position: absolute;
+      right: -5%;
+      top: -12%;
+      width: 35%;
+      aspect-ratio: 4/3;
+      transform: rotate(3.5deg);
+      z-index: 1;
+      opacity: .65
+    }
+
+    .showcase-panel img,
+    .showcase-panel video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .showcase-panel-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg3), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: .5rem;
+      min-height: 120px;
+      position: relative
+    }
+
+    .showcase-panel-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(184, 134, 11, .06), transparent)
+    }
+
+    .sp-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 600;
+      color: rgba(29, 45, 68, .15);
+      line-height: 1;
+      position: relative;
+      z-index: 1
+    }
+
+    .sp-sub {
+      font-size: .6rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 500;
+      position: relative;
+      z-index: 1
+    }
+
+    .showcase-ambient::before {
+      content: '';
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(184, 134, 11, .07) 0%, transparent 70%);
+      filter: blur(40px);
+      animation: ambientPulse 5s ease-in-out infinite alternate
+    }
+
+    @keyframes ambientPulse {
+      from {
+        opacity: .5;
+        transform: translate(-50%, -50%) scale(1)
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.15)
+      }
+    }
+
+    .showcase-caption {
+      text-align: center;
+      position: relative;
+      z-index: 2
+    }
+
+    .showcase-caption-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .3rem
+    }
+
+    .showcase-caption-tag {
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 400
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+   MEDIA SLIDER SYSTEM
+   ─────────────────────────────────────────────────────────────
+   Supports BOTH images and videos in the same slider.
+   Videos autoplay muted on slide activation.
+   Click main viewport → opens fullscreen lightbox.
+══════════════════════════════════════════════════════════════ */
+    .pslider-wrap {
+      margin: 0 3rem 3rem;
+      position: relative
+    }
+
+    .pslider-glow {
+      position: absolute;
+      inset: -40px;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      filter: blur(60px)
+    }
+
+    .pslider-wrap:hover .pslider-glow {
+      opacity: 1
+    }
+
+    .pslider-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      cursor: pointer;
+      will-change: transform
+    }
+
+    .pslider-track {
+      display: flex;
+      height: 100%;
+      transition: transform var(--slider-speed) var(--slider-ease);
+      will-change: transform
+    }
+
+    /* ── Individual slide ───────────────────────────────────────
+   Each slide can contain either a <img> or a <video>.
+   Videos are muted & autoplay when the slide is active.
+──────────────────────────────────────────────────────────── */
+    .pslide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    /* Shared styles for both slide images and slide videos */
+    .pslide-img,
+    .pslide-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      will-change: transform;
+      transition: transform 0.12s ease;
+      /* parallax motion */
+    }
+
+    /* Zoom effect on hover (applied to active slide only) */
+    .pslider-wrap:hover .pslide.active .pslide-img,
+    .pslider-wrap:hover .pslide.active .pslide-video {
+      transform: scale(1.02) translateZ(0)
+    }
+
+    /* ── Video controls overlay (shown on video slides) ────────── */
+    .pslide-video-controls {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Mute / unmute toggle button */
+    .pslide-mute-btn {
+      background: rgba(255, 252, 245, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 252, 245, 0.25);
+      border-radius: 3px;
+      padding: 0.3rem 0.65rem;
+      cursor: pointer;
+      color: rgba(245, 237, 224, 0.9);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      font-family: 'Jost', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s ease;
+    }
+
+    .pslide-mute-btn:hover {
+      background: rgba(184, 134, 11, .25);
+      border-color: rgba(184, 134, 11, .5);
+      color: #f5ede0
+    }
+
+    .pslide-mute-btn svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0
+    }
+
+    /* Video type badge (small "VIDEO" label, top-left of slide) */
+    .pslide-type-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 252, 245, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 252, 245, 0.25);
+      border-radius: 3px;
+      padding: 0.25rem 0.65rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(245, 237, 224, 0.85);
+      z-index: 8;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .pslide-type-badge svg {
+      width: 9px;
+      height: 9px
+    }
+
+    /* ── Slider placeholder ─────────────────────────────────────── */
+    .pslide-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: .75rem;
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      position: relative
+    }
+
+    .pslide-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(184, 134, 11, .07), transparent 70%)
+    }
+
+    .pslide-ph-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 6rem;
+      font-weight: 600;
+      line-height: 1;
+      color: rgba(29, 45, 68, .1);
+      position: relative;
+      z-index: 1
+    }
+
+    .pslide-ph-label {
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      position: relative;
+      z-index: 1
+    }
+
+    .pslide-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: linear-gradient(to top, rgba(26, 18, 8, .45) 0%, transparent 40%), linear-gradient(to bottom, rgba(26, 18, 8, .15) 0%, transparent 30%)
+    }
+
+    /* ── Counter, arrows, thumbs ─────────────────────────────────── */
+    .pslider-counter {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: rgba(255, 252, 245, .18);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 252, 245, .22);
+      border-radius: 3px;
+      padding: .28rem .75rem;
+      font-family: 'Jost', sans-serif;
+      font-size: .72rem;
+      font-weight: 500;
+      color: rgba(245, 237, 224, .9);
+      letter-spacing: .1em;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+
+    .pslider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 252, 245, .16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 252, 245, .22);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      color: rgba(245, 237, 224, .88);
+      transition: all .25s cubic-bezier(0.23, 1, 0.32, 1);
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .pslider-viewport:hover .pslider-arrow {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .pslider-arrow:hover {
+      background: rgba(184, 134, 11, .22);
+      border-color: rgba(184, 134, 11, .45);
+      color: #f5ede0;
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 8px 24px rgba(184, 134, 11, .2)
+    }
+
+    .pslider-arrow.prev {
+      left: 16px
+    }
+
+    .pslider-arrow.next {
+      right: 16px
+    }
+
+    .pslider-arrow svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0
+    }
+
+    .pslider-thumbs {
+      display: flex;
+      gap: .5rem;
+      margin-top: .75rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch
+    }
+
+    .pslider-thumbs::-webkit-scrollbar {
+      display: none
+    }
+
+    .pslider-thumb {
+      flex-shrink: 0;
+      width: var(--slider-thumb-size);
+      height: var(--slider-thumb-h);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      transition: all .25s cubic-bezier(0.23, 1, 0.32, 1);
+      background: var(--bg2)
+    }
+
+    .pslider-thumb:hover {
+      border-color: rgba(184, 134, 11, .45);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(29, 45, 68, .12)
+    }
+
+    .pslider-thumb.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold), 0 6px 20px rgba(184, 134, 11, .2)
+    }
+
+    .pslider-thumb img,
+    .pslider-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s var(--slider-ease)
+    }
+
+    .pslider-thumb:hover img,
+    .pslider-thumb:hover video {
+      transform: scale(1.08)
+    }
+
+    .pthumb-ph {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: rgba(29, 45, 68, .2)
+    }
+
+    /* Video thumbnail overlay (play icon) */
+    .pthumb-video-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(29, 45, 68, 0.2);
+      transition: background 0.2s ease;
+    }
+
+    .pthumb-video-overlay svg {
+      width: 16px;
+      height: 16px;
+      color: rgba(245, 237, 224, 0.9);
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5))
+    }
+
+    .pslider-thumb.active .pthumb-video-overlay,
+    .pslider-thumb:hover .pthumb-video-overlay {
+      background: rgba(184, 134, 11, 0.3)
+    }
+
+    /* Showcase section wrapper */
+    .showcase-section {
+      padding: 0 3rem 4rem;
+      position: relative
+    }
+
+    .showcase-section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem
+    }
+
+    .showcase-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: rgba(29, 45, 68, .07);
+      line-height: 1;
+      letter-spacing: -.02em;
+      user-select: none
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   FULLSCREEN LIGHTBOX
+   ─────────────────────────────────────────────────────────────
+   ESC key closes. Arrow keys navigate. Swipe left/right.
+   Videos keep playing in the lightbox.
+═══════════════════════════════════════════════════════════════ */
+    #pslider-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+      background: rgba(14, 10, 5, .94);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px)
+    }
+
+    #pslider-lightbox.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .plb-inner {
+      position: relative;
+      max-width: min(1100px, 95vw);
+      width: 100%;
+      overflow: hidden;
+      /* ADD THIS */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem
+    }
+
+    .plb-img-wrap {
+      width: 100%;
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(184, 134, 11, .2);
+      box-shadow: 0 50px 120px rgba(0, 0, 0, .7)
+    }
+
+    #plbImgSlot {
+      width: 100%;
+      height: 72vh;
+
+      display: center;
+      align-items: center;
+      justify-content: center;
+
+      position: relative;
+    }
+
+    .plb-main-img,
+    .plb-main-video {
+      display: block;
+
+      width: auto;
+      height: auto;
+
+      max-width: 100%;
+      max-height: 72vh;
+
+      object-fit: contain;
+
+      margin: 0 auto;
+
+      background: rgba(20, 14, 8, .5);
+      border-radius: 10px;
+    }
+
+    .plb-main-video {
+      cursor: pointer
+    }
+
+
+    /* click to play/pause in lightbox */
+    .plb-ph {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      background: linear-gradient(135deg, rgba(29, 45, 68, .5), rgba(14, 10, 5, .7))
+    }
+
+    .plb-ph-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-weight: 600;
+      color: rgba(245, 237, 224, .08);
+      line-height: 1
+    }
+
+    .plb-ph-text {
+      font-size: .78rem;
+      color: rgba(245, 237, 224, .35);
+      letter-spacing: .14em;
+      text-transform: uppercase
+    }
+
+    .plb-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 252, 245, .1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 252, 245, .18);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgba(245, 237, 224, .8);
+      transition: all .22s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 2
+    }
+
+    .plb-arrow:hover {
+      background: rgba(184, 134, 11, .2);
+      border-color: rgba(184, 134, 11, .5);
+      color: #f5ede0;
+      box-shadow: 0 8px 24px rgba(184, 134, 11, .25)
+    }
+
+    .plb-arrow.prev {
+      left: 24px
+    }
+
+    .plb-arrow.next {
+      right: 24px
+    }
+
+    .plb-arrow svg {
+      width: 20px;
+      height: 20px
+    }
+
+    .plb-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+
+      width: 42px;
+      height: 42px;
+
+      z-index: 50;
+
+      background: rgba(255, 252, 245, .12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+
+      border: 1px solid rgba(255, 252, 245, .18);
+      border-radius: 8px;
+
+      cursor: pointer;
+      color: rgba(245, 237, 224, .85);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transition: all .25s ease;
+    }
+
+    .plb-close:hover {
+      background: rgba(192, 57, 43, .2);
+      border-color: rgba(192, 57, 43, .45);
+      color: #f5ede0
+    }
+
+    .plb-meta {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem
+    }
+
+    .plb-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: rgba(245, 237, 224, .88)
+    }
+
+    .plb-counter {
+      font-family: 'Jost', sans-serif;
+      font-size: .8rem;
+      color: rgba(245, 237, 224, .5);
+      letter-spacing: .12em
+    }
+
+    .plb-thumbs {
+      display: flex;
+      gap: .45rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      width: 100%;
+      -webkit-overflow-scrolling: touch
+    }
+
+    .plb-thumbs::-webkit-scrollbar {
+      display: none
+    }
+
+    .plb-thumb {
+      flex-shrink: 0;
+      width: 60px;
+      height: 44px;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 252, 245, .12);
+      cursor: pointer;
+      transition: all .22s;
+      background: rgba(29, 45, 68, .4);
+      position: relative
+    }
+
+    .plb-thumb:hover {
+      border-color: rgba(184, 134, 11, .45)
+    }
+
+    .plb-thumb.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold)
+    }
+
+    .plb-thumb img,
+    .plb-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .plb-thumb-ph {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .9rem;
+      color: rgba(245, 237, 224, .2)
+    }
+
+    /* Video play icon overlay on lightbox thumbnails */
+    .plb-thumb-vid-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(29, 45, 68, .25)
+    }
+
+    .plb-thumb-vid-icon svg {
+      width: 14px;
+      height: 14px;
+      color: rgba(245, 237, 224, .85)
+    }
+
+    /* ── Related projects ─────────────────────────────────────── */
+    .related-section {
+      padding: 0 3rem 4rem
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem
+    }
+
+    .related-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .45s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      will-change: transform
+    }
+
+    .related-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, .05) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform .55s ease;
+      z-index: 1;
+      pointer-events: none
+    }
+
+    .related-card:hover::before {
+      transform: translateX(100%)
+    }
+
+    .related-card:hover {
+      border-color: rgba(184, 134, 11, .3);
+      box-shadow: 0 20px 50px rgba(29, 45, 68, .12), 0 0 30px rgba(184, 134, 11, .06);
+      transform: translateY(-7px)
+    }
+
+    .related-thumb {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg2)
+    }
+
+    .related-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .55s cubic-bezier(0.23, 1, 0.32, 1)
+    }
+
+    .related-card:hover .related-thumb-img {
+      transform: scale(1.07)
+    }
+
+    .related-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(29, 45, 68, .4), transparent 60%)
+    }
+
+    .related-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: rgba(29, 45, 68, .15);
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      position: relative
+    }
+
+    .related-thumb-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(184, 134, 11, .05), transparent)
+    }
+
+    .related-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(245, 237, 224, .88);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .6rem;
+      font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 2px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      z-index: 2;
+      font-family: 'Jost', sans-serif
+    }
+
+    .related-body {
+      padding: 1.3rem 1.4rem 1.5rem
+    }
+
+    .related-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .3rem;
+      line-height: 1.2
+    }
+
+    .related-tagline {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-weight: 300
+    }
+
+    .related-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .related-tags {
+      display: flex;
+      gap: .35rem;
+      flex-wrap: wrap
+    }
+
+    .related-tag {
+      background: rgba(29, 45, 68, .05);
+      border: 1px solid var(--border);
+      color: var(--navy);
+      font-size: .6rem;
+      font-weight: 500;
+      padding: .2rem .55rem;
+      border-radius: 2px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-family: 'Jost', sans-serif
+    }
+
+    .related-explore {
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .06em;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      transition: color .2s;
+      white-space: nowrap;
+      font-family: 'Jost', sans-serif
+    }
+
+    .related-card:hover .related-explore {
+      color: var(--navy)
+    }
+
+    .related-explore svg {
+      width: 12px;
+      height: 12px;
+      transition: transform .2s
+    }
+
+    .related-card:hover .related-explore svg {
+      transform: translateX(3px)
+    }
+
+    /* ── Mobile ───────────────────────────────────────────────── */
+    @media(max-width:768px) {
+      nav {
+        padding: 1rem 1.5rem
+      }
+
+      .nav-links {
+        display: none
+      }
+
+      .hero {
+        padding: 4rem 1.5rem 3rem
+      }
+
+      .portfolio-section,
+      .why-section,
+      .pricing-section,
+      .contact-section {
+        padding: 3rem 1.5rem
+      }
+
+      .cards-grid,
+      .why-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr
+      }
+
+      .cta-banner {
+        padding: 2rem 1.5rem
+      }
+
+      footer {
+        padding: 1.5rem
+      }
+
+      .proj-hero,
+      .proj-section {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem
+      }
+
+      .proj-showcase {
+        margin: 0 1.5rem 2rem
+      }
+
+      .pslider-wrap {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem
+      }
+
+      .pslider-arrow {
+        opacity: .75;
+        pointer-events: all;
+        width: 36px;
+        height: 36px
+      }
+
+      .pslider-arrow svg {
+        width: 15px;
+        height: 15px
+      }
+
+      .pslider-arrow.prev {
+        left: 22px
+      }
+
+      .pslider-arrow.next {
+        right: 22px
+      }
+
+      :root {
+        --slider-thumb-size: 56px;
+        --slider-thumb-h: 42px
+      }
+
+      .plb-arrow.prev {
+        left: 48px
+      }
+
+      .plb-arrow.next {
+        right: 48px
+      }
+
+      .plb-arrow {
+        width: 38px;
+        height: 38px
+      }
+
+      .showcase-section,
+      .related-section {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem
+      }
+
+      .proj-divider {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem
+      }
+
+      .showcase-panel.float-left,
+      .showcase-panel.float-right {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Custom cursor elements (remove to use default cursor) ──── -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ── Decorative background layers ──────────────────────────── -->
+  <div id="bg-canvas">
+    <div class="bg-layer"></div>
+    <div class="bg-noise"></div>
+    <div class="bg-vignette"></div>
+    <div class="ambient-orb amb1"></div>
+    <div class="ambient-orb amb2"></div>
+    <div class="ambient-orb amb3"></div>
+  </div>
+
+  <!-- ── Page transition wipe overlay ──────────────────────────── -->
+  <div id="page-transition"></div>
+
+  <!-- ════════════════════════════════════════════════════════════
+     NAVIGATION BAR
+     CUSTOMIZE: Edit link labels, logo text, CTA button text
+════════════════════════════════════════════════════════════ -->
+  <nav id="navbar">
+    <!-- CUSTOMIZE: Change SLIDE / CRAFT text to your brand name -->
+    <div class="nav-logo" onclick="navigateHome()">
+      <span class="slide">SLIDE</span><span class="craft">CRAFT</span>
+    </div>
+    <div class="nav-links">
+      <!-- CUSTOMIZE: Add/remove nav links as needed -->
+      <a onclick="scrollToSection('portfolio-anchor')">Portfolio</a>
+      <a onclick="scrollToSection('why-anchor')">Why Us</a>
+      <a onclick="scrollToSection('pricing-anchor')">Pricing</a>
+      <a onclick="scrollToSection('contact-anchor')">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="back-btn" id="backBtn" onclick="navigateBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+        </svg>
+        Back
+      </button>
+      <!-- CUSTOMIZE: Change "Order Now" text and openWA('nav') source -->
+      <button class="nav-cta" onclick="scrollToSection('pricing-anchor')">Order Now</button>
+    </div>
+  </nav>
+
+  <!-- ── Sticky floating CTA button (appears after scroll) ─────── -->
+  <button class="sticky-cta" id="stickyCTA" onclick="openWA('sticky')">Order on WhatsApp →</button>
+
+  <!-- ════════════════════════════════════════════════════════════
+     HOME VIEW
+════════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-home">
+
+    <!-- ── HERO SECTION ─────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-glow hg1"></div>
+      <div class="hero-glow hg2"></div>
+      <div class="hero-glow hg3"></div>
+      <div class="hero-inner">
+        <!-- CUSTOMIZE: Change badge text -->
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Premium Presentation Studio
+        </div>
+        <!-- CUSTOMIZE: Change headline (keep <em> for italic colored line) -->
+        <h1 class="hero-h1">
+          Slides That
+          <em>Command Attention</em>
+        </h1>
+        <div class="hero-divider">
+          <div class="hero-divider-diamond"></div>
+        </div>
+        <!-- CUSTOMIZE: Change sub-heading description -->
+        <p class="hero-sub">Bespoke presentation design crafted with precision and intentionality. We transform your
+          ideas into visual stories that leave a lasting impression.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="scrollToSection('pricing-anchor')">Start Your Project →</button>
+          <button class="btn-ghost" onclick="scrollToSection('portfolio-anchor')">View Portfolio</button>
+        </div>
+        <!-- CUSTOMIZE: Change these 4 stat numbers and labels -->
+        <div class="hero-stats">
+          <div class="hero-stat"><span class="hero-stat-val">240+</span><span class="hero-stat-lbl">Projects
+              Delivered</span></div>
+          <div class="hero-stat"><span class="hero-stat-val">98%</span><span class="hero-stat-lbl">Client
+              Satisfaction</span></div>
+          <div class="hero-stat"><span class="hero-stat-val">4.7 ★</span><span class="hero-stat-lbl">Average
+              Rating</span>
+          </div>
+          <div class="hero-stat"><span class="hero-stat-val">48h</span><span class="hero-stat-lbl">Delivery Time</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MARQUEE STRIP ─────────────────────────────────────────
+       CUSTOMIZE: Add/remove .marquee-item spans.
+       The track is duplicated (14 items × 2) for seamless loop.
+  ──────────────────────────────────────────────────────────── -->
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="marquee-item">College Presentations<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Arduino Projects<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Poster Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Report Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Menu Card Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Startup Logo Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Brand Identity Design<span class="marquee-dot">◆</span></span>
+
+        <!-- Duplicated for infinite loop -->
+        <span class="marquee-item">College Presentations<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Arduino Projects<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Poster Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Report Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Menu Card Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Startup Logo Design<span class="marquee-dot">◆</span></span>
+        <span class="marquee-item">Brand Identity Design<span class="marquee-dot">◆</span></span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ── PORTFOLIO GRID (populated by JS) ──────────────────────── -->
+    <section class="portfolio-section" id="portfolio-anchor">
+      <div class="portfolio-header reveal">
+        <div class="section-label"><span></span>Our Work</div>
+        <h2 class="section-head">Selected <em>Projects</em></h2>
+        <p>A curated collection of presentation designs crafted for ambitious brands and leaders.</p>
+      </div>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── WHY US GRID (populated by JS) ─────────────────────────── -->
+    <section class="why-section" id="why-anchor">
+      <div style="max-width:1200px;margin:0 auto">
+        <div class="reveal">
+          <div class="section-label"><span></span>Why SlideCraft</div>
+          <h2 class="section-head">Designed with <em>Purpose</em></h2>
+        </div>
+        <div class="why-grid" id="whyGrid"></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── PRICING GRID (populated by JS) ────────────────────────── -->
+    <section class="pricing-section" id="pricing-anchor">
+      <div style="max-width:1200px;margin:0 auto">
+        <div class="reveal">
+          <div class="section-label"><span></span>Pricing</div>
+          <h2 class="section-head">Simple, Transparent <em>Rates</em></h2>
+        </div>
+        <div class="pricing-grid" id="pricingGrid"></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── CTA BANNER ──────────────────────────────────────────────── -->
+    <section style="padding:4rem 3rem">
+      <div class="cta-banner reveal">
+        <div class="section-label" style="justify-content:center;margin-bottom:1rem"><span></span>Get Started</div>
+        <h2>Ready to Elevate Your <em
+            style="color:var(--accent);font-family:'Cormorant Garamond',serif;font-style:italic">Presentation?</em></h2>
+        <p>Whether it's a board meeting or a fundraising pitch, we craft slides that speak with authority and elegance.
+        </p>
+        <div class="cta-btns">
+          <button class="btn-primary" onclick="openWA('cta')">Order on WhatsApp →</button>
+          <button class="btn-ghost" onclick="scrollToSection('contact-anchor')">Send an Enquiry</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONTACT FORM ─────────────────────────────────────────────
+       CUSTOMIZE: Add/remove select options for your services.
+       The form submits directly to WhatsApp on submit.
+  ──────────────────────────────────────────────────────────── -->
+    <section class="contact-section" id="contact-anchor">
+      <div class="reveal">
+        <div class="section-label"><span></span>Contact</div>
+        <h2 class="section-head">Start a <em>Conversation</em></h2>
+        <p style="color:var(--muted);font-size:.9rem;margin-top:.5rem;font-weight:300;line-height:1.7">Tell us about
+          your project and we'll get back to you within 24 hours.</p>
+      </div>
+      
+      <form class="contact-form reveal" onsubmit="handleFormSubmit(event)">
+        <input type="text" placeholder="Your Name" required>
+        <!-- CUSTOMIZE: Add/remove service options here -->
+        <select required>
+          <option value="" disabled selected>Select a Service</option>
+          <option>Pitch Deck</option>
+          <option>Investor Presentation</option>
+          <option>Business Proposal</option>
+          <option>Conference Slides</option>
+          <option>Brand Presentation</option>
+          <option>Other</option>
+        </select>
+        <textarea placeholder="Tell us about your project…"></textarea>
+        <button class="btn-primary" type="submit" style="align-self:flex-start">Send via WhatsApp →</button>
+      </form>
+    </section>
+
+    <!-- ── FOOTER ───────────────────────────────────────────────── -->
+    <footer>
+      
+       <button type="submit" aria-label="Email us!">
+  <i class="fa-solid fa-envelope"></i>
+</button>
+      
+      <div style="display:flex;gap:2rem">
+        <a style="color:var(--muted);font-size:.78rem;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.06em"
+          onclick="scrollToSection('portfolio-anchor')">Portfolio</a>
+        <a style="color:var(--muted);font-size:.78rem;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.06em"
+          onclick="scrollToSection('pricing-anchor')">Pricing</a>
+        <a style="color:var(--muted);font-size:.78rem;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.06em"
+          onclick="openWA('footer')">WhatsApp</a>
+      </div>
+      <!-- CUSTOMIZE: Update copyright year/name -->
+      <p style="color:var(--muted);font-size:.75rem;letter-spacing:.04em">© 2025 SlideCraft — All rights reserved</p>
+    </footer>
+
+  </div><!-- /view-home -->
+
+  <!-- ════════════════════════════════════════════════════════════
+     PROJECT DETAIL VIEW (rendered dynamically by openProject())
+════════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-project"></div>
+
+  <!-- ════════════════════════════════════════════════════════════
+     FULLSCREEN LIGHTBOX (shared across all projects)
+     Opened when user clicks the main slider image.
+════════════════════════════════════════════════════════════ -->
+  <div id="pslider-lightbox">
+    <div class="plb-inner" id="plbInner">
+      <button class="plb-close" id="plbClose">✕</button>
+      <div class="plb-img-wrap" id="plbImgWrap">
+        <button class="plb-arrow prev" id="plbPrev">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <div id="plbImgSlot"></div>
+        <button class="plb-arrow next" id="plbNext">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+      <div class="plb-meta">
+        <div class="plb-title" id="plbTitle"></div>
+        <div class="plb-counter" id="plbCounter"></div>
+      </div>
+      <div class="plb-thumbs" id="plbThumbs"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ════════════════════════════════════════════════════════════════
+       SITE CONFIGURATION
+    ════════════════════════════════════════════════════════════════ */
+
+    // CUSTOMIZE: Replace with your WhatsApp number (country code + number, no + sign)
+    const WA_NUMBER = '919998329419';
+    const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
+
+    /* ════════════════════════════════════════════════════════════════
+       SLIDER CONFIGURATION
+       ──────────────────────────────────────────────────────────────
+       CUSTOMIZE: Tweak these global slider/media settings.
+    ════════════════════════════════════════════════════════════════ */
+    const SLIDER_AUTOPLAY = false;  // set true to enable slide autoplay
+    const SLIDER_AUTOPLAY_MS = 4500;   // autoplay interval in milliseconds
+    const PARALLAX_STRENGTH = 12;     // px of parallax shift on mouse move
+    const SLIDER_LOOP = true;   // infinite loop when navigating past last
+
+    /* ════════════════════════════════════════════════════════════════
+       PROJECTS DATA
+       ──────────────────────────────────────────────────────────────
+       CUSTOMIZE: Edit this array to add/remove projects.
+    
+       Each project object has these fields:
+       ─────────────────────────────────────
+       id          — string, used in WhatsApp messages & related matching
+       title       — displayed name of the project
+       thumbnail   — path to the card thumbnail image (relative to HTML)
+       video       — (OPTIONAL) path to an mp4 video; shown on card hover
+                     e.g.  video: 'videos/my-ppt-preview.mp4'
+                     Leave out or set to '' to show no video on the card.
+       tagline     — short one-line subtitle
+       category    — shown as the category chip (top-left of card)
+       desc        — paragraph description of the project
+       tags        — array of short tag labels shown on the card
+       color       — primary accent color for this project page
+       color2      — darker version of the accent (unused currently)
+       bg          — rgba background for decorative elements
+       deliverables— array of 4 deliverable labels (project page)
+       features    — array of feature bullet points (project page)
+       showcase    — array of media items for the project page slider.
+                     ─────────────────────────────────────────────────
+                     Each item can be:
+                       • A string path to an IMAGE: 'images/foo.png'
+                       • An OBJECT for a VIDEO:
+                         {
+                           type: 'video',
+                           src:  'videos/foo.mp4',
+                           poster: 'images/foo-poster.jpg'  ← optional
+                         }
+                     ─────────────────────────────────────────────────
+                     Mix images and videos freely in the array.
+                     Example:
+                       showcase: [
+                         'images/slide1.png',
+                         { type:'video', src:'videos/demo.mp4', poster:'images/poster.jpg' },
+                         'images/slide3.png',
+                       ]
+    ════════════════════════════════════════════════════════════════ */
+    const PROJECTS = [
+      {
+        id: 'PPT',
+        title: 'Collage Presentations',
+        thumbnail: 'images/PPT.png',
+        // CUSTOMIZE: Add a hover-preview video for this card:
+        // video: 'videos/ppt-preview.mp4',
+        video: '',
+        tagline: 'Present Ideas That Get Remembered',
+        category: 'Presentation',
+        desc: 'Professional PPT presentations with modern visuals, clean layouts, animations, and impactful storytelling.',
+        tags: ['Professional', 'Modern Slides', 'Animations'],
+        color: '#c0392b', color2: '#962d22', bg: 'rgba(192,57,43,0.08)',
+        deliverables: ['PowerPoint + PDF files', 'Custom slide designs', 'Animated transitions', 'Presentation assets'],
+        features: ['Modern slide layouts', 'Infographics & charts', 'Animations & transitions', 'Professional storytelling'],
+        // CUSTOMIZE: Add images and/or videos to the slider below.
+        // Mix types freely — images shown as <img>, videos as <video>.
+        showcase: [
+          //'images/PPT.png',
+          // Example video slide — uncomment and set your path:
+          // { type: 'video', src: 'videos/ppt-showcase.mp4', poster: 'images/PPT.png' },
+          { type: 'video', src: 'videos/PPT/ParkinngGate.mp4', poster: 'images/PPT/ParkinngGate.png' },
+          { type: 'video', src: 'videos/PPT/macOStemplate.mp4', poster: 'images/PPT/macOS.png' },
+          { type: 'video', src: 'videos/PPT/LiquidGlassV2.0.mp4', poster: 'images/PPT/LQGLV2.png' },
+          { type: 'video', src: 'videos/PPT/LaserSecuritySystem.mp4', poster: 'images/PPT/LaserSecuritySystem.png' },
+          { type: 'video', src: 'videos/PPT/wockhart.mp4', poster: 'images/PPT/wockhart.png' },
+          { type: 'video', src: 'videos/PPT/Chandrayan.mp4', poster: 'images/PPT/Chandrayan.png' },
+        ]
+      },
+      {
+        id: 'Tech Service',
+        title: 'Arduino Projects',
+        thumbnail: 'images/Arduino.png',
+        // CUSTOMIZE: Add a hover video for this card:
+        // video: 'videos/arduino-preview.mp4',
+        video: '',
+        tagline: 'Where Innovation Meets Real-World Circuits',
+        category: 'Technical',
+        desc: 'Custom Arduino and embedded system projects with coding, circuit design, and hardware integration.',
+        tags: ['Embedded Systems', 'Coding', 'Hardware'],
+        color: '#1d2d44', color2: '#152233', bg: 'rgba(29,45,68,0.08)',
+        deliverables: ['Circuit diagrams', 'Arduino source code', 'Project documentation', 'Component list'],
+        features: ['Circuit design', 'Embedded coding', 'Sensor integration', 'Hardware prototyping'],
+        showcase: [
+          'images/Arduino.png',
+          'images/Arduino/RFID3.jpg',
+          'images/Arduino/RFID.png',
+          'images/Arduino/RFID1.jpg',
+          'images/Arduino/FSG.jpg',
+          'images/Arduino/FOOTSTEPGEN.png',
+          'images/Arduino/Picture1.jpg',
+        ]
+      },
+     /* {
+        id: 'Design Service',
+        title: 'Poster Design',
+        thumbnail: 'images/Fest.png',
+        // CUSTOMIZE: Add a hover video for this card:
+        // video: 'videos/fest-preview.mp4',
+        video: '',
+        tagline: 'Posters That Capture Attention Instantly.',
+        category: 'Design',
+        desc: 'Eye-catching posters designed for events, promotions, branding, and social media campaigns.',
+        tags: ['Creative', 'Eye-Catching', 'Marketing'],
+        color: '#b8860b', color2: '#8b6508', bg: 'rgba(184,134,11,0.08)',
+        deliverables: ['High-resolution poster', 'Print-ready files', 'Social media versions', 'Editable source file'],
+        features: ['Creative compositions', 'High-impact typography', 'Print-ready quality', 'Brand-focused visuals'],
+        showcase: [
+          'images/Fest.png',
+          'images/Fest.png',
+          // CUSTOMIZE: Replace with a real video slide:
+          // { type: 'video', src: 'videos/fest-reel.mp4', poster: 'images/Fest.png' },
+          'images/Fest.png',
+        ]
+      },*/
+      {
+        id: 'Academic',
+        title: 'Final Year Project Report',
+        thumbnail: 'images/Report.png',
+        video: '',
+        tagline: 'Professional Reports, Clearly Delivered.',
+        category: 'Academics',
+        desc: 'Well-structured academic and business reports with polished formatting and premium layouts.',
+        tags: ['Structured', 'Clean Layout', 'Professional'],
+        color: '#5a7a4a', color2: '#3d5c33', bg: 'rgba(90,122,74,0.08)',
+        deliverables: ['Formatted report PDF', 'Editable DOCX file', 'Charts & tables', 'Print-ready layout'],
+        features: ['Structured formatting', 'Clean typography', 'Charts & tables', 'Professional documentation'],
+        showcase: [
+          'images/Report.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-01.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-02.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-03.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-04.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-05.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-06.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-07.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-08.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-09.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-10.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-11.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-12.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-13.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-14.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-15.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-16.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-17.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-18.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-19.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-20.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-21.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-22.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-23.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-24.png',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-25.png',
+        ]
+      },
+      {
+        id: 'Design Service',
+        title: 'Restaurant Menu Card',
+        thumbnail: 'images/Menu.png',
+        video: '',
+        tagline: 'Menus Crafted to Tempt at First Glance.',
+        category: 'Design',
+        desc: 'Elegant and modern menu designs crafted to enhance customer experience and brand appeal.',
+        tags: ['Restaurant Branding', 'Elegant', 'Premium'],
+        color: '#7b5ea7', color2: '#5c4080', bg: 'rgba(123,94,167,0.08)',
+        deliverables: ['Menu card layouts', 'Print-ready PDF', 'Editable design source', 'Digital menu version'],
+        features: ['Premium layouts', 'Food showcase sections', 'Elegant typography', 'Restaurant branding'],
+        showcase: [
+          'images/menu1.png',
+          'images/menu2.png',
+          'images/menu3.png',
+          'images/menu4.png',
+          'images/menu5.png',
+        ]
+      },
+      {
+        id: 'Branding',
+        title: 'Startup Logo & Brand Identity',
+        thumbnail: 'images/Logo.png',
+        video: '',
+        tagline: 'Brands Built to Lead.',
+        category: 'Branding',
+        desc: 'Unique and memorable logo designs tailored to reflect your startups vision and identity. Complete branding solutions including colors, typography, brand assets, and visual identity systems.',
+        tags: ['Minimal', 'Memorable', 'Brand Identity', 'Brand Strategy', 'Visual System', 'Premium'],
+        color: '#2980b9', color2: '#1a6090', bg: 'rgba(41,128,185,0.08)',
+        deliverables: ['Brand guideline PDF', 'Typography system', 'Social media kit', 'Brand asset package', 'Logo PNG files', 'Transparent logo pack', 'Color variations'],
+        features: ['Custom logo concepts', 'Minimal brand marks', 'Color palette selection', 'Scalable vector design', 'Typography system', 'Social media assets', 'Complete visual identity'],
+        showcase: [
+          
+          'images/LOGO/Logo1.png',
+          { type: 'video', src: 'videos/logo/outro.mp4', poster: 'images/LOGO/Logo1.png' },
+          'images/LOGO/Tanwar Construction01.jpg',
+          'images/LOGO/Tanwar Construction13.jpg',
+          'images/LOGO/Tanwar Construction10.jpg',
+        ]
+      },
+    ];
+
+    /* ════════════════════════════════════════════════════════════════
+       WHY US CARDS DATA
+       CUSTOMIZE: Edit these 6 cards to describe your strengths.
+    ════════════════════════════════════════════════════════════════ */
+    const WHY_CARDS = [
+      { icon: '✦', title: 'Strategic Clarity', desc: 'Every slide has a purpose. We structure your story for maximum impact and comprehension.' },
+      { icon: '◈', title: 'Refined Aesthetics', desc: 'Beautiful, intentional design that reflects the quality of your brand and thinking.' },
+      { icon: '◎', title: 'Fast Turnaround', desc: 'Professional results delivered within 48 hours without sacrificing an ounce of quality.' },
+      { icon: '◇', title: 'Unlimited Revisions', desc: 'We iterate until every detail is precisely right. Your satisfaction is our benchmark.' },
+      { icon: '▣', title: 'Bespoke for You', desc: 'No templates. Every deck is designed from scratch, tailored to your unique goals.' },
+      { icon: '⬡', title: 'Ongoing Support', desc: 'Post-delivery guidance and editable source files so you can adapt decks with ease.' },
+    ];
+
+    /* ════════════════════════════════════════════════════════════════
+       PRICING DATA
+       CUSTOMIZE: Edit tiers, prices, features. Mark one as featured.
+    ════════════════════════════════════════════════════════════════ */
+    const PRICING = [
+      {
+        tier: 'Essential', price: '₹199', featured: false,
+        desc: 'Perfect for focused, high-impact pitches.',
+        features: ['Up to 10 slides', '2 revision rounds', 'PDF + PPTX', '1 custom colour scheme'],
+      },
+      {
+        tier: 'Professional', price: '₹499', featured: true, /* CUSTOMIZE: set featured:true on your preferred plan */
+        desc: 'Our most popular option for ambitious projects.',
+        features: ['Up to 20 slides', 'Unlimited revisions', 'PDF + PPTX + Keynote', 'Custom illustration set', 'Data visualisation pack'],
+      },
+      {
+        tier: 'Enterprise', price: '₹999', featured: false,
+        desc: 'Comprehensive solutions for major presentations.',
+        features: ['Including Ess. & Pro.', 'Unlimited slides', 'Dedicated designer', 'All formats included', 'Priority WhatsApp support'],
+      },
+    ];
+
+    /* ════════════════════════════════════════════════════════════════
+       HELPER: Is a showcase item a video?
+    ════════════════════════════════════════════════════════════════ */
+    function isVideoItem(item) {
+      return item && typeof item === 'object' && item.type === 'video';
+    }
+
+    /* Returns the display src of a showcase item (string or object) */
+    function itemSrc(item) { return isVideoItem(item) ? item.src : item; }
+    function itemPoster(item) { return isVideoItem(item) ? (item.poster || '') : item; }
+
+    /* ════════════════════════════════════════════════════════════════
+       BUILD PORTFOLIO CARDS (home grid)
+       ──────────────────────────────────────────────────────────────
+       Supports:
+         • Static thumbnail image (always shown)
+         • Optional hover-preview video (crossfades in on card hover)
+           — Add  video: 'videos/preview.mp4'  to a project object
+    ════════════════════════════════════════════════════════════════ */
+    function buildCards() {
+      const grid = document.getElementById('cardsGrid');
+      PROJECTS.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = 'project-card reveal';
+
+        // ── Static thumbnail HTML ──
+        const thumbImg = p.thumbnail
+          ? `<img class="card-image" src="${p.thumbnail}" alt="${p.title}" onerror="this.style.display='none'">`
+          : '';
+
+        // ── Hover-preview video HTML (only if project.video is set) ──
+        // CUSTOMIZE: Set  video: 'videos/your-file.mp4'  in the project object.
+        // The video will fade in on hover and fade out when mouse leaves.
+        const hoverVideo = p.video
+          ? `<video class="card-video"
+               src="${p.video}"
+               muted playsinline loop preload="none"
+               aria-hidden="true"></video>`
+          : '';
+
+        // ── "▶ Preview" badge shown when card is hovered (only if video exists) ──
+        const videoBadge = p.video
+          ? `<div class="card-video-badge">
+           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+           Preview
+         </div>`
+          : '';
+
+        card.innerHTML = `
+      <div class="card-thumb">
+        ${thumbImg}
+        ${hoverVideo}
+        <div class="card-overlay"></div>
+        ${videoBadge}
+        <span class="card-tag">${p.category}</span>
+        <span class="card-num">0${i + 1}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.tagline} — ${p.desc}</div>
+        <div class="card-footer">
+          <div class="card-tags">${p.tags.map(t => `<span class="card-badge">${t}</span>`).join('')}</div>
+          <div class="card-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </div>
+        </div>
+      </div>`;
+
+        // ── Wire up hover-video play/pause ──
+        if (p.video) {
+
+          const vid = card.querySelector('.card-video');
+
+          // preload for smoother playback
+          vid.load();
+
+          card.addEventListener('mouseenter', async () => {
+
+            if (!vid) return;
+
+            try {
+
+              vid.currentTime = 0;
+
+              const playPromise = vid.play();
+
+              if (playPromise !== undefined) {
+                await playPromise;
+              }
+
+            } catch (err) {
+
+              console.log('Video play failed:', err);
+
+            }
+
+          });
+
+          card.addEventListener('mouseleave', () => {
+
+            if (!vid) return;
+
+            vid.pause();
+            vid.currentTime = 0;
+            card.onclick = () => openProject(p);
+
+            grid.appendChild(card);
+
+          });
+
+        }
+        card.onclick = () => openProject(p);
+
+        grid.appendChild(card);
+
+      });
+    }
+    /* ════════════════════════════════════════════════════════════════
+       BUILD WHY-US CARDS
+    ════════════════════════════════════════════════════════════════ */
+    function buildWhy() {
+      const grid = document.getElementById('whyGrid');
+      WHY_CARDS.forEach(w => {
+        const el = document.createElement('div');
+        el.className = 'why-card reveal';
+        el.innerHTML = `
+      <div class="why-icon">${w.icon}</div>
+      <div class="why-title">${w.title}</div>
+      <div class="why-desc">${w.desc}</div>`;
+        grid.appendChild(el);
+      });
+    }
+
+
+    /* ════════════════════════════════════════════════════════════════
+       BUILD PRICING CARDS
+    ════════════════════════════════════════════════════════════════ */
+    function buildPricing() {
+      const grid = document.getElementById('pricingGrid');
+      PRICING.forEach(p => {
+        const el = document.createElement('div');
+        el.className = `pricing-card reveal${p.featured ? ' featured' : ''}`;
+        el.innerHTML = `
+      ${p.featured ? '<div class="pricing-badge">Most Popular</div>' : ''}
+      <div class="pricing-tier">${p.tier}</div>
+      <div class="pricing-price">${p.price}</div>
+      <div class="pricing-desc">${p.desc}</div>
+      <ul class="pricing-features">
+        ${p.features.map(f => `<li><span class="pricing-check">◆</span>${f}</li>`).join('')}
+      </ul>
+      <button class="pricing-cta" onclick="openWA('pricing-${p.tier.toLowerCase()}')">Get Started →</button>`;
+        grid.appendChild(el);
+      });
+
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       SLIDER MODULE
+       ──────────────────────────────────────────────────────────────
+       Renders a slide track that supports both <img> and <video>.
+       Videos autoplay (muted) when their slide becomes active and
+       pause when navigating away.
+    
+       MEDIA TYPES in showcase[]:
+         • 'images/foo.png'             → standard image slide
+         • { type:'video', src:'...' }  → video slide (autoplays)
+    ════════════════════════════════════════════════════════════════ */
+
+    let _sliderState = null;
+    let _autoplayTimer = null;
+    let _sliderKeyHandler = null;
+
+    /**
+     * buildInteractiveSlider(p)
+     * Returns HTML string for the full media slider section.
+     * Called from buildShowcaseGallery() → openProject().
+     */
+    function buildInteractiveSlider(p) {
+      const items = p.showcase && p.showcase.length > 0 ? p.showcase : [null];
+      const count = items.length;
+
+      // ── Build each slide ──────────────────────────────────────
+      const slidesHtml = items.map((item, i) => {
+        let mediaEl = '';
+
+        if (!item) {
+          // Placeholder slide
+          mediaEl = `<div class="pslide-placeholder">
+        <div class="pslide-ph-letter">${p.title.charAt(0)}</div>
+        <div class="pslide-ph-label">${p.tagline}</div>
+      </div>`;
+        } else if (isVideoItem(item)) {
+          // ── VIDEO SLIDE ──
+          // autoplay + loop + muted (required for autoplay in browsers)
+          // poster is the first-frame preview image (optional but recommended)
+          mediaEl = `
+        <video class="pslide-video"
+               src="${item.src}"
+               ${item.poster ? `poster="${item.poster}"` : ''}
+               muted playsinline loop preload="metadata"
+               data-video-slide="true"></video>
+        <div class="pslide-overlay"></div>
+        <!-- VIDEO type badge (top-left, always visible) -->
+        <div class="pslide-type-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Video
+        </div>
+        <!-- Mute/unmute toggle (bottom-right) -->
+        <div class="pslide-video-controls">
+          <button class="pslide-mute-btn" onclick="toggleSlideVideoMute(this)" title="Toggle sound">
+            <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+              <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+            </svg>
+            <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none">
+              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+            Muted
+          </button>
+        </div>`;
+        } else {
+          // ── IMAGE SLIDE ──
+          mediaEl = `
+        <img class="pslide-img"
+             src="${item}"
+             loading="${i === 0 ? 'eager' : 'lazy'}"
+             alt="${p.title} — image ${i + 1}"
+             draggable="false"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="pslide-placeholder" style="display:none">
+          <div class="pslide-ph-letter">${p.title.charAt(0)}</div>
+          <div class="pslide-ph-label">Image unavailable</div>
+        </div>
+        <div class="pslide-overlay"></div>`;
+        }
+
+        return `<div class="pslide${i === 0 ? ' active' : ''}" data-idx="${i}">${mediaEl}</div>`;
+      }).join('');
+
+      // ── Build thumbnail strip ────────────────────────────────
+      const thumbsHtml = items.map((item, i) => {
+        let thumbContent = '';
+
+        if (!item) {
+          thumbContent = `<div class="pthumb-ph">${i + 1}</div>`;
+        } else if (isVideoItem(item)) {
+          // Video thumbnail: show poster image or plain placeholder + play icon
+          thumbContent = item.poster
+            ? `<img src="${item.poster}" loading="lazy" alt="Video thumb ${i + 1}" draggable="false">
+           <div class="pthumb-video-overlay">
+             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+           </div>`
+            : `<div class="pthumb-ph">${i + 1}
+             <div class="pthumb-video-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:rgba(29,45,68,0.5)"><path d="M8 5v14l11-7z"/></svg>
+             </div>
+           </div>`;
+        } else {
+          thumbContent = `
+        <img src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="pthumb-ph" style="display:none">${i + 1}</div>`;
+        }
+
+        return `<div class="pslider-thumb${i === 0 ? ' active' : ''}" data-idx="${i}" style="position:relative">${thumbContent}</div>`;
+      }).join('');
+
+      // Glow color from project accent
+      const glowRgb = hexToRgb(p.color || '#b8860b');
+      const glowBg = glowRgb ? `rgba(${glowRgb},0.12)` : 'rgba(184,134,11,0.1)';
+
+      return `
+  <div class="showcase-section reveal">
+    <div class="showcase-section-head">
+      <div>
+        <div class="section-label"><span></span>Selected Work</div>
+        <h2 class="section-head">Work <em>Examples</em></h2>
+      </div>
+      <div class="showcase-count">${String(count).padStart(2, '0')}</div>
+    </div>
+    <div class="pslider-wrap" id="psliderWrap">
+      <div class="pslider-glow" style="background:${glowBg}"></div>
+      <div class="pslider-viewport" id="psliderViewport">
+        <div class="pslider-counter">
+          <span id="psliderCurNum">01</span> / <span id="psliderTotNum">${String(count).padStart(2, '0')}</span>
+        </div>
+        <button class="pslider-arrow prev" id="psliderPrev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="pslider-track" id="psliderTrack">${slidesHtml}</div>
+        <button class="pslider-arrow next" id="psliderNext" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="pslider-thumbs" id="psliderThumbs">${thumbsHtml}</div>
+    </div>
+  </div>`;
+    }
+
+    /**
+     * Toggle mute on a video slide from its button.
+     * Called by the inline onclick on .pslide-mute-btn.
+     */
+    function toggleSlideVideoMute(btn) {
+      const slide = btn.closest('.pslide');
+      const vid = slide && slide.querySelector('video');
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      btn.querySelector('.icon-muted').style.display = vid.muted ? '' : 'none';
+      btn.querySelector('.icon-unmuted').style.display = vid.muted ? 'none' : '';
+      btn.childNodes[btn.childNodes.length - 1].textContent = vid.muted ? ' Muted' : ' Sound on';
+    }
+
+    /**
+     * initSlider(p)
+     * Wires all slider interactivity after HTML is injected.
+     */
+    function initSlider(p) {
+      const items = p.showcase && p.showcase.length > 0 ? p.showcase : [null];
+      const viewport = document.getElementById('psliderViewport');
+      const track = document.getElementById('psliderTrack');
+      const thumbsEl = document.getElementById('psliderThumbs');
+      if (!viewport || !track) return;
+
+      _sliderState = { p, items, total: items.length, cur: 0, isAnimating: false };
+      clearAutoplay();
+
+      // ── Helper: pause all video slides ──────────────────────
+      function pauseAllVideos() {
+        track.querySelectorAll('video').forEach(v => v.pause());
+      }
+
+      // ── Helper: play video on the active slide if it's a video ──
+      function playActiveVideo(idx) {
+        const activeSlide = track.querySelector(`.pslide[data-idx="${idx}"]`);
+        const vid = activeSlide && activeSlide.querySelector('video');
+        if (vid) vid.play().catch(() => { });
+      }
+
+      // ── goTo: move the track to a given index ────────────────
+      function goTo(idx, animate = true) {
+        if (_sliderState.isAnimating && animate) return;
+        const s = _sliderState;
+
+        if (SLIDER_LOOP) idx = ((idx % s.total) + s.total) % s.total;
+        else idx = Math.max(0, Math.min(idx, s.total - 1));
+
+        // Pause all, then play the newly active one (if video)
+        pauseAllVideos();
+
+        track.style.transition = animate
+          ? 'transform var(--slider-speed) var(--slider-ease)'
+          : 'none';
+
+        requestAnimationFrame(() => { track.style.transform = `translateX(-${idx * 100}%)`; });
+
+        track.querySelectorAll('.pslide').forEach((sl, i) => sl.classList.toggle('active', i === idx));
+
+        updateThumbs(idx);
+        updateCounter(idx);
+
+        s.cur = idx;
+        if (animate) {
+          s.isAnimating = true;
+          setTimeout(() => {
+            if (_sliderState) _sliderState.isAnimating = false;
+            playActiveVideo(idx); // play after transition completes
+          }, 600);
+        } else {
+          playActiveVideo(idx);
+        }
+      }
+
+      function updateThumbs(idx) {
+        if (!thumbsEl) return;
+        thumbsEl.querySelectorAll('.pslider-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+        const active = thumbsEl.querySelector('.pslider-thumb.active');
+        if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+
+      function updateCounter(idx) {
+        const el = document.getElementById('psliderCurNum');
+        if (el) el.textContent = String(idx + 1).padStart(2, '0');
+      }
+
+      // ── Arrow buttons ────────────────────────────────────────
+      document.getElementById('psliderPrev')?.addEventListener('click', e => {
+        e.stopPropagation(); goTo(_sliderState.cur - 1); resetAutoplay();
+      });
+      document.getElementById('psliderNext')?.addEventListener('click', e => {
+        e.stopPropagation(); goTo(_sliderState.cur + 1); resetAutoplay();
+      });
+
+      // ── Click viewport → open lightbox ───────────────────────
+      viewport.addEventListener('click', () => {
+        openPremiumLightbox(_sliderState.items, _sliderState.cur, p);
+      });
+
+      // ── Thumbnail clicks ─────────────────────────────────────
+      thumbsEl?.querySelectorAll('.pslider-thumb').forEach((t, i) => {
+        t.addEventListener('click', e => { e.stopPropagation(); goTo(i); resetAutoplay(); });
+      });
+
+      // ── Keyboard navigation ──────────────────────────────────
+      if (_sliderKeyHandler) document.removeEventListener('keydown', _sliderKeyHandler);
+      _sliderKeyHandler = e => {
+        if (document.getElementById('pslider-lightbox')?.classList.contains('open')) return;
+        if (e.key === 'ArrowLeft') { goTo(_sliderState.cur - 1); resetAutoplay(); }
+        if (e.key === 'ArrowRight') { goTo(_sliderState.cur + 1); resetAutoplay(); }
+      };
+      document.addEventListener('keydown', _sliderKeyHandler);
+
+      // ── Touch/swipe ──────────────────────────────────────────
+      let touchX = 0, touchY = 0, isSwiping = false;
+      viewport.addEventListener('touchstart', e => {
+        touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; isSwiping = false;
+      }, { passive: true });
+      viewport.addEventListener('touchmove', e => {
+        const dx = Math.abs(e.touches[0].clientX - touchX);
+        const dy = Math.abs(e.touches[0].clientY - touchY);
+        if (dx > dy && dx > 8) isSwiping = true;
+      }, { passive: true });
+      viewport.addEventListener('touchend', e => {
+        if (!isSwiping) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (dx < -40) { goTo(_sliderState.cur + 1); resetAutoplay(); }
+        else if (dx > 40) { goTo(_sliderState.cur - 1); resetAutoplay(); }
+        isSwiping = false;
+        e.preventDefault();
+      }, { passive: false });
+
+      // ── Parallax on mouse move ───────────────────────────────
+      const wrap = document.getElementById('psliderWrap');
+      wrap?.addEventListener('mousemove', e => {
+        const rect = viewport.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / rect.width - 0.5;
+        const cy = (e.clientY - rect.top) / rect.height - 0.5;
+        const media = track.querySelector('.pslide.active .pslide-img, .pslide.active .pslide-video');
+        if (media) media.style.transform = `scale(1.06) translate(${cx * PARALLAX_STRENGTH}px, ${cy * PARALLAX_STRENGTH}px)`;
+      });
+      wrap?.addEventListener('mouseleave', () => {
+        const media = track.querySelector('.pslide.active .pslide-img, .pslide.active .pslide-video');
+        if (media) media.style.transform = 'scale(1) translate(0,0)';
+      });
+
+      // ── Autoplay (disabled by default; set SLIDER_AUTOPLAY=true) ─
+      function startAutoplay() {
+        if (!SLIDER_AUTOPLAY || _sliderState.total <= 1) return;
+        _autoplayTimer = setInterval(() => goTo(_sliderState.cur + 1), SLIDER_AUTOPLAY_MS);
+      }
+      function resetAutoplay() { clearAutoplay(); startAutoplay(); }
+      startAutoplay();
+      viewport.addEventListener('mouseenter', clearAutoplay);
+      viewport.addEventListener('mouseleave', () => { if (SLIDER_AUTOPLAY) startAutoplay(); });
+
+      // Play first slide if it's a video
+      playActiveVideo(0);
+    }
+
+    function clearAutoplay() {
+      if (_autoplayTimer) { clearInterval(_autoplayTimer); _autoplayTimer = null; }
+    }
+
+    /* Convenience wrapper called by openProject() */
+    function buildShowcaseGallery(p) { return buildInteractiveSlider(p); }
+
+    /* ════════════════════════════════════════════════════════════════
+       FULLSCREEN LIGHTBOX MODULE
+       ──────────────────────────────────────────────────────────────
+       Opened when user clicks the main slider viewport.
+       Supports both images and video in the lightbox.
+       ESC key closes. Arrow keys navigate. Swipe on mobile.
+    ════════════════════════════════════════════════════════════════ */
+    let _lb = { items: [], idx: 0, p: null };
+
+    function openPremiumLightbox(items, startIdx, p) {
+      _lb.items = items && items.length > 0 ? items : [null];
+      _lb.idx = startIdx || 0;
+      _lb.p = p;
+      renderLbThumbs();
+      renderLbItem();
+      document.getElementById('pslider-lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function renderLbItem() {
+      const slot = document.getElementById('plbImgSlot');
+      const title = document.getElementById('plbTitle');
+      const ctr = document.getElementById('plbCounter');
+      if (!slot) return;
+
+      const item = _lb.items[_lb.idx];
+      const p = _lb.p;
+
+      if (!item) {
+        slot.innerHTML = `<div class="plb-ph">
+      <div class="plb-ph-letter">${p.title.charAt(0)}</div>
+      <div class="plb-ph-text">${p.tagline}</div>
+    </div>`;
+      } else if (isVideoItem(item)) {
+        // ── Video in lightbox: controls visible, click to play/pause ──
+        slot.innerHTML = `
+      <video class="plb-main-video"
+             src="${item.src}"
+             ${item.poster ? `poster="${item.poster}"` : ''}
+             muted controls autoplay loop playsinline
+             style="max-height:72vh;width:100%;background:rgba(20,14,8,.5)"></video>`;
+      } else {
+        slot.innerHTML = `
+      <img class="plb-main-img" src="${item}" alt="${p.title}" draggable="false"
+           onerror="this.parentNode.innerHTML='<div class=\\"plb-ph\\"><div class=\\"plb-ph-letter\\">${p.title.charAt(0)}</div><div class=\\"plb-ph-text\\">Image unavailable</div></div>'">`;
+      }
+
+      if (title) title.textContent = p.title;
+      if (ctr) ctr.textContent = `${String(_lb.idx + 1).padStart(2, '0')} / ${String(_lb.items.length).padStart(2, '0')}`;
+
+      // Sync thumbnail highlights
+      document.getElementById('plbThumbs')?.querySelectorAll('.plb-thumb').forEach((t, i) => {
+        t.classList.toggle('active', i === _lb.idx);
+        if (i === _lb.idx) t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      });
+    }
+
+    function renderLbThumbs() {
+      const container = document.getElementById('plbThumbs');
+      if (!container) return;
+
+      container.innerHTML = _lb.items.map((item, i) => {
+        let content = '';
+        if (!item) {
+          content = `<div class="plb-thumb-ph">${i + 1}</div>`;
+        } else if (isVideoItem(item)) {
+          content = item.poster
+            ? `<img src="${item.poster}" loading="lazy" alt="Thumb ${i + 1}" draggable="false">
+           <div class="plb-thumb-vid-icon">
+             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+           </div>`
+            : `<div class="plb-thumb-ph">▶</div>`;
+        } else {
+          content = `
+        <img src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
+             onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+        <div class="plb-thumb-ph" style="display:none">${i + 1}</div>`;
+        }
+        return `<div class="plb-thumb${i === _lb.idx ? ' active' : ''}" data-idx="${i}" style="position:relative">${content}</div>`;
+      }).join('');
+
+      container.querySelectorAll('.plb-thumb').forEach((t, i) => {
+        t.addEventListener('click', () => { _lb.idx = i; renderLbItem(); });
+      });
+    }
+
+    function closePremiumLightbox() {
+      document.getElementById('pslider-lightbox')?.classList.remove('open');
+      document.body.style.overflow = '';
+      // Stop any playing lightbox video
+      document.getElementById('plbImgSlot')?.querySelectorAll('video').forEach(v => v.pause());
+    }
+
+    function lbPrev() { _lb.idx = ((_lb.idx - 1) + _lb.items.length) % _lb.items.length; renderLbItem(); }
+    function lbNext() { _lb.idx = (_lb.idx + 1) % _lb.items.length; renderLbItem(); }
+
+    /* Wire lightbox controls (runs once on load) */
+    (function setupLightboxControls() {
+      document.getElementById('pslider-lightbox')?.addEventListener('click', e => {
+        if (e.target === document.getElementById('pslider-lightbox')) closePremiumLightbox();
+      });
+      document.getElementById('plbClose')?.addEventListener('click', closePremiumLightbox);
+      document.getElementById('plbPrev')?.addEventListener('click', e => { e.stopPropagation(); lbPrev(); });
+      document.getElementById('plbNext')?.addEventListener('click', e => { e.stopPropagation(); lbNext(); });
+
+      document.addEventListener('keydown', e => {
+        if (!document.getElementById('pslider-lightbox')?.classList.contains('open')) return;
+        if (e.key === 'Escape') closePremiumLightbox();
+        if (e.key === 'ArrowLeft') lbPrev();
+        if (e.key === 'ArrowRight') lbNext();
+      });
+
+      // Touch swipe in lightbox
+      const lbEl = document.getElementById('pslider-lightbox');
+      let lbTX = 0, lbDrag = false;
+      lbEl?.addEventListener('touchstart', e => { lbTX = e.touches[0].clientX; lbDrag = false; }, { passive: true });
+      lbEl?.addEventListener('touchmove', e => {
+        if (Math.abs(e.touches[0].clientX - lbTX) > 8) lbDrag = true;
+      }, { passive: true });
+      lbEl?.addEventListener('touchend', e => {
+        if (!lbDrag) return;
+        const dx = e.changedTouches[0].clientX - lbTX;
+        if (dx < -40) lbNext();
+        else if (dx > 40) lbPrev();
+        lbDrag = false;
+      }, { passive: true });
+    })();
+
+    /* ════════════════════════════════════════════════════════════════
+       HERO SHOWCASE (floating panels on the project page)
+    ════════════════════════════════════════════════════════════════ */
+    function buildHeroShowcase(p) {
+      const items = p.showcase || [];
+      const mainItem = items[0] || null;
+      const leftItem = items[1] || null;
+      const rightItem = items[2] || items[0] || null;
+
+      // Render a panel — supports image or video
+      const panelMedia = (item, letter, sub) => {
+        if (!item) {
+          return `<div class="showcase-panel-placeholder"><div class="sp-letter">${letter}</div><div class="sp-sub">${sub}</div></div>`;
+        } else if (isVideoItem(item)) {
+          return `<video src="${item.src}" ${item.poster ? `poster="${item.poster}"` : ''} muted loop autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
+        } else {
+          return `<img src="${item}" alt="${p.title}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+              <div class="showcase-panel-placeholder" style="display:none"><div class="sp-letter">${letter}</div><div class="sp-sub">${sub}</div></div>`;
+        }
+      };
+
+      const particles = Array.from({ length: 12 }, (_, i) => {
+        const size = 2 + Math.random() * 3;
+        const left = 10 + Math.random() * 80;
+        const dur = 4 + Math.random() * 6;
+        const delay = Math.random() * 5;
+        const drift = (Math.random() - 0.5) * 60;
+        const col = Math.random() > 0.5 ? 'rgba(184,134,11,0.5)' : 'rgba(192,57,43,0.4)';
+        return `<div class="proj-showcase-particle" style="width:${size}px;height:${size}px;left:${left}%;bottom:5%;background:${col};animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px"></div>`;
+      }).join('');
+
+      return `
+  <div class="proj-showcase">
+    <div class="showcase-ambient"></div>
+    <div class="proj-showcase-particles">${particles}</div>
+    <div class="proj-showcase-inner">
+      <div class="showcase-panel-wrap">
+        <div class="showcase-panel float-left">${panelMedia(leftItem, p.title.charAt(0), 'Detail')}</div>
+        <div class="showcase-panel main-panel">${panelMedia(mainItem, p.title.charAt(0), p.tagline)}</div>
+        <div class="showcase-panel float-right">${panelMedia(rightItem, p.title.charAt(0), 'Preview')}</div>
+      </div>
+      <div class="showcase-caption">
+        <div class="showcase-caption-title">${p.title}</div>
+        <div class="showcase-caption-tag">${p.tagline} — ${p.category}</div>
+      </div>
+    </div>
+  </div>`;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       RELATED PROJECTS
+    ════════════════════════════════════════════════════════════════ */
+    function buildRelatedProjects(p) {
+      const related = PROJECTS
+        .filter(r => !(r.id === p.id && r.title === p.title))
+        .filter(r => r.category === p.category || r.tags.some(t => p.tags.includes(t)))
+        .slice(0, 3);
+      if (!related.length) return '';
+
+      const cards = related.map(r => {
+        const thumbEl = r.thumbnail
+          ? `<img class="related-thumb-img" src="${r.thumbnail}" alt="${r.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+          : '';
+        return `
+    <div class="related-card" onclick="openProject(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+      <div class="related-thumb">
+        ${thumbEl}
+        <div class="related-thumb-overlay"></div>
+        <div class="related-thumb-placeholder" style="display:${r.thumbnail ? 'none' : 'flex'}">${r.title.charAt(0)}</div>
+        <div class="related-chip">${r.category}</div>
+      </div>
+      <div class="related-body">
+        <div class="related-title">${r.title}</div>
+        <div class="related-tagline">${r.tagline}</div>
+        <div class="related-footer">
+          <div class="related-tags">${r.tags.slice(0, 2).map(t => `<span class="related-tag">${t}</span>`).join('')}</div>
+          <div class="related-explore">Explore
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>`;
+      }).join('');
+
+      return `
+  <div class="related-section reveal">
+    <div class="section-label"><span></span>You May Also Like</div>
+    <h2 class="section-head">Related <em>Services</em></h2>
+    <div class="related-grid">${cards}</div>
+  </div>`;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       PROJECT PAGE RENDERER
+    ════════════════════════════════════════════════════════════════ */
+    function openProject(p) {
+      transitionTo(() => {
+        showView('project');
+        window.scrollTo(0, 0);
+        document.getElementById('backBtn').style.display = 'flex';
+        setTimeout(() => document.getElementById('stickyCTA').classList.add('show'), 1000);
+
+        document.getElementById('view-project').innerHTML = `
+      <div class="proj-hero">
+        <div class="proj-hero-inner">
+          <div class="proj-meta">
+            <span class="proj-meta-chip">${p.category}</span>
+            ${p.tags.map(t => `<span class="proj-meta-chip">${t}</span>`).join('')}
+          </div>
+          <h1 class="proj-title">${p.title}</h1>
+          <p class="proj-tagline">${p.tagline} — ${p.desc}</p>
+        </div>
+      </div>
+
+      ${buildHeroShowcase(p)}
+
+      <div class="proj-section reveal">
+        <h2>What's Included</h2>
+        <div class="info-box">
+          ${p.deliverables.map((d, i) => `
+            <div class="info-box-item">
+              <div class="info-box-num">0${i + 1}</div>
+              <div class="info-box-label">${d}</div>
+              <div class="info-box-text"></div>
+            </div>
+            ${i < p.deliverables.length - 1 ? '<div class="info-box-divider"></div>' : ''}
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="proj-section reveal">
+        <h2>Key Features</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem">
+          ${p.features.map(f => `
+            <div style="padding:1.2rem 1.4rem;background:var(--glass);border:1px solid var(--border);border-radius:6px;display:flex;gap:.75rem;align-items:flex-start">
+              <span style="color:${p.color};font-size:.65rem;margin-top:.25rem">◆</span>
+              <span style="font-size:.85rem;color:var(--text);font-weight:400">${f}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="proj-section reveal">
+        <h2>How It Works</h2>
+        <div style="display:flex;gap:0;flex-wrap:wrap;background:var(--glass);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+          ${['Brief & Discovery', 'Design & Creation', 'Review & Revisions', 'Final Delivery'].map((step, i) => `
+            <div style="flex:1;min-width:160px;padding:1.75rem;${i < 3 ? 'border-right:1px solid var(--border)' : ''}">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:${p.color};opacity:.22;margin-bottom:.5rem">0${i + 1}</div>
+              <div style="font-weight:500;font-size:.88rem;margin-bottom:.3rem;color:var(--navy)">${step}</div>
+              <div style="font-size:.78rem;color:var(--muted);line-height:1.6;font-weight:300"></div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="proj-divider"></div>
+
+      ${buildShowcaseGallery(p)}
+
+      <div class="proj-divider"></div>
+
+      ${buildRelatedProjects(p)}
+
+      <div class="proj-divider" style="margin-bottom:0"></div>
+
+      <div style="padding:3rem">
+        <div class="cta-banner reveal">
+          <div class="section-label" style="justify-content:center;margin-bottom:1rem"><span></span>Order Now</div>
+          <h2>Love This <em style="color:${p.color};font-family:'Cormorant Garamond',serif;font-style:italic">Style?</em></h2>
+          <p>Get your own ${p.title}-calibre deck crafted with the same level of precision and artistry.</p>
+          <div class="cta-btns">
+            <button class="btn-primary" style="background:${p.color};box-shadow:0 4px 20px ${p.color}33" onclick="openWA('project-cta-${p.id}')">Order on WhatsApp →</button>
+            <button class="btn-ghost" onclick="navigateBack()">View All Projects</button>
+          </div>
+        </div>
+      </div>
+
+      <footer style="border-top:1px solid var(--border);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.06em" onclick="navigateHome()">SLIDE<span style="color:var(--accent)">CRAFT</span></div>
+        <a style="color:var(--muted);font-size:.82rem;text-decoration:none;cursor:pointer" onclick="navigateBack()">← Back to Portfolio</a>
+        <p style="color:var(--muted);font-size:.75rem">© 2025 SlideCraft</p>
+      </footer>`;
+
+        // After HTML is injected, wire up the media slider
+        setTimeout(() => initSlider(p), 0);
+      });
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       NAVIGATION HELPERS
+    ════════════════════════════════════════════════════════════════ */
+    function navigateHome() {
+      transitionTo(() => {
+        showView('home');
+        document.getElementById('backBtn').style.display = 'none';
+        document.getElementById('stickyCTA').classList.remove('show');
+        setTimeout(() => document.getElementById('portfolio-anchor').scrollIntoView({ behavior: 'smooth' }), 100);
+      });
+    }
+    function navigateBack() {
+      transitionTo(() => {
+        showView('home');
+        document.getElementById('backBtn').style.display = 'none';
+        document.getElementById('stickyCTA').classList.remove('show');
+        setTimeout(() => document.getElementById('portfolio-anchor').scrollIntoView({ behavior: 'smooth' }), 100);
+      });
+    }
+    function scrollToSection(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+    function transitionTo(cb) {
+      const pt = document.getElementById('page-transition');
+      pt.className = 'entering';
+      setTimeout(() => { cb(); pt.className = 'leaving'; setTimeout(() => pt.className = '', 500); }, 380);
+    }
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active', 'visible'));
+      const v = document.getElementById('view-' + name);
+      v.classList.add('active');
+      setTimeout(() => { v.classList.add('visible'); initReveal(); }, 50);
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       SCROLL REVEAL (intersection observer)
+    ════════════════════════════════════════════════════════════════ */
+    function initReveal() {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.reveal:not(.revealed)').forEach(el => obs.observe(el));
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       WHATSAPP INTEGRATION
+       CUSTOMIZE: Add new source keys and messages to the msgs object.
+    ════════════════════════════════════════════════════════════════ */
+    function openWA(source) {
+      const msgs = {
+        'nav': `Hi SlideCraft! I'd like to place an order.`,
+        'hero': `Hi SlideCraft! I saw your website and I'd like to start a project.`,
+        'sticky': `Hi SlideCraft! I'd like to discuss a project.`,
+        'footer': `Hi SlideCraft! I have a question.`,
+        'cta': `Hi SlideCraft! I'm ready to get started.`,
+      };
+      const msg = msgs[source] || `Hi SlideCraft! I'd like to enquire about a presentation.`;
+      window.open(WA_BASE + encodeURIComponent(msg), '_blank');
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.querySelector('input[type="text"]')?.value || '';
+      const service = form.querySelector('select')?.value || 'general enquiry';
+      const message = form.querySelector('textarea')?.value || '';
+      const waMsg = `Hi SlideCraft! I'm ${name}.\nService: ${service}\n${message ? 'Details: ' + message : ''}`;
+      window.open(WA_BASE + encodeURIComponent(waMsg), '_blank');
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       CUSTOM CURSOR
+    ════════════════════════════════════════════════════════════════ */
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 50);
+    });
+
+    /* ════════════════════════════════════════════════════════════════
+       SCROLL EFFECTS (navbar + sticky CTA)
+    ════════════════════════════════════════════════════════════════ */
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      nav.style.background = window.scrollY > 50
+        ? 'rgba(245,237,224,0.95)'
+        : 'rgba(245,237,224,0.8)';
+      if (document.getElementById('view-home').classList.contains('active')) {
+        document.getElementById('stickyCTA').classList.toggle('show', window.scrollY > 400);
+      }
+    });
+
+    /* ════════════════════════════════════════════════════════════════
+       UTILITY: hex color → "r,g,b" string for rgba() usage
+    ════════════════════════════════════════════════════════════════ */
+    function hexToRgb(hex) {
+      const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return r ? `${parseInt(r[1], 16)},${parseInt(r[2], 16)},${parseInt(r[3], 16)}` : null;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       INIT — runs on page load
+    ════════════════════════════════════════════════════════════════ */
+    buildCards();
+    buildWhy();
+    buildPricing();
+    showView('home');
+  </script>
+</body>
+
+</html>
