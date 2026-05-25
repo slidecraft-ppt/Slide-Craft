@@ -1125,12 +1125,15 @@
       padding: 5rem 3rem
     }
 
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.2rem;
-      margin-top: 3rem
-    }
+  .pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(280px, 320px));
+  gap: 1.2rem;
+
+  max-width: 1000px;
+  margin: 3rem auto 0;
+  justify-content: center;
+}
 
     .pricing-card {
       padding: 2rem 1.8rem;
@@ -3052,20 +3055,20 @@
       },
      /* {
         id: 'Design Service',
-        title: 'Poster Design',
-        thumbnail: 'images/Fest.png',
+        title: 'Website Design',
+        thumbnail: 'images/Site.png',
         // CUSTOMIZE: Add a hover video for this card:
         // video: 'videos/fest-preview.mp4',
         video: '',
-        tagline: 'Posters That Capture Attention Instantly.',
+        tagline: 'Websites That Capture Attention Instantly.',
         category: 'Design',
-        desc: 'Eye-catching posters designed for events, promotions, branding, and social media campaigns.',
-        tags: ['Creative', 'Eye-Catching', 'Marketing'],
+        desc: 'Custom modern websites with responsive layouts, premium visuals, and smooth user experience across all devices.',
+        tags: ['Responsive', 'Modern UI', 'Interactive'],
         color: '#b8860b', color2: '#8b6508', bg: 'rgba(184,134,11,0.08)',
-        deliverables: ['High-resolution poster', 'Print-ready files', 'Social media versions', 'Editable source file'],
-        features: ['Creative compositions', 'High-impact typography', 'Print-ready quality', 'Brand-focused visuals'],
+        deliverables: ['Complete website UI', 'Responsive HTML/CSS', 'Optimized assets', 'Deployment-ready files'],
+        features: ['Smooth animations', 'Custom sections', 'SEO-friendly structure', 'Fast-loading pages'],
         showcase: [
-          'images/Fest.png',
+          'images/Site.png',
           'images/Fest.png',
           // CUSTOMIZE: Replace with a real video slide:
           // { type: 'video', src: 'videos/fest-reel.mp4', poster: 'images/Fest.png' },
