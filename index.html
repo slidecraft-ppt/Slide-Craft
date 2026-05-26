@@ -35,6 +35,12 @@
 
   <title>SlideCraft — Premium Presentation Design Studio</title>
 
+  <!-- ── FAVICON ───────────────────────────────────────────────────
+  CUSTOMIZE: Replace images/favicon.png with your logo/icon file.
+  Supported formats: .png, .ico, .svg
+  ──────────────────────────────────────────────────────────────── -->
+  <!-- <link rel="icon" type="image/png" href="images/favicon.png"> -->
+
   <!-- ── FONTS ─────────────────────────────────────────────────────
   CUSTOMIZE: Replace these Google Font imports to change typography.
   Current pairing: Cormorant Garamond (display) + Jost (body)
@@ -190,6 +196,101 @@
       z-index: 0;
       pointer-events: none;
       overflow: hidden
+    }
+
+    .arduino-section {
+      max-width: 1180px;
+      margin: 80px auto;
+      padding: 56px 48px 72px;
+
+      background:
+        radial-gradient(circle at top right,
+          rgba(255, 153, 0, .12),
+          transparent 40%),
+        linear-gradient(135deg,
+          #0f172a,
+          #111827);
+
+      border-radius: 32px;
+
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.18),
+        0 8px 24px rgba(0, 0, 0, 0.12);
+
+      color: white;
+    }
+
+    .arduino-section h2 {
+      color: white;
+    }
+
+    .arduino-wrapper {
+      padding: 0 24px;
+    }
+
+    /* ── Pricing cards inside the dark Arduino section ── */
+    .arduino-section .pricing-card {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .arduino-section .pricing-card.featured {
+      background: rgba(255, 149, 0, 0.13);
+      border-color: rgba(255, 149, 0, 0.45);
+    }
+
+    .arduino-section .pricing-card:not(.featured):hover {
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-tier {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-price {
+      color: #ffffff;
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-desc {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-features li {
+      color: rgba(255, 255, 255, 0.65);
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-check {
+      color: #ffb74d;
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-cta {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .arduino-section .pricing-card:not(.featured) .pricing-cta:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .arduino-section .pricing-card.featured .pricing-price {
+      color: #ffffff;
+    }
+
+    .arduino-banner {
+      margin: 30px auto 50px;
+      padding: 14px 24px;
+      width: fit-content;
+
+      border: 1px solid rgba(255, 153, 0, 0);
+      border-radius: 999px;
+
+      background: rgba(255, 77, 0, 0);
+
+      color: #ff7a4d;
     }
 
     .bg-layer {
@@ -644,6 +745,50 @@
       left: 50%;
       transform: translateX(-50%);
       background: rgba(184, 134, 11, 0.035)
+    }
+
+    .pricing-category {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 3rem;
+    }
+
+    /* arduino wrapper needs extra top gap since the dark box has no outer top padding */
+    .pricing-category.arduino-section {
+      max-width: 1180px;
+      margin: 80px auto;
+      padding: 50px;
+      border-radius: 28px;
+
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, .18),
+        0 0 0 1px rgba(255, 255, 255, .04);
+    }
+
+    .section-tag {
+      display: inline-block;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      font-size: .75rem;
+      margin-bottom: 12px;
+    }
+
+    .arduino-section .section-tag {
+      color: #ffb74d;
+    }
+
+    #ppt-pricing-grid,
+    #arduino-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(280px, 320px));
+      gap: 1.2rem;
+      justify-content: center;
+      margin-top: 3rem;
+    }
+
+    #arduino-pricing-grid {
+      margin-bottom: 0.5rem;
     }
 
     /* ── Buttons ──────────────────────────────────────────────── */
@@ -1147,13 +1292,6 @@
       flex-direction: column;
     }
 
-    .pricing-features {
-      list-style: none;
-      margin-bottom: 1.8rem;
-
-      flex: 1;
-    }
-
     .pricing-card:not(.featured):hover {
       border-color: var(--border2);
       transform: translateY(-4px);
@@ -1189,7 +1327,7 @@
     }
 
     .pricing-card.featured .pricing-tier {
-      color: rgba(242, 152, 7, 0.6)
+      color: #b86a00;
     }
 
     .pricing-card:not(.featured) .pricing-tier {
@@ -1205,11 +1343,7 @@
     }
 
     .pricing-card.featured .pricing-price {
-      color: #000000
-    }
-
-    .pricing-cta {
-      margin-top: auto;
+      color: #1d2d44;
     }
 
     .pricing-card:not(.featured) .pricing-price {
@@ -1223,7 +1357,7 @@
     }
 
     .pricing-card.featured .pricing-desc {
-      color: rgba(227, 154, 35, 0.65)
+      color: #d2931e;
     }
 
     .pricing-card:not(.featured) .pricing-desc {
@@ -1232,7 +1366,8 @@
 
     .pricing-features {
       list-style: none;
-      margin-bottom: 1.8rem
+      margin-bottom: 1.8rem;
+      flex: 1
     }
 
     .pricing-features li {
@@ -1246,8 +1381,8 @@
     }
 
     .pricing-card.featured .pricing-features li {
-      border-bottom-color: rgba(245, 237, 224, .1);
-      color: rgb(58, 41, 1)
+      color: #d2931e;
+      border-bottom-color: rgba(0, 0, 0, .08);
     }
 
     .pricing-card:not(.featured) .pricing-features li {
@@ -1260,7 +1395,7 @@
     }
 
     .pricing-card.featured .pricing-check {
-      color: var(--gold2)
+      color: #d48806;
     }
 
     .pricing-cta {
@@ -1273,7 +1408,8 @@
       font-family: 'Jost', sans-serif;
       letter-spacing: .08em;
       text-transform: uppercase;
-      transition: all .25s
+      transition: all .25s;
+      margin-top: auto
     }
 
     .pricing-card.featured .pricing-cta {
@@ -2212,7 +2348,7 @@
       width: 100%;
       height: 72vh;
 
-      display: center;
+      display: flex;
       align-items: center;
       justify-content: center;
 
@@ -2745,8 +2881,17 @@
      CUSTOMIZE: Edit link labels, logo text, CTA button text
 ════════════════════════════════════════════════════════════ -->
   <nav id="navbar">
-    <!-- CUSTOMIZE: Change SLIDE / CRAFT text to your brand name -->
+    <!-- CUSTOMIZE: Logo in navbar.
+         OPTION A — Use an image logo (recommended):
+           1. Put your logo file in the images/ folder (e.g. images/logo.png)
+           2. Uncomment the <img> line below and remove the text spans.
+         OPTION B — Keep the text logo: just edit the SLIDE / CRAFT spans.
+    -->
     <div class="nav-logo" onclick="navigateHome()">
+      <!-- OPTION A: uncomment this line and add your logo path -->
+      <!-- <img src="images/logo.png" alt="SlideCraft Logo" style="height:36px;width:auto;display:block"> -->
+
+      <!-- OPTION B: text logo (remove these two spans when using image) -->
       <span class="slide">SLIDE</span><span class="craft">CRAFT</span>
     </div>
     <div class="nav-links">
@@ -2868,32 +3013,45 @@
     </section>
 
     <div class="divider"></div>
+    <!-- Different Pricing sections-->
+    <div class="arduino-wrapper">
+
+      <section class="pricing-category" id="pricing-anchor">
+        <span class="section-tag">Presentation Design</span>
+        <h2>Presentation Packages</h2>
+        <div id="ppt-pricing-grid"></div>
+      </section>
+
+      <section class="pricing-category arduino-section">
+        <span class="section-tag">Embedded Systems</span>
+        <h2>Arduino Project Development</h2>
+
+        <div class="arduino-banner">
+          <span>🚨 Development Charges Only • Hardware Components Quoted Separately</span>
+        </div>
+
+        <div id="arduino-pricing-grid"></div>
+      </section>
+
+    </div>
 
     <!-- ── PRICING GRID (populated by JS) ────────────────────────── -->
-    <section class="pricing-section" id="pricing-anchor">
-      <div style="max-width:1200px;margin:0 auto">
-        <div class="reveal">
-          <div class="section-label"><span></span>Pricing</div>
-          <h2 class="section-head">Simple, Transparent <em>Rates</em></h2>
-        </div>
-        <div class="pricing-grid" id="pricingGrid"></div>
-      </div>
-    </section>
-   
-    <div class="pricing-marquee">
-  <div class="pricing-marquee-track">
-    <span>✦ Development Charges Only</span>
-    <span>✦ Components Quoted Separately</span>
-    <span>✦ Arduino Boards, Sensors & Modules Not Included</span>
-    <span>✦ Transparent Project Pricing</span>
 
-    <!-- duplicate for seamless loop -->
-    <span>✦ Development Charges Only</span>
-    <span>✦ Components Quoted Separately</span>
-    <span>✦ Arduino Boards, Sensors & Modules Not Included</span>
-    <span>✦ Transparent Project Pricing</span>
-  </div>
-</div>
+
+    <div class="pricing-marquee">
+      <div class="pricing-marquee-track">
+        <span>✦ Development Charges Only</span>
+        <span>✦ Components Quoted Separately</span>
+        <span>✦ Arduino Boards, Sensors & Modules Not Included</span>
+        <span>✦ Transparent Project Pricing</span>
+
+        <!-- duplicate for seamless loop -->
+        <span>✦ Development Charges Only</span>
+        <span>✦ Components Quoted Separately</span>
+        <span>✦ Arduino Boards, Sensors & Modules Not Included</span>
+        <span>✦ Transparent Project Pricing</span>
+      </div>
+    </div>
 
     <div class="divider"></div>
 
@@ -2947,9 +3105,16 @@
     <!-- ── FOOTER ───────────────────────────────────────────────── -->
     <footer>
 
-      <button type="submit" aria-label="Email us!">
-        <i class="fa-solid fa-envelope"></i>
-      </button>
+      <!-- CUSTOMIZE: Footer logo (bottom-left).
+           OPTION A — image logo: uncomment <img> and remove the text div.
+           OPTION B — text logo: keep the div below as-is.
+      -->
+      <!-- <img src="images/logo.png" alt="SlideCraft" style="height:30px;width:auto;opacity:.7"> -->
+      <div
+        style="font-family:'Cinzel',serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.06em;color:var(--muted)"
+        onclick="navigateHome()">
+        SLIDE<span style="color:var(--accent)">CRAFT</span>
+      </div>
 
       <div style="display:flex;gap:2rem">
         <a style="color:var(--muted);font-size:.78rem;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.06em"
@@ -3233,7 +3398,7 @@
        PRICING DATA
        CUSTOMIZE: Edit tiers, prices, features. Mark one as featured.
     ════════════════════════════════════════════════════════════════ */
-    const PRICING = [
+    const PPT_PRICING = [
       {
         tier: 'Essential', price: '₹199', featured: false,
         desc: 'Perfect for focused, high-impact pitches.',
@@ -3248,7 +3413,9 @@
         tier: 'Enterprise', price: '₹499', featured: false,
         desc: 'Comprehensive solutions for major presentations.',
         features: ['Including Ess. & Pro.', 'Unlimited slides', 'Dedicated designer', 'All formats included', 'Priority WhatsApp support'],
-      },
+      }
+    ]
+    const PROJECT_PRICING = [
       {
         tier: 'Mini Project',
         price: '₹499',
@@ -3315,6 +3482,7 @@
     ════════════════════════════════════════════════════════════════ */
     function buildCards() {
       const grid = document.getElementById('cardsGrid');
+
       PROJECTS.forEach((p, i) => {
         const card = document.createElement('div');
         card.className = 'project-card reveal';
@@ -3398,9 +3566,6 @@
 
             vid.pause();
             vid.currentTime = 0;
-            card.onclick = () => openProject(p);
-
-            grid.appendChild(card);
 
           });
 
@@ -3431,23 +3596,34 @@
     /* ════════════════════════════════════════════════════════════════
        BUILD PRICING CARDS
     ════════════════════════════════════════════════════════════════ */
-    function buildPricing() {
-      const grid = document.getElementById('pricingGrid');
-      PRICING.forEach(p => {
+    function buildPricingGrid(data, gridId) {
+      const grid = document.getElementById(gridId);
+
+      data.forEach(p => {
         const el = document.createElement('div');
-        el.className = `pricing-card reveal${p.featured ? ' featured' : ''}`;
+
+        el.className =
+          `pricing-card reveal${p.featured ? ' featured' : ''}`;
+
         el.innerHTML = `
       ${p.featured ? '<div class="pricing-badge">Most Popular</div>' : ''}
       <div class="pricing-tier">${p.tier}</div>
       <div class="pricing-price">${p.price}</div>
       <div class="pricing-desc">${p.desc}</div>
+
       <ul class="pricing-features">
-        ${p.features.map(f => `<li><span class="pricing-check">◆</span>${f}</li>`).join('')}
+        ${p.features.map(f =>
+          `<li><span class="pricing-check">◆</span>${f}</li>`
+        ).join('')}
       </ul>
-      <button class="pricing-cta" onclick="openWA('pricing-${p.tier.toLowerCase()}')">Get Started →</button>`;
+
+      <button class="pricing-cta" onclick="openWA('pricing-${p.tier.replace(/\s+/g, '-').toLowerCase()}')">
+        Get Started →
+      </button>
+    `;
+
         grid.appendChild(el);
       });
-
     }
 
     /* ════════════════════════════════════════════════════════════════
@@ -4107,7 +4283,12 @@
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active', 'visible'));
       const v = document.getElementById('view-' + name);
       v.classList.add('active');
-      setTimeout(() => { v.classList.add('visible'); initReveal(); }, 50);
+      // Force a reflow so the browser registers display:block before
+      // the opacity transition starts — without this the view stays invisible.
+      void v.offsetHeight;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { v.classList.add('visible'); initReveal(); });
+      });
     }
 
     /* ════════════════════════════════════════════════════════════════
@@ -4131,8 +4312,21 @@
         'sticky': `Hi SlideCraft! I'd like to discuss a project.`,
         'footer': `Hi SlideCraft! I have a question.`,
         'cta': `Hi SlideCraft! I'm ready to get started.`,
+        /* Pricing tier sources — auto-generated by buildPricingGrid */
+        'pricing-essential': `Hi SlideCraft! I'd like to order the Essential presentation package (₹199).`,
+        'pricing-professional': `Hi SlideCraft! I'd like to order the Professional presentation package (₹299).`,
+        'pricing-enterprise': `Hi SlideCraft! I'd like to order the Enterprise presentation package (₹499).`,
+        'pricing-mini-project': `Hi SlideCraft! I'm interested in the Mini Arduino Project (₹499).`,
+        'pricing-academic-project': `Hi SlideCraft! I'm interested in the Academic Arduino Project (₹999).`,
+        'pricing-competition-project': `Hi SlideCraft! I'm interested in the Competition Arduino Project (₹1999+).`,
       };
-      const msg = msgs[source] || `Hi SlideCraft! I'd like to enquire about a presentation.`;
+      /* Fallback: if source starts with "pricing-", make a generic tier message */
+      let msg = msgs[source];
+      if (!msg && source.startsWith('pricing-')) {
+        const tier = source.replace('pricing-', '').replace(/-/g, ' ');
+        msg = `Hi SlideCraft! I'd like to enquire about the ${tier} plan.`;
+      }
+      msg = msg || `Hi SlideCraft! I'd like to enquire about your services.`;
       window.open(WA_BASE + encodeURIComponent(msg), '_blank');
     }
 
@@ -4181,10 +4375,13 @@
     /* ════════════════════════════════════════════════════════════════
        INIT — runs on page load
     ════════════════════════════════════════════════════════════════ */
-    buildCards();
-    buildWhy();
-    buildPricing();
-    showView('home');
+    document.addEventListener('DOMContentLoaded', () => {
+      buildCards();
+      buildWhy();
+      buildPricingGrid(PPT_PRICING, 'ppt-pricing-grid');
+      buildPricingGrid(PROJECT_PRICING, 'arduino-pricing-grid');
+      showView('home');
+    });
   </script>
 </body>
 
