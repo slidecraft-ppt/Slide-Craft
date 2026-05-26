@@ -1125,15 +1125,15 @@
       padding: 5rem 3rem
     }
 
-  .pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(280px, 320px));
-  gap: 1.2rem;
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(280px, 320px));
+      gap: 1.2rem;
 
-  max-width: 1000px;
-  margin: 3rem auto 0;
-  justify-content: center;
-}
+      max-width: 1000px;
+      margin: 3rem auto 0;
+      justify-content: center;
+    }
 
     .pricing-card {
       padding: 2rem 1.8rem;
@@ -2868,7 +2868,7 @@
         <p style="color:var(--muted);font-size:.9rem;margin-top:.5rem;font-weight:300;line-height:1.7">Tell us about
           your project and we'll get back to you within 24 hours.</p>
       </div>
-      
+
       <form class="contact-form reveal" onsubmit="handleFormSubmit(event)">
         <input type="text" placeholder="Your Name" required>
         <!-- CUSTOMIZE: Add/remove service options here -->
@@ -2888,11 +2888,11 @@
 
     <!-- ── FOOTER ───────────────────────────────────────────────── -->
     <footer>
-      
-       <button type="submit" aria-label="Email us!">
-  <i class="fa-solid fa-envelope"></i>
-</button>
-      
+
+      <button type="submit" aria-label="Email us!">
+        <i class="fa-solid fa-envelope"></i>
+      </button>
+
       <div style="display:flex;gap:2rem">
         <a style="color:var(--muted);font-size:.78rem;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.06em"
           onclick="scrollToSection('portfolio-anchor')">Portfolio</a>
@@ -3053,28 +3053,27 @@
           'images/Arduino/Picture1.jpg',
         ]
       },
-     /* {
-        id: 'Design Service',
-        title: 'Website Design',
-        thumbnail: 'images/Site.png',
-        // CUSTOMIZE: Add a hover video for this card:
-        // video: 'videos/fest-preview.mp4',
-        video: '',
-        tagline: 'Websites That Capture Attention Instantly.',
-        category: 'Design',
-        desc: 'Custom modern websites with responsive layouts, premium visuals, and smooth user experience across all devices.',
-        tags: ['Responsive', 'Modern UI', 'Interactive'],
-        color: '#b8860b', color2: '#8b6508', bg: 'rgba(184,134,11,0.08)',
-        deliverables: ['Complete website UI', 'Responsive HTML/CSS', 'Optimized assets', 'Deployment-ready files'],
-        features: ['Smooth animations', 'Custom sections', 'SEO-friendly structure', 'Fast-loading pages'],
-        showcase: [
-          'images/Site.png',
-          'images/Fest.png',
-          // CUSTOMIZE: Replace with a real video slide:
-          // { type: 'video', src: 'videos/fest-reel.mp4', poster: 'images/Fest.png' },
-          'images/Fest.png',
-        ]
-      },*/
+       {
+         id: 'Design Service',
+         title: 'Website Design',
+         thumbnail: 'images/Site.png',
+         // CUSTOMIZE: Add a hover video for this card:
+         // video: 'videos/fest-preview.mp4',
+         video: '',
+         tagline: 'Websites That Capture Attention Instantly.',
+         category: 'Design',
+         desc: 'Custom modern websites with responsive layouts, premium visuals, and smooth user experience across all devices.',
+         tags: ['Responsive', 'Modern UI', 'Interactive'],
+         color: '#b8860b', color2: '#8b6508', bg: 'rgba(184,134,11,0.08)',
+         deliverables: ['Complete website UI', 'Responsive HTML/CSS', 'Optimized assets', 'Deployment-ready files'],
+         features: ['Smooth animations', 'Custom sections', 'SEO-friendly structure', 'Fast-loading pages'],
+         showcase: [
+           'images/Site.png',
+           // CUSTOMIZE: Replace with a real video slide:
+           { type: 'video', src: 'videos/Website/Slidecraft.mp4', poster: 'images/Site.png' },
+           
+         ]
+       },
       {
         id: 'Academic',
         title: 'Final Year Project Report',
@@ -3149,7 +3148,7 @@
         deliverables: ['Brand guideline PDF', 'Typography system', 'Social media kit', 'Brand asset package', 'Logo PNG files', 'Transparent logo pack', 'Color variations'],
         features: ['Custom logo concepts', 'Minimal brand marks', 'Color palette selection', 'Scalable vector design', 'Typography system', 'Social media assets', 'Complete visual identity'],
         showcase: [
-          
+
           'images/LOGO/Logo1.png',
           { type: 'video', src: 'videos/logo/outro.mp4', poster: 'images/LOGO/Logo1.png' },
           'images/LOGO/Tanwar Construction01.jpg',
