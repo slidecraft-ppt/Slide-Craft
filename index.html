@@ -2751,20 +2751,21 @@
     }
 
     /* ── Mobile ───────────────────────────────────────────────── */
-    @media(max-width:768px) {
-      #arduino-pricing-grid {
-        display: grid;
-        grid-template-columns: 1fr !important;
-        gap: 1rem;
-      }
+  @media (max-width: 768px) {
+  #arduino-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+  gap: 1.2rem;
+  justify-content: center;
+}
 
-      .arduino-card,
-      .arduino-card.featured {
-        width: 100%;
-        max-width: 100%;
-        transform: none;
-        margin: 0;
-      }
+  .arduino-card,
+  .arduino-card.featured {
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+  }
+}
 
       nav {
         padding: 1rem 1.5rem
