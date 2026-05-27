@@ -112,7 +112,7 @@
       /* thumbnail strip height */
     }
 
-   
+
 
     /* ── Reset & base ──────────────────────────────────────────── */
     *,
@@ -199,12 +199,13 @@
       display: block;
       object-fit: contain;
     }
-   nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-}
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
 
     .nav-actions {
       flex-shrink: 0;
@@ -473,7 +474,7 @@
       }
     }
 
-  
+
     .nav-links {
       display: flex;
       gap: 2rem;
@@ -491,8 +492,8 @@
       background: var(--accent);
       border-radius: 2px;
       transition: left 0.38s cubic-bezier(0.23, 1, 0.32, 1),
-                  width 0.38s cubic-bezier(0.23, 1, 0.32, 1),
-                  opacity 0.25s;
+        width 0.38s cubic-bezier(0.23, 1, 0.32, 1),
+        opacity 0.25s;
       opacity: 0;
       pointer-events: none;
     }
@@ -500,6 +501,8 @@
     .nav-indicator.visible {
       opacity: 1;
     }
+
+    .nav-links a {
       color: var(--muted);
       text-decoration: none;
       font-size: .78rem;
@@ -507,7 +510,7 @@
       letter-spacing: .1em;
       text-transform: uppercase;
       transition: color .2s;
-      cursor: pointer
+      cursor: pointer;
     }
 
     .nav-links a:hover {
@@ -1572,7 +1575,7 @@
       display: flex;
       align-items: center;
       gap: .4rem;
-      box-shadow: 0 4px 16px rgba(37,211,102,.45), 0 2px 6px rgba(0,0,0,.15);
+      box-shadow: 0 4px 16px rgba(37, 211, 102, .45), 0 2px 6px rgba(0, 0, 0, .15);
       opacity: 0;
       transform: translateY(20px) scale(0.95);
       transition: all .35s cubic-bezier(0.23, 1, 0.32, 1);
@@ -1586,7 +1589,7 @@
     .sticky-cta:hover {
       background: #1ebe5d;
       transform: translateY(-2px) scale(1.04);
-      box-shadow: 0 8px 24px rgba(37,211,102,.55);
+      box-shadow: 0 8px 24px rgba(37, 211, 102, .55);
     }
 
     .sticky-cta svg {
@@ -1606,7 +1609,8 @@
       gap: 1rem;
       background: rgba(29, 45, 68, .02)
     }
-    footer > *:last-child {
+
+    footer>*:last-child {
       text-align: right;
     }
 
@@ -2808,6 +2812,7 @@
 
     /* ── Mobile ───────────────────────────────────────────────── */
     @media (max-width: 768px) {
+
       #arduino-pricing-grid,
       #ppt-pricing-grid {
         grid-template-columns: 1fr;
@@ -2820,361 +2825,448 @@
         transform: none;
       }
 
-    nav {
-      padding: 1rem 1.5rem
+      nav {
+        padding: 1rem 1.5rem
+      }
+
+      .nav-links {
+        display: none
+      }
+
+      .hero {
+        padding: 4rem 1.5rem 3rem
+      }
+
+      .portfolio-section,
+      .why-section,
+      .pricing-section,
+      .contact-section {
+        padding: 3rem 1.5rem
+      }
+
+      .cards-grid,
+      .why-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr
+      }
+
+      .cta-banner {
+        padding: 2rem 1.5rem
+      }
+
+      footer {
+        padding: 1.5rem;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+
+      footer>*:last-child {
+        text-align: center;
+      }
+
+      .proj-hero,
+      .proj-section {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem
+      }
+
+      .proj-showcase {
+        margin: 0 1.5rem 2rem
+      }
+
+      .pslider-wrap {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem
+      }
+
+      .pslider-arrow {
+        opacity: .75;
+        pointer-events: all;
+        width: 36px;
+        height: 36px
+      }
+
+      .pslider-arrow svg {
+        width: 15px;
+        height: 15px
+      }
+
+      .pslider-arrow.prev {
+        left: 22px
+      }
+
+      .pslider-arrow.next {
+        right: 22px
+      }
+
+      :root {
+        --slider-thumb-size: 56px;
+        --slider-thumb-h: 42px
+      }
+
+      .plb-arrow.prev {
+        left: 48px
+      }
+
+      .plb-arrow.next {
+        right: 48px
+      }
+
+      .plb-arrow {
+        width: 38px;
+        height: 38px
+      }
+
+      .showcase-section,
+      .related-section {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem
+      }
+
+      .proj-divider {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem
+      }
+
+      .showcase-panel.float-left,
+      .showcase-panel.float-right {
+        display: none
+      }
     }
 
-    .nav-links {
-      display: none
-    }
-
-    .hero {
-      padding: 4rem 1.5rem 3rem
-    }
-
-    .portfolio-section,
-    .why-section,
-    .pricing-section,
-    .contact-section {
-      padding: 3rem 1.5rem
-    }
-
-    .cards-grid,
-    .why-grid,
-    .pricing-grid {
-      grid-template-columns: 1fr
-    }
-
-    .cta-banner {
-      padding: 2rem 1.5rem
-    }
-
-    footer {
-      padding: 1.5rem;
-      grid-template-columns: 1fr;
-      justify-items: center;
-      text-align: center;
-    }
-    footer > *:last-child {
-      text-align: center;
-    }
-
-    .proj-hero,
-    .proj-section {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem
-    }
-
-    .proj-showcase {
-      margin: 0 1.5rem 2rem
-    }
-
-    .pslider-wrap {
-      margin-left: 1.5rem;
-      margin-right: 1.5rem
-    }
-
-    .pslider-arrow {
-      opacity: .75;
-      pointer-events: all;
-      width: 36px;
-      height: 36px
-    }
-
-    .pslider-arrow svg {
-      width: 15px;
-      height: 15px
-    }
-
-    .pslider-arrow.prev {
-      left: 22px
-    }
-
-    .pslider-arrow.next {
-      right: 22px
-    }
-
-    :root {
-      --slider-thumb-size: 56px;
-      --slider-thumb-h: 42px
-    }
-
-    .plb-arrow.prev {
-      left: 48px
-    }
-
-    .plb-arrow.next {
-      right: 48px
-    }
-
-    .plb-arrow {
-      width: 38px;
-      height: 38px
-    }
-
-    .showcase-section,
-    .related-section {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem
-    }
-
-    .proj-divider {
-      margin-left: 1.5rem;
-      margin-right: 1.5rem
-    }
-
-    .showcase-panel.float-left,
-    .showcase-panel.float-right {
-      display: none
-    }
-  }
-
-  /* ══════════════════════════════════════════════════════
+    /* ══════════════════════════════════════════════════════
      LOADING SCREEN
   ══════════════════════════════════════════════════════ */
-  #loading-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    transition: opacity .5s ease, visibility .5s ease;
-  }
-  #loading-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-  .loader-logo {
-    font-family: 'Cinzel', serif;
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: .12em;
-    color: var(--navy);
-    opacity: 0;
-    transform: translateY(18px) scale(0.96);
-    animation: loaderReveal .7s .1s cubic-bezier(0.23,1,0.32,1) forwards;
-  }
-  .loader-logo span { color: var(--accent); }
-  .loader-logo-img {
-    height: 64px;
-    width: auto;
-    opacity: 0;
-    transform: translateY(18px) scale(0.94);
-    animation: loaderReveal .7s .05s cubic-bezier(0.23,1,0.32,1) forwards;
-  }
-  .loader-bar-wrap {
-    width: 120px;
-    height: 2px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-    opacity: 0;
-    animation: loaderReveal .4s .35s ease forwards;
-  }
-  .loader-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--accent), var(--gold));
-    border-radius: 2px;
-    animation: loaderFill 0.85s .4s cubic-bezier(0.4,0,0.2,1) forwards;
-  }
-  .loader-tagline {
-    font-size: .7rem;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 400;
-    opacity: 0;
-    animation: loaderReveal .4s .5s ease forwards;
-  }
-  @keyframes loaderReveal {
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  @keyframes loaderFill {
-    to { width: 100%; }
-  }
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      transition: opacity .5s ease, visibility .5s ease;
+    }
 
-  /* ══════════════════════════════════════════════════════
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      color: var(--navy);
+      opacity: 0;
+      transform: translateY(18px) scale(0.96);
+      animation: loaderReveal .7s .1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    .loader-logo span {
+      color: var(--accent);
+    }
+
+    .loader-logo-img {
+      height: 64px;
+      width: auto;
+      opacity: 0;
+      transform: translateY(18px) scale(0.94);
+      animation: loaderReveal .7s .05s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    .loader-bar-wrap {
+      width: 120px;
+      height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      opacity: 0;
+      animation: loaderReveal .4s .35s ease forwards;
+    }
+
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      border-radius: 2px;
+      animation: loaderFill 0.85s .4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .loader-tagline {
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 400;
+      opacity: 0;
+      animation: loaderReveal .4s .5s ease forwards;
+    }
+
+    @keyframes loaderReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes loaderFill {
+      to {
+        width: 100%;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════
      TESTIMONIALS SECTION
   ══════════════════════════════════════════════════════ */
-  .testimonials-section {
-    padding: 6rem 3rem;
-  }
-  .testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 3rem auto 0;
-  }
-  .testi-card {
-    background: var(--glass2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem 1.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    transition: border-color .3s, box-shadow .3s, transform .3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .testi-card::before {
-    content: '\201C';
-    position: absolute;
-    top: -10px;
-    right: 20px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 7rem;
-    color: var(--accent);
-    opacity: .07;
-    line-height: 1;
-    pointer-events: none;
-  }
-  .testi-card:hover {
-    border-color: var(--border2);
-    box-shadow: 0 12px 40px rgba(139,100,60,0.1);
-    transform: translateY(-4px);
-  }
-  .testi-stars {
-    display: flex;
-    gap: 3px;
-  }
-  .testi-star {
-    color: var(--gold2);
-    font-size: .9rem;
-  }
-  .testi-quote {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    font-style: italic;
-    line-height: 1.75;
-    color: var(--text);
-    font-weight: 400;
-    flex: 1;
-  }
-  .testi-author {
-    display: flex;
-    align-items: center;
-    gap: .9rem;
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-  }
-  .testi-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--navy), var(--accent));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cinzel', serif;
-    font-size: .85rem;
-    font-weight: 600;
-    color: #f5ede0;
-    flex-shrink: 0;
-  }
-  .testi-name {
-    font-weight: 600;
-    font-size: .88rem;
-    color: var(--text);
-    letter-spacing: .02em;
-  }
-  .testi-role {
-    font-size: .75rem;
-    color: var(--muted);
-    font-weight: 300;
-    margin-top: .1rem;
-  }
+    .testimonials-section {
+      padding: 6rem 0 6rem 3rem;
+    }
 
-  /* ══════════════════════════════════════════════════════
+    .testimonials-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-right: 3rem;
+    }
+
+    .testimonials-scroll-wrapper {
+      position: relative;
+      margin-top: 3rem;
+    }
+
+    .testimonials-track {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 3rem 2rem 0;
+      scrollbar-width: none;
+      cursor: grab;
+    }
+
+    .testimonials-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .testimonials-track:active {
+      cursor: grabbing;
+    }
+
+    .testimonials-scroll-fade {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--bg));
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .testi-card {
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 360px;
+      scroll-snap-align: start;
+    }
+
+    .testi-card::before {
+      content: '\201C';
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 7rem;
+      color: var(--accent);
+      opacity: .07;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .testi-card:hover {
+      border-color: var(--border2);
+      box-shadow: 0 12px 40px rgba(139, 100, 60, 0.1);
+      transform: translateY(-4px);
+    }
+
+    .testi-stars {
+      display: flex;
+      gap: 3px;
+    }
+
+    .testi-star {
+      color: var(--gold2);
+      font-size: .9rem;
+    }
+
+    .testi-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.75;
+      color: var(--text);
+      font-weight: 400;
+      flex: 1;
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    .testi-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: .85rem;
+      font-weight: 600;
+      color: #f5ede0;
+      flex-shrink: 0;
+    }
+
+    .testi-name {
+      font-weight: 600;
+      font-size: .88rem;
+      color: var(--text);
+      letter-spacing: .02em;
+    }
+
+    .testi-role {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-top: .1rem;
+    }
+
+    /* ══════════════════════════════════════════════════════
      FAQ SECTION
   ══════════════════════════════════════════════════════ */
-  .faq-section {
-    padding: 6rem 3rem;
-    background: var(--bg2);
-  }
-  .faq-inner {
-    max-width: 780px;
-    margin: 3rem auto 0;
-    display: flex;
-    flex-direction: column;
-    gap: .75rem;
-  }
-  .faq-item {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--glass2);
-    overflow: hidden;
-    transition: border-color .25s;
-  }
-  .faq-item:hover {
-    border-color: var(--border2);
-  }
-  .faq-item.open {
-    border-color: rgba(192,57,43,0.2);
-    background: var(--glass3);
-  }
-  .faq-question {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 1.6rem;
-    cursor: pointer;
-    gap: 1rem;
-    user-select: none;
-  }
-  .faq-question-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--navy);
-    letter-spacing: .01em;
-  }
-  .faq-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid var(--border2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: transform .3s ease, background .25s, border-color .25s;
-    color: var(--accent);
-    font-size: .85rem;
-  }
-  .faq-item.open .faq-icon {
-    transform: rotate(45deg);
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #f5ede0;
-  }
-  .faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height .4s cubic-bezier(0.23,1,0.32,1), padding .3s;
-  }
-  .faq-answer-inner {
-    padding: 0 1.6rem 1.4rem;
-    color: var(--muted);
-    font-size: .9rem;
-    line-height: 1.8;
-    font-weight: 300;
-  }
-  .faq-item.open .faq-answer {
-    max-height: 400px;
-  }
+    .faq-section {
+      padding: 6rem 3rem;
+      background: var(--bg2);
+    }
 
-  @media(max-width:768px) {
-    .testimonials-grid { grid-template-columns: 1fr; }
-    .testimonials-section, .faq-section { padding: 3rem 1.5rem; }
-  }
+    .faq-inner {
+      max-width: 780px;
+      margin: 3rem auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--glass2);
+      overflow: hidden;
+      transition: border-color .25s;
+    }
+
+    .faq-item:hover {
+      border-color: var(--border2);
+    }
+
+    .faq-item.open {
+      border-color: rgba(192, 57, 43, 0.2);
+      background: var(--glass3);
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 1.6rem;
+      cursor: pointer;
+      gap: 1rem;
+      user-select: none;
+    }
+
+    .faq-question-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: .01em;
+    }
+
+    .faq-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform .3s ease, background .25s, border-color .25s;
+      color: var(--accent);
+      font-size: .85rem;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #f5ede0;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s cubic-bezier(0.23, 1, 0.32, 1), padding .3s;
+    }
+
+    .faq-answer-inner {
+      padding: 0 1.6rem 1.4rem;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 400px;
+    }
+
+    @media(max-width:768px) {
+      .testimonials-section {
+        padding: 3rem 0 3rem 1.5rem;
+      }
+
+      .testimonials-header {
+        padding-right: 1.5rem;
+      }
+
+      .testi-card {
+        flex: 0 0 280px;
+      }
+
+      .faq-section {
+        padding: 3rem 1.5rem;
+      }
+    }
   </style>
 </head>
 
@@ -3187,7 +3279,9 @@
     <img src="images/Website_Logo.png" alt="SlideCraft" class="loader-logo-img"
       onerror="this.style.display='none';document.querySelector('.loader-logo-fallback').style.display='block'">
     <div class="loader-logo loader-logo-fallback" style="display:none">SLIDE<span>CRAFT</span></div>
-    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar"></div>
+    </div>
     <div class="loader-tagline">Premium Presentation Studio</div>
   </div>
 
@@ -3250,7 +3344,11 @@
   </nav>
 
   <!-- ── Sticky floating CTA button (appears after scroll) ─────── -->
-  <button class="sticky-cta" id="stickyCTA" onclick="openWA('sticky')"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Order on WhatsApp</button>
+  <button class="sticky-cta" id="stickyCTA" onclick="openWA('sticky')"><svg viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>Order on WhatsApp</button>
 
   <!-- ════════════════════════════════════════════════════════════
      HOME VIEW
@@ -3393,23 +3491,26 @@
 
     <!-- ── TESTIMONIALS SECTION ──────────────────────────────────────── -->
     <section class="testimonials-section" id="testimonials-anchor">
-      <div style="max-width:1200px;margin:0 auto">
+      <div class="testimonials-header">
         <div class="reveal">
           <div class="section-label"><span></span>Client Love</div>
           <h2 class="section-head">What People <em>Say</em></h2>
-          <p style="color:var(--muted);font-size:.9rem;font-weight:300;line-height:1.7;max-width:480px">Real words from real clients — classmates and professionals who trusted SlideCraft with their most important moments.</p>
+          <p style="color:var(--muted);font-size:.9rem;font-weight:300;line-height:1.7;max-width:480px">Real words from
+            real clients — classmates and professionals who trusted SlideCraft with their most important moments.</p>
         </div>
-        <div class="testimonials-grid">
+      </div>
+      <div class="testimonials-scroll-wrapper">
+        <div class="testimonials-track" id="testiTrack">
           <div class="testi-card reveal">
             <div class="testi-stars">
               <span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span>
             </div>
-            <div class="testi-quote">"Handed over my rough notes and got back a stunning deck that genuinely wowed my professor. The animations were smooth and and overall concept matches the topic perfectly. 100% worth it."</div>
+            <div class="testi-quote">"Handed over my rough notes and got back a stunning deck that genuinely wowed my professor. The animations were smooth and the overall concept matches the topic perfectly. 100% worth it."</div>
             <div class="testi-author">
               <div class="testi-avatar">SP</div>
               <div>
                 <div class="testi-name">Sandhay Patel</div>
-                <div class="testi-role">MBA, HR — MSU- Vadodara</div>
+                <div class="testi-role">MBA, HR — MSU Vadodara</div>
               </div>
             </div>
           </div>
@@ -3439,7 +3540,21 @@
               </div>
             </div>
           </div>
+          <div class="testi-card reveal">
+            <div class="testi-stars">
+              <span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span>
+            </div>
+            <div class="testi-quote">"An exceptional experience from beginning to end. The level of professionalism, creativity, and commitment to quality was remarkable. Every detail was handled with care, resulting in a final product that far surpassed my expectations. Highly recommended!"</div>
+            <div class="testi-author">
+              <div class="testi-avatar">RT</div>
+              <div>
+                <div class="testi-name">Rehan Tanwar</div>
+                <div class="testi-role">Tanwar Constructions</div>
+              </div>
+            </div>
+          </div>
         </div>
+        <div class="testimonials-scroll-fade"></div>
       </div>
     </section>
 
@@ -3451,7 +3566,8 @@
         <div class="reveal" style="text-align:center">
           <div class="section-label" style="justify-content:center"><span></span>Common Questions</div>
           <h2 class="section-head">Everything You <em>Need to Know</em></h2>
-          <p style="color:var(--muted);font-size:.9rem;font-weight:300;line-height:1.7;max-width:480px;margin:0 auto">Answers to the questions we get asked most often — so you can order with confidence.</p>
+          <p style="color:var(--muted);font-size:.9rem;font-weight:300;line-height:1.7;max-width:480px;margin:0 auto">
+            Answers to the questions we get asked most often — so you can order with confidence.</p>
         </div>
         <div class="faq-inner reveal">
           <div class="faq-item" onclick="toggleFaq(this)">
@@ -3459,35 +3575,60 @@
               <span class="faq-question-text">How long does it take to complete a project?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer"><div class="faq-answer-inner">Most presentations are delivered within <strong>24–48 hours</strong> of receiving your content. Arduino projects and reports typically take <strong>2–4 days</strong> depending on complexity. If you have a hard deadline, just mention it when you message us — we'll do our best to accommodate rush orders at no extra charge for most standard requests.</div></div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Most presentations are delivered within <strong>24–48 hours</strong> of
+                receiving your content. Arduino projects and reports typically take <strong>2–4 days</strong> depending
+                on complexity. If you have a hard deadline, just mention it when you message us — we'll do our best to
+                accommodate rush orders at no extra charge for most standard requests.</div>
+            </div>
           </div>
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-question">
               <span class="faq-question-text">Do you offer revisions if I'm not happy?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer"><div class="faq-answer-inner">Absolutely. Every order includes <strong>free revisions</strong> until you're satisfied with the result. We want you to love the final output, not just accept it. Changes to content, layout, colors, or style are all welcome. Just share your feedback via WhatsApp and we'll turn it around quickly.</div></div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Absolutely. Every order includes <strong>free revisions</strong> until
+                you're satisfied with the result. We want you to love the final output, not just accept it. Changes to
+                content, layout, colors, or style are all welcome. Just share your feedback via WhatsApp and we'll turn
+                it around quickly.</div>
+            </div>
           </div>
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-question">
               <span class="faq-question-text">What do you need from me to get started?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer"><div class="faq-answer-inner">Just the basics — your <strong>topic, key points or notes, and any reference material</strong> (PDFs, images, data, rough slides). For Arduino projects, tell us the module name or problem statement. The more context you share, the better the output. No design experience needed on your end — that's exactly what we're here for.</div></div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Just the basics — your <strong>topic, key points or notes, and any reference
+                  material</strong> (PDFs, images, data, rough slides). For Arduino projects, tell us the module name or
+                problem statement. The more context you share, the better the output. No design experience needed on
+                your end — that's exactly what we're here for.</div>
+            </div>
           </div>
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-question">
               <span class="faq-question-text">What formats will I receive my files in?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer"><div class="faq-answer-inner">Presentations are delivered as editable <strong>.pptx files plus a PDF export</strong>. Reports come as both <strong>.docx and PDF</strong>. Arduino projects include source code (.ino), circuit diagrams, and a component list. All files are sent directly via WhatsApp or Google Drive — whichever you prefer.</div></div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Presentations are delivered as editable <strong>.pptx files plus a PDF
+                  export</strong>. Reports come as both <strong>.docx and PDF</strong>. Arduino projects include source
+                code (.ino), circuit diagrams, and a component list. All files are sent directly via WhatsApp or Google
+                Drive — whichever you prefer.</div>
+            </div>
           </div>
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-question">
               <span class="faq-question-text">How do I pay, and is it safe?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer"><div class="faq-answer-inner">Payment is accepted via <strong>UPI, Google Pay, or PhonePe</strong> — fast and familiar. For new clients, a small advance secures your slot; the remainder is due on delivery. We've completed <strong>240+ projects</strong> with a 98% satisfaction rate, so your trust is something we take seriously.</div></div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Payment is accepted via <strong>UPI, Google Pay, or PhonePe</strong> — fast
+                and familiar. For new clients, a small advance secures your slot; the remainder is due on delivery.
+                We've completed <strong>240+ projects</strong> with a 98% satisfaction rate, so your trust is something
+                we take seriously.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -3550,10 +3691,8 @@
            OPTION B — text logo: keep the div below as-is.
       -->
       <!-- <img src="images/logo.png" alt="SlideCraft" style="height:30px;width:auto;opacity:.7"> -->
-      <img src="images/Website_Logo.png"
-     alt="SlideCraft Logo"
-     onclick="navigateHome()"
-     style="height:42px;width:auto;cursor:pointer;opacity:.9;">
+      <img src="images/Website_Logo.png" alt="SlideCraft Logo" onclick="navigateHome()"
+        style="height:42px;width:auto;cursor:pointer;opacity:.9;">
 
       <div style="display:flex;gap:2rem">
         <a style="color:var(--muted);font-size:.78rem;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.06em"
@@ -4807,12 +4946,12 @@
       }
 
       const sections = [
-        { id: 'portfolio-anchor',     section: 'portfolio-anchor' },
-        { id: 'why-anchor',           section: 'why-anchor' },
-        { id: 'pricing-anchor',       section: 'pricing-anchor' },
-        { id: 'testimonials-anchor',  section: 'testimonials-anchor' },
-        { id: 'faq-anchor',           section: 'faq-anchor' },
-        { id: 'contact-anchor',       section: 'contact-anchor' },
+        { id: 'portfolio-anchor', section: 'portfolio-anchor' },
+        { id: 'why-anchor', section: 'why-anchor' },
+        { id: 'pricing-anchor', section: 'pricing-anchor' },
+        { id: 'testimonials-anchor', section: 'testimonials-anchor' },
+        { id: 'faq-anchor', section: 'faq-anchor' },
+        { id: 'contact-anchor', section: 'contact-anchor' },
       ];
 
       const scrollY = window.scrollY + 60; // offset for fixed nav height
@@ -4831,9 +4970,9 @@
       const activeLink = navLinks.querySelector(`[data-section="${activeSection}"]`);
       if (!activeLink) { indicator.classList.remove('visible'); return; }
 
-      const navRect  = navLinks.getBoundingClientRect();
+      const navRect = navLinks.getBoundingClientRect();
       const linkRect = activeLink.getBoundingClientRect();
-      indicator.style.left  = (linkRect.left - navRect.left) + 'px';
+      indicator.style.left = (linkRect.left - navRect.left) + 'px';
       indicator.style.width = linkRect.width + 'px';
       indicator.classList.add('visible');
     }
@@ -4873,6 +5012,29 @@
         if (ls) ls.classList.add('hidden');
       }, 1100);
     });
+
+    /* ════════════════════════════════════════════════════════════════
+       TESTIMONIALS DRAG-TO-SCROLL
+    ════════════════════════════════════════════════════════════════ */
+    (function () {
+      const track = document.getElementById('testiTrack');
+      if (!track) return;
+      let isDown = false, startX, scrollLeft;
+      track.addEventListener('mousedown', e => {
+        isDown = true;
+        track.style.userSelect = 'none';
+        startX = e.pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
+      });
+      document.addEventListener('mouseup', () => { isDown = false; track.style.userSelect = ''; });
+      track.addEventListener('mouseleave', () => { isDown = false; });
+      track.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        track.scrollLeft = scrollLeft - (x - startX) * 1.2;
+      });
+    })();
 
     /* ════════════════════════════════════════════════════════════════
        FAQ TOGGLE
