@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════
+   MARQUEE.CSS
+   Scrolling logo/text marquee strip on the homepage.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Marquee strip ────────────────────────────────────────── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      background: rgba(29, 45, 68, 0.025);
+      position: relative;
+      z-index: 2
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: marqueeScroll 30s linear infinite;
+      white-space: nowrap
+    }
+
+    @keyframes marqueeScroll {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    .marquee-item {
+      font-family: 'Cinzel', serif;
+      font-size: .7rem;
+      font-weight: 400;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 2.5rem
+    }
+
+    .marquee-dot {
+      color: var(--gold);
+      margin-left: 2.5rem
+    }
+

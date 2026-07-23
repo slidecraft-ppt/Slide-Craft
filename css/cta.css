@@ -1,0 +1,38 @@
+/* ═══════════════════════════════════════════════════════════════
+   CTA.CSS
+   Mid-page call-to-action banner.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── CTA banner ───────────────────────────────────────────── */
+    .cta-banner {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3.5rem;
+      text-align: center;
+      background: rgba(29, 45, 68, .03)
+    }
+
+    .cta-banner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .8rem
+    }
+
+    .cta-banner p {
+      color: var(--muted);
+      font-size: .92rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+      font-weight: 300
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+

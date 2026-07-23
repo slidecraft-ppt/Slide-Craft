@@ -1,0 +1,253 @@
+/* ═══════════════════════════════════════════════════════════════
+   HERO.CSS
+   Homepage hero section (badge, headline, sub-copy, stat row, glows).
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Hero section ─────────────────────────────────────────── */
+    .hero {
+      padding: 6rem 3rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: rgba(29, 45, 68, 0.06);
+      border: 1px solid rgba(29, 45, 68, 0.15);
+      color: var(--navy);
+      padding: .45rem 1.3rem;
+      border-radius: 2px;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .7s ease both
+    }
+
+    /* CUSTOMIZE: Change the badge dot color by editing this background */
+    .hero-badge-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: dotPulse 1.8s infinite
+    }
+
+    @keyframes dotPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(1.5)
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 7.5vw, 6.5rem);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -.01em;
+      margin-bottom: 1rem;
+      animation: fadeUp .7s .1s ease both;
+      color: var(--navy)
+    }
+
+    .hero-h1 em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      display: block;
+      font-size: 1.05em
+    }
+
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      margin: 1.5rem auto 1.8rem;
+      animation: fadeUp .7s .15s ease both
+    }
+
+    .hero-divider::before,
+    .hero-divider::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 80px;
+      background: linear-gradient(90deg, transparent, var(--border2))
+    }
+
+    .hero-divider::after {
+      background: linear-gradient(90deg, var(--border2), transparent)
+    }
+
+    .hero-divider-diamond {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg)
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.85;
+      max-width: 520px;
+      margin: 0 auto 3rem;
+      animation: fadeUp .7s .2s ease both;
+      font-weight: 300
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp .7s .3s ease both;
+      margin-bottom: 4rem
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      animation: fadeUp .7s .4s ease both
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .15rem;
+      padding: .8rem 1.5rem;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 4px
+    }
+
+    .hero-stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: var(--navy)
+    }
+
+    .hero-stat-lbl {
+      font-size: .7rem;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .hero-glow {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(80px)
+    }
+
+    .hg1 {
+      width: 500px;
+      height: 500px;
+      top: -150px;
+      left: -100px;
+      background: rgba(192, 57, 43, 0.05)
+    }
+
+    .hg2 {
+      width: 400px;
+      height: 400px;
+      top: 0;
+      right: -80px;
+      background: rgba(29, 45, 68, 0.04)
+    }
+
+    .hg3 {
+      width: 350px;
+      height: 350px;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(184, 134, 11, 0.035)
+    }
+
+    .pricing-category {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 3rem;
+    }
+
+    /* arduino wrapper needs extra top gap since the dark box has no outer top padding */
+    .pricing-category.arduino-section {
+      max-width: 1180px;
+      margin: 80px auto;
+      padding: 50px;
+      border-radius: 28px;
+
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, .18),
+        0 0 0 1px rgba(255, 255, 255, .04);
+    }
+
+    .section-tag {
+      display: inline-block;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      font-size: .75rem;
+      margin-bottom: 12px;
+    }
+
+    .arduino-section .section-tag {
+      color: #ffb74d;
+    }
+
+    #ppt-pricing-grid,
+    #arduino-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 3rem;
+    }
+
+    #arduino-pricing-grid {
+      margin-bottom: 0.5rem;
+    }
+

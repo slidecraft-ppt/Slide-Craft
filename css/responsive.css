@@ -1,0 +1,328 @@
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE.CSS
+   Shared mobile breakpoints (max-width 768px / 380px) that adjust many components at once. Loaded last so it can override component styles at small viewports.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Mobile ───────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+
+      /* Hide custom cursor on touch devices */
+      #cursor, #cursor-ring {
+        display: none;
+      }
+
+      body {
+        cursor: auto;
+      }
+
+      /* Navigation */
+      nav {
+        padding: .6rem 1.25rem;
+        grid-template-columns: 1fr auto;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-actions {
+        gap: .5rem;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .nav-drawer {
+        display: flex;
+      }
+
+      /* Reduce logo size on mobile */
+      .nav-logo img {
+        height: 36px !important;
+      }
+
+      .nav-cta {
+        display: none;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 5rem 1.25rem 3rem;
+        min-height: auto;
+      }
+
+      .hero-h1 {
+        font-size: clamp(2.4rem, 10vw, 3.5rem);
+      }
+
+      .hero-btns {
+        flex-direction: column;
+        align-items: center;
+        gap: .75rem;
+      }
+
+      .hero-btns .btn-primary,
+      .hero-btns .btn-ghost {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+      }
+
+      .hero-stats {
+        gap: .75rem;
+      }
+
+      .hero-stat {
+        padding: .6rem 1rem;
+        flex: 1 1 calc(50% - .375rem);
+        min-width: 120px;
+      }
+
+      /* Sections */
+      .portfolio-section {
+        padding: 3rem 1.25rem 4rem;
+      }
+
+      .why-section {
+        padding: 3rem 1.25rem;
+      }
+
+      .why-section > div {
+        padding: 0;
+      }
+
+      .pricing-section,
+      .contact-section {
+        padding: 3rem 1.25rem;
+      }
+
+      /* Grids → single column */
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.1rem;
+      }
+
+      .why-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #arduino-pricing-grid,
+      #ppt-pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .arduino-card,
+      .arduino-card.featured {
+        width: 100%;
+        max-width: 100%;
+        transform: none;
+      }
+
+      /* Pricing section wrappers */
+      .pricing-category {
+        padding: 0 1.25rem;
+        margin: 50px auto;
+      }
+
+      .pricing-category.arduino-section {
+        padding: 2rem 1.25rem;
+        margin: 20px 1.25rem;
+        border-radius: 20px;
+      }
+
+      .arduino-wrapper {
+        padding: 0;
+      }
+
+      .arduino-banner {
+        width: 100%;
+        text-align: center;
+        padding: 10px 14px;
+        font-size: .82rem;
+      }
+
+      /* CTA Banner */
+      .cta-banner {
+        padding: 2rem 1.25rem;
+        margin: 0 0;
+      }
+
+      section[style*="padding:4rem 3rem"] {
+        padding: 2rem 1.25rem !important;
+      }
+
+      /* Dividers */
+      .divider {
+        margin: 0 1.25rem;
+      }
+
+      /* Contact */
+      .contact-section {
+        padding: 3rem 1.25rem;
+      }
+
+      /* Footer */
+      footer {
+        padding: 2rem 1.25rem;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 1.25rem;
+      }
+
+      footer > *:last-child {
+        text-align: center;
+      }
+
+      footer > div {
+        gap: 1.25rem;
+      }
+
+      /* Project detail view */
+      .proj-hero {
+        padding: 2rem 1.25rem 1.5rem;
+      }
+
+      .proj-section {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        padding-bottom: 2rem;
+      }
+
+      .proj-showcase {
+        margin: 0 1.25rem 2rem;
+        min-height: auto;
+      }
+
+      .proj-showcase-inner {
+        padding: 2.5rem 1rem 4rem;
+      }
+
+      .proj-divider {
+        margin-left: 1.25rem;
+        margin-right: 1.25rem;
+      }
+
+      .info-box {
+        flex-direction: column;
+        gap: 1.25rem;
+        padding: 1.5rem 1.25rem;
+      }
+
+      .info-box-divider {
+        width: 100%;
+        height: 1px;
+        align-self: auto;
+      }
+
+      .info-box-item {
+        min-width: unset;
+      }
+
+      /* Slider */
+      .pslider-wrap {
+        margin-left: 1.25rem;
+        margin-right: 1.25rem;
+      }
+
+      .pslider-arrow {
+        opacity: .85;
+        pointer-events: all;
+        width: 36px;
+        height: 36px;
+      }
+
+      .pslider-arrow svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .pslider-arrow.prev {
+        left: 10px;
+      }
+
+      .pslider-arrow.next {
+        right: 10px;
+      }
+
+      :root {
+        --slider-thumb-size: 52px;
+        --slider-thumb-h: 38px;
+      }
+
+      /* Lightbox */
+      #pslider-lightbox {
+        padding: .75rem;
+      }
+
+      #plbImgSlot {
+        height: 55vw;
+      }
+
+      .plb-main-img,
+      .plb-main-video {
+        max-height: 55vw;
+      }
+
+      .plb-arrow {
+        width: 34px;
+        height: 34px;
+      }
+
+      .plb-arrow.prev {
+        left: 6px;
+      }
+
+      .plb-arrow.next {
+        right: 6px;
+      }
+
+      /* Showcase & Related sections */
+      .showcase-section,
+      .related-section {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        padding-bottom: 2.5rem;
+      }
+
+      .showcase-panel.float-left,
+      .showcase-panel.float-right {
+        display: none;
+      }
+
+      .related-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Pricing marquee */
+      .pricing-marquee-track {
+        gap: 36px;
+      }
+
+      .pricing-marquee-track span {
+        font-size: .8rem;
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 380px) {
+      .hero-h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-stat {
+        flex: 1 1 100%;
+      }
+
+      .nav-drawer a {
+        font-size: 1.7rem;
+        padding: .7rem 1.5rem;
+      }
+    }
+

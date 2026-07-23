@@ -1,0 +1,117 @@
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY.CSS
+   Small utility classes extracted from inline style attributes (kept together since they are one-off, cross-cutting helpers rather than a single component).
+═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ─────────────────────────────────────────────────────────────
+   Extracted from inline style="" attributes that used to live in
+   index.html, so all presentation lives in this stylesheet only.
+═══════════════════════════════════════════════════════════════ */
+
+/* Loading screen fallback text-logo (shown only if the image 404s) */
+.loader-logo-fallback {
+  display: none;
+}
+
+.loader-logo-fallback.visible {
+  display: block;
+}
+
+/* Navbar logo image */
+.navbar-logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Generic centered content wrapper (Why Us / FAQ sections) */
+.section-wrap-1200 {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* .section-label modifiers */
+.section-label.center {
+  justify-content: center;
+}
+
+.section-label.mb-1 {
+  margin-bottom: 1rem;
+}
+
+/* Shared muted sub-copy paragraph (Testimonials / FAQ headers) */
+.section-sub-480 {
+  color: var(--muted);
+  font-size: .9rem;
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+.section-sub-480.centered {
+  margin: 0 auto;
+}
+
+.section-sub-mt {
+  color: var(--muted);
+  font-size: .9rem;
+  margin-top: .5rem;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+/* Dimmed half-star in testimonials */
+.testi-star.dim {
+  opacity: .35;
+}
+
+/* Accent italic emphasis inside the CTA banner heading */
+.accent-em {
+  color: var(--accent);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+
+.cta-section-wrap {
+  padding: 4rem 3rem;
+}
+
+/* Submit button aligned to the start of the contact form */
+.btn-primary.align-start {
+  align-self: flex-start;
+}
+
+/* Footer */
+.footer-logo-img {
+  height: 42px;
+  width: auto;
+  cursor: pointer;
+  opacity: .9;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-link {
+  color: var(--muted);
+  font-size: .78rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color .2s;
+  letter-spacing: .06em;
+}
+
+.footer-copy {
+  color: var(--muted);
+  font-size: .75rem;
+  letter-spacing: .04em;
+}

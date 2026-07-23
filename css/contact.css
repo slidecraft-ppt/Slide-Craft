@@ -1,0 +1,46 @@
+/* ═══════════════════════════════════════════════════════════════
+   CONTACT.CSS
+   Contact form section.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Contact form ─────────────────────────────────────────── */
+    .contact-section {
+      padding: 5rem 3rem;
+      max-width: 700px;
+      margin: 0 auto
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2.5rem
+    }
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .9rem 1.1rem;
+      font-family: 'Jost', sans-serif;
+      font-size: .88rem;
+      color: var(--text);
+      font-weight: 300;
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none
+    }
+
+    .contact-form input:focus,
+    .contact-form select:focus,
+    .contact-form textarea:focus {
+      border-color: var(--border2)
+    }
+
+    .contact-form textarea {
+      min-height: 120px;
+      resize: vertical
+    }
+

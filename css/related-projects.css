@@ -1,0 +1,188 @@
+/* ═══════════════════════════════════════════════════════════════
+   RELATED-PROJECTS.CSS
+   Related projects grid shown at the bottom of a project page.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Related projects ─────────────────────────────────────── */
+    .related-section {
+      padding: 0 3rem 4rem
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem
+    }
+
+    .related-card {
+      background: var(--liquid-bg);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-border);
+      border-radius: 16px;
+      box-shadow: var(--liquid-shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .45s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      will-change: transform
+    }
+
+    .related-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, .05) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform .55s ease;
+      z-index: 1;
+      pointer-events: none
+    }
+
+    .related-card:hover::before {
+      transform: translateX(100%)
+    }
+
+    .related-card:hover {
+      border-color: rgba(255, 255, 255, .8);
+      box-shadow: var(--liquid-shadow), 0 20px 50px rgba(29, 45, 68, .14), 0 0 30px rgba(184, 134, 11, .08);
+      transform: translateY(-7px)
+    }
+
+    .related-thumb {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg2)
+    }
+
+    .related-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .55s cubic-bezier(0.23, 1, 0.32, 1)
+    }
+
+    .related-card:hover .related-thumb-img {
+      transform: scale(1.07)
+    }
+
+    .related-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(29, 45, 68, .4), transparent 60%)
+    }
+
+    .related-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: rgba(29, 45, 68, .15);
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      position: relative
+    }
+
+    .related-thumb-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(184, 134, 11, .05), transparent)
+    }
+
+    .related-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(245, 237, 224, .88);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .6rem;
+      font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 2px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      z-index: 2;
+      font-family: 'Jost', sans-serif
+    }
+
+    .related-body {
+      padding: 1.3rem 1.4rem 1.5rem
+    }
+
+    .related-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .3rem;
+      line-height: 1.2
+    }
+
+    .related-tagline {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-weight: 300
+    }
+
+    .related-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .related-tags {
+      display: flex;
+      gap: .35rem;
+      flex-wrap: wrap
+    }
+
+    .related-tag {
+      background: rgba(29, 45, 68, .05);
+      border: 1px solid var(--border);
+      color: var(--navy);
+      font-size: .6rem;
+      font-weight: 500;
+      padding: .2rem .55rem;
+      border-radius: 2px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-family: 'Jost', sans-serif
+    }
+
+    .related-explore {
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .06em;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      transition: color .2s;
+      white-space: nowrap;
+      font-family: 'Jost', sans-serif
+    }
+
+    .related-card:hover .related-explore {
+      color: var(--navy)
+    }
+
+    .related-explore svg {
+      width: 12px;
+      height: 12px;
+      transition: transform .2s
+    }
+
+    .related-card:hover .related-explore svg {
+      transform: translateX(3px)
+    }
+

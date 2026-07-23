@@ -1,0 +1,59 @@
+/* ═══════════════════════════════════════════════════════════════
+   SECTION-HEADINGS.CSS
+   Shared .section-label / .section-head heading kicker styles, dividers, and scroll-reveal animation.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Section labels & headings ────────────────────────────── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .75rem
+    }
+
+    .section-label span {
+      display: block;
+      width: 18px;
+      height: 1px;
+      background: var(--accent)
+    }
+
+    .section-head {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 600;
+      letter-spacing: -.01em;
+      line-height: 1.1;
+      margin-bottom: .5rem;
+      color: var(--navy)
+    }
+
+    .section-head em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--accent);
+      font-size: 1.05em
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 3rem
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0)
+    }
+

@@ -1,0 +1,20 @@
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER.CSS
+   Site footer.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(29, 45, 68, .02)
+    }
+
+    footer>*:last-child {
+      text-align: right;
+    }
+

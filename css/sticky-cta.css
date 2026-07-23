@@ -1,0 +1,48 @@
+/* ═══════════════════════════════════════════════════════════════
+   STICKY-CTA.CSS
+   Floating sticky WhatsApp CTA button.
+═══════════════════════════════════════════════════════════════ */
+
+    /* ── Sticky WhatsApp CTA ──────────────────────────────────── */
+    .sticky-cta {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 400;
+      background: #25D366;
+      color: #fff;
+      border: none;
+      padding: .45rem .9rem .45rem .7rem;
+      border-radius: 999px;
+      font-family: 'Jost', sans-serif;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      box-shadow: 0 4px 16px rgba(37, 211, 102, .45), 0 2px 6px rgba(0, 0, 0, .15);
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      transition: all .35s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .sticky-cta.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .sticky-cta:hover {
+      background: #1ebe5d;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 24px rgba(37, 211, 102, .55);
+    }
+
+    .sticky-cta svg {
+      width: 15px;
+      height: 15px;
+      fill: #fff;
+      flex-shrink: 0;
+    }
+
