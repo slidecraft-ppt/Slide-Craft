@@ -42,6 +42,20 @@
           if (fallback) fallback.classList.add('visible');
         });
       }
+
+      /* Loading screen background video: fade in once it can actually
+         play. If the file is missing/unsupported it just never gets
+         the .is-ready class, so the loader falls back to its plain
+         background color underneath the overlay — no broken-video UI. */
+      const loaderBgVideo = document.getElementById('loaderBgVideo');
+      if (loaderBgVideo) {
+        loaderBgVideo.addEventListener('canplay', () => {
+          loaderBgVideo.classList.add('is-ready');
+        });
+        loaderBgVideo.addEventListener('error', () => {
+          loaderBgVideo.style.display = 'none';
+        });
+      }
     }
 
     /* ════════════════════════════════════════════════════════════════
@@ -59,6 +73,5 @@
       setTimeout(() => {
         const ls = document.getElementById('loading-screen');
         if (ls) ls.classList.add('hidden');
-      }, 1100);
+      }, 5000);
     });
-

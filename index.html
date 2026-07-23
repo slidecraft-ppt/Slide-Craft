@@ -123,14 +123,23 @@
 
   <!-- ══════════════════════════════════════════════════════
      LOADING SCREEN — branded 1-second intro
+     CUSTOMIZE: Set your own clip as the src on #loaderBgVideo below.
+     Keep it short and small in file size (a few seconds, muted, no
+     audio needed) since it only plays for about a second before the
+     loading screen fades out.
   ══════════════════════════════════════════════════════ -->
   <div id="loading-screen">
-    <img src="images/Website_Logo.png" alt="SlideCraft" class="loader-logo-img" id="loaderLogoImg">
-    <div class="loader-logo loader-logo-fallback">SLIDE<span>CRAFT</span></div>
-    <div class="loader-bar-wrap">
-      <div class="loader-bar"></div>
+    <video id="loaderBgVideo" class="loader-bg-video" src="videos/logo/outro.mp4" autoplay muted loop playsinline></video>
+    <div class="loader-bg-overlay"></div>
+
+    <div class="loader-content">
+      <img src="images/Website_Logo.png" alt="SlideCraft" class="loader-logo-img" id="loaderLogoImg">
+      <div class="loader-logo loader-logo-fallback">SLIDE<span>CRAFT</span></div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar"></div>
+      </div>
+      <div class="loader-tagline">Premium Presentation Studio</div>
     </div>
-    <div class="loader-tagline">Premium Presentation Studio</div>
   </div>
 
   <!-- ── Custom cursor elements (remove to use default cursor) ──── -->
