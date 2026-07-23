@@ -27,6 +27,18 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
+      // On mobile / touch / small-viewport / data-saver / reduced-motion,
+      // downloading and scroll-scrubbing 660 images is unnecessarily heavy
+      // (large data usage, battery drain, and scroll jank on lower-end
+      // devices). Those visitors get a single static frame instead — the
+      // ambient gradient/noise/vignette layers still provide the rest of
+      // the background look.
+      const isSmallViewport = window.matchMedia('(max-width: 768px)').matches;
+      const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isDataSaver = !!(navigator.connection && navigator.connection.saveData);
+      const useLightweightMode = isSmallViewport || isCoarsePointer || prefersReducedMotion || isDataSaver;
+
       const frames = [];
       let loadedCount = 0;
       let currentFrame = 0;
@@ -74,7 +86,26 @@
         });
       }
 
-      // Preload every frame; canvas fades in once the sequence is usable
+      if (useLightweightMode) {
+        // Lightweight path: load frame 1 only, draw once, no scroll redraws.
+        const img = new Image();
+        img.src = framePath(0);
+        img.onload = () => {
+          drawFrame(0);
+          canvas.classList.add('is-ready');
+        };
+        img.onerror = () => {
+          // Missing frame file — silently skip; ambient gradient layers
+          // above the canvas still provide a background either way.
+        };
+        frames.push(img);
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas, { passive: true });
+        return;
+      }
+
+      // Full path (desktop / fine-pointer / no data-saver): preload every
+      // frame; canvas fades in once the sequence is usable.
       for (let i = 0; i < FRAME_COUNT; i++) {
         const img = new Image();
         img.src = framePath(i);

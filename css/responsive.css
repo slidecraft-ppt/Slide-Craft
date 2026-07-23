@@ -6,6 +6,33 @@
     /* ── Mobile ───────────────────────────────────────────────── */
     @media (max-width: 768px) {
 
+      /* Lighter "glass" blur site-wide: backdrop-filter is one of the
+         most expensive effects to repaint on mobile GPUs, especially
+         inside scrolling containers. A cheaper blur here keeps every
+         .liquid-glass-style card smooth without changing the look much. */
+      :root {
+        --liquid-blur: blur(2px) saturate(160%);
+      }
+
+      /* Cheaper ambient-orb blur radius (blur cost grows roughly with
+         the square of the radius, so this meaningfully reduces paint
+         cost on lower-end phones while keeping the same soft-glow look) */
+      .ambient-orb {
+        filter: blur(46px);
+      }
+
+      .hero-glow {
+        filter: blur(40px);
+      }
+
+      /* Prevent iOS Safari's automatic zoom-in when a form field with
+         font-size under 16px receives focus */
+      .contact-form input,
+      .contact-form select,
+      .contact-form textarea {
+        font-size: 16px;
+      }
+
       /* Hide custom cursor on touch devices */
       #cursor, #cursor-ring {
         display: none;
@@ -153,7 +180,7 @@
         margin: 0 0;
       }
 
-      section[style*="padding:4rem 3rem"] {
+      .cta-section-wrap {
         padding: 2rem 1.25rem !important;
       }
 

@@ -64,7 +64,7 @@
 
       const cards = related.map(r => {
         const thumbEl = r.thumbnail
-          ? `<img class="related-thumb-img" src="${r.thumbnail}" alt="${r.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+          ? `<img class="related-thumb-img" src="${r.thumbnail}" alt="${r.title}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
           : '';
         return `
     <div class="related-card" onclick="openProject(${JSON.stringify(r).replace(/"/g, '&quot;')})">

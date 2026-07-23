@@ -31,7 +31,7 @@
 
         // ── Static thumbnail HTML ──
         const thumbImg = p.thumbnail
-          ? `<img class="card-image" src="${p.thumbnail}" alt="${p.title}" onerror="this.style.display='none'">`
+          ? `<img class="card-image" src="${p.thumbnail}" alt="${p.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">`
           : '';
 
         // ── Hover-preview video HTML (only if project.video is set) ──

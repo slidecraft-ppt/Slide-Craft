@@ -10,11 +10,11 @@
 
       background:
         radial-gradient(circle at top right,
-          rgba(10, 10, 10, 0.12),
+          rgba(255, 153, 0, .12),
           transparent 40%),
         linear-gradient(135deg,
-          #0f172a42,
-          #11182767);
+          #0f172a,
+          #111827);
 
       border-radius: 32px;
 
@@ -26,7 +26,7 @@
     }
 
     .arduino-section h2 {
-      color: rgb(255, 238, 81);
+      color: white;
     }
 
     .arduino-wrapper {
@@ -43,8 +43,8 @@
     }
 
     .arduino-section .pricing-card.featured {
-      background: linear-gradient(135deg, rgba(218, 214, 209, 0.28) 0%, rgba(255, 255, 255, .08) 45%, rgba(255, 149, 0, .1) 100%);
-      border-color: rgba(245, 245, 244, 0.5);
+      background: linear-gradient(135deg, rgba(255, 149, 0, .28) 0%, rgba(255, 255, 255, .08) 45%, rgba(255, 149, 0, .1) 100%);
+      border-color: rgba(255, 149, 0, .5);
     }
 
     .arduino-section .pricing-card:not(.featured):hover {
@@ -71,7 +71,7 @@
     }
 
     .arduino-section .pricing-card:not(.featured) .pricing-check {
-      color: #111111;
+      color: #ffb74d;
     }
 
     .arduino-section .pricing-card:not(.featured) .pricing-cta {
@@ -81,7 +81,7 @@
 
     .arduino-section .pricing-card:not(.featured) .pricing-cta:hover {
       background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.279);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .arduino-section .pricing-card.featured .pricing-price {

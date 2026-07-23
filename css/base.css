@@ -24,6 +24,9 @@
       overflow-x: hidden;
       cursor: none;
       /* custom cursor is rendered via JS below */
+      /* Removes the gray flash Android/iOS show on tap; buttons/links
+         already have their own hover/active states for feedback */
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* ── Custom cursor ─────────────────────────────────────────
@@ -54,14 +57,14 @@
       transition: transform .12s ease, width .25s, height .25s, opacity .25s
     }
 
-    body:has(a:hover, button:hover, [onclick]:hover, label:hover) #cursor {
+    body:has(a:hover, button:hover, [data-action]:hover, label:hover) #cursor {
       width: 32px;
       height: 32px;
       background: rgba(192, 57, 43, 0.12);
       border: 1px solid rgba(192, 57, 43, 0.5)
     }
 
-    body:has(a:hover, button:hover, [onclick]:hover, label:hover) #cursor-ring {
+    body:has(a:hover, button:hover, [data-action]:hover, label:hover) #cursor-ring {
       opacity: 0
     }
 
@@ -207,6 +210,16 @@
 
       100% {
         transform: translate(40px, 30px) scale(1.08)
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ambient-orb {
+        animation: none;
+      }
+
+      html {
+        scroll-behavior: auto;
       }
     }
 
