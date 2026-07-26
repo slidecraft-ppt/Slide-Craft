@@ -28,27 +28,27 @@
        showcase    — array of media items for the project page slider.
                      ─────────────────────────────────────────────────
                      Each item can be:
-                       • A string path to an IMAGE: 'images/foo.png'
+                       • A string path to an IMAGE: 'images/foo.webp'
                        • An OBJECT for a VIDEO:
                          {
                            type: 'video',
                            src:  'videos/foo.mp4',
-                           poster: 'images/foo-poster.jpg'  ← optional
+                           poster: 'images/foo-poster.webp'  ← optional
                          }
                      ─────────────────────────────────────────────────
                      Mix images and videos freely in the array.
                      Example:
                        showcase: [
-                         'images/slide1.png',
-                         { type:'video', src:'videos/demo.mp4', poster:'images/poster.jpg' },
-                         'images/slide3.png',
+                         'images/slide1.webp',
+                         { type:'video', src:'videos/demo.mp4', poster:'images/poster.webp' },
+                         'images/slide3.webp',
                        ]
     ════════════════════════════════════════════════════════════════ */
     const PROJECTS = [
       {
         id: 'PPT',
         title: 'College Presentations',
-        thumbnail: 'images/PPT.png',
+        thumbnail: 'images/PPT.webp',
         // CUSTOMIZE: Add a hover-preview video for this card:
         // video: 'videos/ppt-preview.mp4',
         video: '',
@@ -62,21 +62,21 @@
         // CUSTOMIZE: Add images and/or videos to the slider below.
         // Mix types freely — images shown as <img>, videos as <video>.
         showcase: [
-          //'images/PPT.png',
+          //'images/PPT.webp',
           // Example video slide — uncomment and set your path:
-          // { type: 'video', src: 'videos/ppt-showcase.mp4', poster: 'images/PPT.png' },
-          { type: 'video', src: 'videos/PPT/ParkinngGate.mp4', poster: 'images/PPT/ParkinngGate.png' },
-          { type: 'video', src: 'videos/PPT/macOStemplate.mp4', poster: 'images/PPT/macOS.png' },
-          { type: 'video', src: 'videos/PPT/LiquidGlassV2.0.mp4', poster: 'images/PPT/LQGLV2.png' },
-          { type: 'video', src: 'videos/PPT/LaserSecuritySystem.mp4', poster: 'images/PPT/LaserSecuritySystem.png' },
-          { type: 'video', src: 'videos/PPT/wockhart.mp4', poster: 'images/PPT/wockhart.png' },
-          { type: 'video', src: 'videos/PPT/Chandrayan.mp4', poster: 'images/PPT/Chandrayan.png' },
+          // { type: 'video', src: 'videos/ppt-showcase.mp4', poster: 'images/PPT.webp' },
+          { type: 'video', src: 'videos/PPT/ParkinngGate.mp4', poster: 'images/PPT/ParkinngGate.webp' },
+          { type: 'video', src: 'videos/PPT/macOStemplate.mp4', poster: 'images/PPT/macOS.webp' },
+          { type: 'video', src: 'videos/PPT/LiquidGlassV2.0.mp4', poster: 'images/PPT/LQGLV2.webp' },
+          { type: 'video', src: 'videos/PPT/LaserSecuritySystem.mp4', poster: 'images/PPT/LaserSecuritySystem.webp' },
+          { type: 'video', src: 'videos/PPT/wockhart.mp4', poster: 'images/PPT/wockhart.webp' },
+          { type: 'video', src: 'videos/PPT/Chandrayan.mp4', poster: 'images/PPT/Chandrayan.webp' },
         ]
       },
       {
         id: 'Tech Service',
         title: 'Arduino Projects',
-        thumbnail: 'images/Arduino.png',
+        thumbnail: 'images/Arduino.webp',
         // CUSTOMIZE: Add a hover video for this card:
         // video: 'videos/arduino-preview.mp4',
         video: '',
@@ -88,19 +88,19 @@
         deliverables: ['Circuit diagrams', 'Arduino source code', 'Project documentation', 'Component list'],
         features: ['Circuit design', 'Embedded coding', 'Sensor integration', 'Hardware prototyping'],
         showcase: [
-          'images/Arduino.png',
-          'images/Arduino/RFID3.jpg',
-          'images/Arduino/RFID.png',
-          'images/Arduino/RFID1.jpg',
-          'images/Arduino/FSG.jpeg',
-          'images/Arduino/FOOTSTEPGEN.png',
-          'images/Arduino/Picture1.jpg',
+          'images/Arduino.webp',
+          'images/Arduino/RFID3.webp',
+          'images/Arduino/RFID.webp',
+          'images/Arduino/RFID1.webp',
+          'images/Arduino/FSG.webp',
+          'images/Arduino/FOOTSTEPGEN.webp',
+          'images/Arduino/Picture1.webp',
         ]
       },
       {
         id: 'Design Service',
         title: 'Website Design',
-        thumbnail: 'images/Site.png',
+        thumbnail: 'images/Site.webp',
         // CUSTOMIZE: Add a hover video for this card:
         // video: 'videos/fest-preview.mp4',
         video: '',
@@ -112,16 +112,16 @@
         deliverables: ['Complete website UI', 'Responsive HTML/CSS', 'Optimized assets', 'Deployment-ready files'],
         features: ['Smooth animations', 'Custom sections', 'SEO-friendly structure', 'Fast-loading pages'],
         showcase: [
-          'images/Site.png',
+          'images/Site.webp',
           // CUSTOMIZE: Replace with a real video slide:
-          { type: 'video', src: 'videos/Website/Slidecraft.mp4', poster: 'images/Site.png' },
+          { type: 'video', src: 'videos/Website/Slidecraft.mp4', poster: 'images/Site.webp' },
 
         ]
       },
       {
         id: 'Academic',
         title: 'Final Year Project Report',
-        thumbnail: 'images/Report.png',
+        thumbnail: 'images/Report.webp',
         video: '',
         tagline: 'Professional Reports, Clearly Delivered.',
         category: 'Academics',
@@ -131,38 +131,38 @@
         deliverables: ['Formatted report PDF', 'Editable DOCX file', 'Charts & tables', 'Print-ready layout'],
         features: ['Structured formatting', 'Clean typography', 'Charts & tables', 'Professional documentation'],
         showcase: [
-          'images/Report.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-01.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-02.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-03.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-04.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-05.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-06.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-07.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-08.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-09.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-10.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-11.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-12.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-13.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-14.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-15.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-16.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-17.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-18.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-19.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-20.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-21.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-22.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-23.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-24.png',
-          'images/RFID_Attendance_Report/RFID_Attendance_Report-25.png',
+          'images/Report.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-01.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-02.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-03.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-04.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-05.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-06.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-07.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-08.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-09.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-10.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-11.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-12.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-13.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-14.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-15.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-16.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-17.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-18.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-19.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-20.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-21.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-22.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-23.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-24.webp',
+          'images/RFID_Attendance_Report/RFID_Attendance_Report-25.webp',
         ]
       },
       {
         id: 'Design Service',
         title: 'Restaurant Menu Card',
-        thumbnail: 'images/Menu.png',
+        thumbnail: 'images/Menu.webp',
         video: '',
         tagline: 'Menus Crafted to Tempt at First Glance.',
         category: 'Design',
@@ -172,17 +172,17 @@
         deliverables: ['Menu card layouts', 'Print-ready PDF', 'Editable design source', 'Digital menu version'],
         features: ['Premium layouts', 'Food showcase sections', 'Elegant typography', 'Restaurant branding'],
         showcase: [
-          'images/menu1.png',
-          'images/menu2.png',
-          'images/menu3.png',
-          'images/menu4.png',
-          'images/menu5.png',
+          'images/menu1.webp',
+          'images/menu2.webp',
+          'images/menu3.webp',
+          'images/menu4.webp',
+          'images/menu5.webp',
         ]
       },
       {
         id: 'Branding',
         title: 'Startup Logo & Brand Identity',
-        thumbnail: 'images/Logo.png',
+        thumbnail: 'images/Logo.webp',
         video: '',
         tagline: 'Brands Built to Lead.',
         category: 'Branding',
@@ -193,11 +193,11 @@
         features: ['Custom logo concepts', 'Minimal brand marks', 'Color palette selection', 'Scalable vector design', 'Typography system', 'Social media assets', 'Complete visual identity'],
         showcase: [
 
-          'images/LOGO/Logo1.png',
-          { type: 'video', src: 'videos/logo/outro.mp4', poster: 'images/LOGO/Logo1.png' },
-          'images/LOGO/Tanwar Construction01.jpg',
-          'images/LOGO/Tanwar Construction13.jpg',
-          'images/LOGO/Tanwar Construction10.jpg',
+          'images/LOGO/Logo1.webp',
+          { type: 'video', src: 'videos/logo/outro.mp4', poster: 'images/LOGO/Logo1.webp' },
+          'images/LOGO/Tanwar Construction01.webp',
+          'images/LOGO/Tanwar Construction13.webp',
+          'images/LOGO/Tanwar Construction10.webp',
         ]
       },
     ];

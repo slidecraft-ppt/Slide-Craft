@@ -27,7 +27,7 @@
       prefix: 'frame_',
       count: 660,                           // CUSTOMIZE: total desktop frames
       pad: 3,                               // frame_001.jpg → 3 digits
-      ext: '.jpg'
+      ext: '.webp'
     };
 
     const FRAME_CONFIG_MOBILE = {
@@ -35,7 +35,7 @@
       prefix: 'frame_',
       count: 655,                             // CUSTOMIZE: total mobile frames (fewer than desktop)
       pad: 3,                                 // frame_001.jpg → 3 digits
-      ext: '.jpg'
+      ext: '.webp'
     };
 
     // Viewport width below which the mobile frame set is used instead of desktop's.
