@@ -6,9 +6,9 @@
     /* ── Navigation ───────────────────────────────────────────── */
     nav {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 10px;
+      left: 1.5rem;
+      right: 1.5rem;
       z-index: 500;
       padding: 0.5rem 3rem;
       display: grid;
@@ -17,7 +17,9 @@
       background: rgba(245, 237, 224, 0.8);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow: 0 4px 24px rgba(29, 45, 68, .08);
       transition: all .3s ease;
     }
 

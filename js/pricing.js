@@ -27,8 +27,11 @@
         ).join('')}
       </ul>
 
-      <button class="pricing-cta" onclick="openWA('pricing-${p.tier.replace(/\s+/g, '-').toLowerCase()}')">
-        Get Started →
+      <button class="cta-learnmore" onclick="openWA('pricing-${p.tier.replace(/\s+/g, '-').toLowerCase()}')">
+        <span class="circle" aria-hidden="true">
+          <span class="icon arrow"></span>
+        </span>
+        <span class="button-text">Get Started</span>
       </button>
     `;
 

@@ -44,6 +44,9 @@
 
       /* Navigation */
       nav {
+        top: 8px;
+        left: .75rem;
+        right: .75rem;
         padding: .6rem 1.25rem;
         grid-template-columns: 1fr auto;
       }
