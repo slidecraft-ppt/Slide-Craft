@@ -12,7 +12,7 @@
         const el = document.createElement('div');
         el.className = 'why-card reveal';
         el.innerHTML = `
-      <div class="why-icon">${w.icon}</div>
+    
       <div class="why-title">${w.title}</div>
       <div class="why-desc">${w.desc}</div>`;
         grid.appendChild(el);

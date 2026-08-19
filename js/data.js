@@ -207,12 +207,12 @@
        CUSTOMIZE: Edit these 6 cards to describe your strengths.
     ════════════════════════════════════════════════════════════════ */
     const WHY_CARDS = [
-      { icon: '✦', title: 'Strategic Clarity', desc: 'Every slide has a purpose. We structure your story for maximum impact and comprehension.' },
-      { icon: '◈', title: 'Refined Aesthetics', desc: 'Beautiful, intentional design that reflects the quality of your brand and thinking.' },
-      { icon: '◎', title: 'Fast Turnaround', desc: 'Professional results delivered within 48 hours without sacrificing an ounce of quality.' },
-      { icon: '◇', title: 'Unlimited Revisions', desc: 'We iterate until every detail is precisely right. Your satisfaction is our benchmark.' },
-      { icon: '▣', title: 'Bespoke for You', desc: 'No templates. Every deck is designed from scratch, tailored to your unique goals.' },
-      { icon: '⬡', title: 'Ongoing Support', desc: 'Post-delivery guidance and editable source files so you can adapt decks with ease.' },
+      {  title: 'Strategic Clarity', desc: 'Every slide has a purpose. We structure your story for maximum impact and comprehension.' },
+      {  title: 'Refined Aesthetics', desc: 'Beautiful, intentional design that reflects the quality of your brand and thinking.' },
+      {  title: 'Fast Turnaround', desc: 'Professional results delivered within 48 hours without sacrificing an ounce of quality.' },
+      {  title: 'Unlimited Revisions', desc: 'We iterate until every detail is precisely right. Your satisfaction is our benchmark.' },
+      {  title: 'Bespoke for You', desc: 'No templates. Every deck is designed from scratch, tailored to your unique goals.' },
+      {  title: 'Ongoing Support', desc: 'Post-delivery guidance and editable source files so you can adapt decks with ease.' },
     ];
 
     /* ════════════════════════════════════════════════════════════════

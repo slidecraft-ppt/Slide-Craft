@@ -33,18 +33,7 @@
       box-shadow: var(--liquid-shadow), 0 10px 30px rgba(29, 45, 68, .1)
     }
 
-    .why-icon {
-      width: 40px;
-      height: 40px;
-      background: rgba(192, 57, 43, .08);
-      border: 1px solid rgba(192, 57, 43, .15);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      font-size: 1.1rem
-    }
+
 
     .why-title {
       font-family: 'Cormorant Garamond', serif;
