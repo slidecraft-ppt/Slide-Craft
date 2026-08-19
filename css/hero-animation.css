@@ -1,0 +1,158 @@
+/* ============================================================================
+   HERO SCROLL ANIMATION — icon fountain + title shrink + navbar fly-in
+   Merged from the standalone drop-in build into the real site's markup.
+   Loaded AFTER hero.css (adds to it, doesn't fight it) and BEFORE
+   responsive.css (so your existing mobile breakpoints there still get the
+   final say if you ever need to override anything here).
+
+   FIXED (this pass):
+   #hero-title-group previously sat in normal flex flow inside #hero-inner
+   and was animated with `transform: translateY(var(--ty))`. Because #hero-
+   inner is flex-centered and only a few px of offset were configured, this
+   LOOKED fine in isolation, but combined with the pin + real page scroll it
+   was sliding the title straight off the top edge of the pinned viewport
+   instead of staying anchored on screen.
+
+   #hero-title-group is now a DIRECT CHILD of #hero-viewport (see index.html)
+   and absolutely positioned against it, anchored with `top: var(--ty)` as a
+   PERCENTAGE of the viewport height (not a px offset). It starts low
+   ("fixed on the bottom") and eases to a slightly higher resting spot while
+   scaling down — driven by the exact same scroll progress (iconProgress)
+   that drives the icon fountain and, indirectly, the background-frame
+   scrub — so all three move together.
+   ============================================================================ */
+
+/* --------------------------------------------------------------------------
+   PIN WRAPPER
+   #hero-pin-wrap is the element GSAP ScrollTrigger pins in place while the
+   icon animation plays out. Its height is set dynamically in JS (from
+   HERO_ANIMATION_CONFIG) so it always matches how much scroll distance the
+   gated sequence should consume.
+   -------------------------------------------------------------------------- */
+#hero-pin-wrap {
+  position: relative;
+  width: 100%;
+}
+
+/* #hero-viewport reuses your existing .hero section (background, glow,
+   padding — all untouched) and just adds the sizing/clipping this effect
+   needs. .hero was already position:relative (for the .hero-glow orbs and
+   now also for #hero-title-group's absolute anchoring below). */
+#hero-viewport {
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   HERO ICONS
+   Positioned via CSS custom properties updated every scroll frame in JS.
+   left/top carry the viewport-relative percentage; transform re-centers the
+   box on that point and applies scale/rotate. Each icon is a fully
+   independent element.
+   ========================================================================== */
+.hero-icon {
+  position: absolute;
+  /* --x / --y are percentages of #hero-viewport, --s is scale, --r is
+     rotation in degrees, --o is opacity. All set from JS. */
+  --x: 50%;
+  --y: 50%;
+  --s: 0;
+  --r: 0deg;
+  --o: 0;
+  left: var(--x);
+  top: var(--y);
+  /* "ICON SIZE" (base) — the box every icon scales from. end.scale in
+     iconConfig (JS) multiplies THIS number. */
+  width: 110px;
+  height: 110px;
+  transform: translate(-50%, -50%) scale(var(--s)) rotate(var(--r));
+  opacity: var(--o);
+  z-index: 6;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.hero-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .18));
+}
+
+/* ==========================================================================
+   TITLE GROUP (badge + h1 + divider)
+   FIXED: now absolutely positioned against #hero-viewport (its nearest
+   positioned ancestor) instead of living in #hero-inner's flex flow. --ty is
+   a PERCENTAGE (of viewport height, e.g. "82%") set from JS each frame, so
+   the group starts anchored near the bottom of the pinned screen and only
+   drifts up slightly (to its configured resting spot) while it shrinks via
+   --ts — it never scrolls/translates fully off-screen because it's always
+   re-centered by `top: var(--ty)` rather than accumulating a translateY
+   offset.
+   ========================================================================== */
+#hero-title-group {
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+  width: min(900px, 90%);
+  text-align: center;
+  --ty: 82%;  /* set from JS: vertical anchor as % of viewport height */
+  --ts: 1;    /* set from JS: scale */
+  top: var(--ty);
+  opacity: 1; /* set from JS: fades out once the icon stage finishes,
+                 before #hero-info-group fades in underneath it */
+  transform: translate(-50%, -50%) scale(var(--ts));
+  transform-origin: center center;
+  will-change: transform, top, opacity;
+}
+
+/* ==========================================================================
+   INFO GROUP (description / CTAs / stats)
+   Hidden until the icon stage finishes, then fades in. #hero-inner now wraps
+   ONLY this group (title-group was pulled out to be a sibling above), so it
+   keeps its own centered flex layout from hero.css untouched.
+   ========================================================================== */
+#hero-info-group {
+  opacity: 0; /* faded in after the icon stage — see JS */
+  will-change: opacity;
+  position: relative;
+  z-index: 5;
+}
+
+/* ==========================================================================
+   NAVBAR FLY-IN
+   #navbar is fixed-positioned by navigation.css already (top/left/right,
+   border-radius pill, blur, etc.) — this rule only adds will-change so the
+   GSAP-driven transform/opacity (set inline via gsap.set() in JS) animates
+   smoothly. JS sets the actual translateY/opacity values.
+   ========================================================================== */
+#navbar {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-icon { display: none; }
+  #hero-title-group {
+    top: 50% !important;
+    --ts: 1 !important;
+    opacity: 1 !important;
+  }
+  #hero-info-group { opacity: 1 !important; }
+  #navbar {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: keep the title comfortably clear of the bottom edge/notch area and
+   don't let it get too wide. responsive.css loads AFTER this file so it can
+   still override anything here if you need device-specific tweaks.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  #hero-title-group {
+    width: 92%;
+  }
+}

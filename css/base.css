@@ -23,6 +23,7 @@
       color: var(--text);
       overflow-x: hidden;
       cursor: none;
+      overflow-anchor: none;
       /* custom cursor is rendered via JS below */
       /* Removes the gray flash Android/iOS show on tap; buttons/links
          already have their own hover/active states for feedback */
@@ -258,6 +259,17 @@
 
 
     /* ── View system ──────────────────────────────────────────── */
+    /* FIXED: this used to also animate `transform: translateY(...)`.
+       A `transform` on ANY ancestor of a pinned element creates a new CSS
+       containing block, which silently turns `position: fixed` pins
+       (used by GSAP ScrollTrigger for the hero icon/title animation)
+       into something that behaves like `position: absolute` relative to
+       this element instead of the real viewport. Since #hero-pin-wrap
+       lives inside #view-home (a `.view`), that transform was the reason
+       the pinned hero never actually held still on screen — the title,
+       icons, and navbar fly-in scrolled away with the page instead of
+       staying pinned while they animated. Kept the opacity fade, dropped
+       the translateY so `.view` never has a transform. */
     .view {
       display: none;
       min-height: 100vh;
@@ -265,8 +277,7 @@
       position: relative;
       z-index: 2;
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity .5s ease, transform .5s ease
+      transition: opacity .5s ease
     }
 
     .view.active {
@@ -274,7 +285,6 @@
     }
 
     .view.visible {
-      opacity: 1;
-      transform: translateY(0)
+      opacity: 1
     }
 

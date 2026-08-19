@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════
    LOADING-SCREEN.CSS
-   Branded loading screen shown for about 1s on first paint.
+   Branded loading screen shown briefly on first paint (static logo +
+   progress bar only — no background video; see js/main.js for the
+   3-second auto-hide timer).
 ═══════════════════════════════════════════════════════════════ */
 
     /* ══════════════════════════════════════════════════════
@@ -21,25 +23,9 @@
       pointer-events: none;
     }
 
-    /* Full-bleed background video, sits behind the overlay + logo */
-    .loader-bg-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity .6s ease;
-    }
-
-    .loader-bg-video.is-ready {
-      opacity: 1;
-    }
-
-    /* Tints/dims the video so the logo and tagline stay readable on
-       top of it. CUSTOMIZE: adjust this color/opacity to match your
-       clip's brightness. */
+    /* Subtle tint layer, kept in case you want to drop a background
+       image/gradient behind the logo later. CUSTOMIZE: adjust this
+       color/opacity if you add one. */
     .loader-bg-overlay {
       position: absolute;
       inset: 0;
@@ -48,7 +34,7 @@
       z-index: 1;
     }
 
-    /* Centered logo/tagline stack, layered above the video + overlay */
+    /* Centered logo/tagline stack, layered above the overlay */
     .loader-content {
       position: relative;
       z-index: 2;
@@ -58,12 +44,6 @@
       align-items: center;
       justify-content: center;
       gap: 1.5rem;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .loader-bg-video {
-        display: none;
-      }
     }
 
     .loader-logo {

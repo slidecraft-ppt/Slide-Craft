@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SlideCraft — Hero Scroll Animation (drop-in build)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--
+  ============================================================================
+  HOW TO MERGE THIS INTO THE REAL SLIDECRAFT SITE
+  ============================================================================
+  I don't have your actual repo files (only the live rendered page + the
+  reference video), so this is a self-contained, drop-in build rather than a
+  direct patch to your real HTML/CSS/JS. It reproduces your real hero content
+  (title, description, CTAs, stats) and navbar (Portfolio / Why Us / Pricing /
+  Reviews / FAQ / Contact / Order Now) using the same text/structure your live
+  site has, so you can:
+
+    1. Copy the markup inside <body> between HERO START / HERO END below into
+       your existing hero section — replacing only the hero markup, keeping
+       everything below it (Portfolio, Why SlideCraft, Pricing, Reviews, FAQ,
+       Contact, Footer) exactly as-is.
+    2. Copy the CSS inside <style id="hero-anim-styles"> into your stylesheet
+       (or keep it as a separate hero-animation.css).
+    3. Copy the JS inside <script id="hero-anim-script"> into your JS file
+       (or keep it separate) and make sure GSAP + ScrollTrigger are loaded
+       before it (CDN links are in <head> below).
+    4. Search for every "USER ICON" and "USER ASSET" comment and swap in your
+       real files/paths.
+
+  If your real markup uses different class names for the navbar/title/stats,
+  just rename the selectors at the top of the JS (search for "SELECTORS").
+  ============================================================================
+-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style id="hero-anim-styles">
+  /* ==========================================================================
+     RESET / PAGE (demo scaffolding only — remove if merging into real site)
+     ========================================================================== */
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background:#fff; }
+  .page-filler { padding: 80px 24px; max-width: 900px; margin: 0 auto; color:#333; }
+  .page-filler h2 { font-size: 28px; }
+
+  /* ==========================================================================
+     HERO PIN WRAPPER
+     This is the element GSAP ScrollTrigger pins in place while the icon
+     animation + navbar entrance play out. Its height determines how much
+     scroll distance the whole gated sequence consumes.
+     ========================================================================== */
+  #hero-pin-wrap {
+    position: relative;
+    width: 100%;
+    /* height is set dynamically in JS from HERO_ANIMATION_CONFIG so it always
+       matches iconStageHeight + heroExitDistance in viewport-heights */
+  }
+
+  #hero-viewport {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(180deg, #efe9de 0%, #d9e6f2 100%);
+  }
+
+  /* --------------------------------------------------------------------------
+     Existing decorative hero background (the abstract 3D shapes seen in the
+     reference video before the transition). Kept as a plain layer — swap for
+     your real existing hero background image/graphic here.
+     -------------------------------------------------------------------------- */
+  #hero-decorative-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, #cfe8e0 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, #f3e9c9 0%, transparent 35%),
+                radial-gradient(circle at 70% 80%, #cdd7f2 0%, transparent 40%);
+    opacity: 1;
+  }
+
+  /* ==========================================================================
+     >>> FUTURE BACKGROUND FRAME SEQUENCE <<<
+     Placeholder canvas only. Do not wire real frames into this yet — see the
+     FRAME SEQUENCE section in the JS for where those get connected later.
+     This layer stays invisible/inert until the navbar-entrance stage begins
+     (see BACKGROUND = SCROLL CONTROLLED comment in JS).
+     ========================================================================== */
+  #hero-background-frames {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* becomes scroll-controlled only after navbar entrance */
+    pointer-events: none;
+  }
+
+  /* --------------------------------------------------------------------------
+     HERO TITLE GROUP (eyebrow + title)
+     Starts at full size near the BOTTOM of the viewport. Driven every frame
+     by updateTitle() during Phase A (same iconProgress that drives the
+     fountain) — shrinks to 30% scale and settles a little below the vertical
+     middle of the screen, in step with the icons spreading out.
+     Positioned via top/left % + translate(-50%,-50%) so JS only ever has to
+     set one transform (see --ty / --ts custom properties below).
+     -------------------------------------------------------------------------- */
+  #hero-title-group {
+    position: absolute;
+    left: 50%;
+    z-index: 5;
+    text-align: center;
+    padding: 0 24px;
+    --ty: 88%;   /* set from JS: vertical position as % of viewport height */
+    --ts: 1;     /* set from JS: scale */
+    top: var(--ty);
+    transform: translate(-50%, -50%) scale(var(--ts));
+    will-change: transform;
+  }
+
+  /* "TEXT SIZE" (small label above the title) */
+  .hero-eyebrow { color:#6b6b6b; letter-spacing:.08em; font-size:13px; text-transform:uppercase; margin-bottom:18px; }
+
+  /* "TEXT SIZE" (main headline) — clamp(min, preferred, max): never smaller
+     than 40px, never bigger than 84px, scales with viewport width (6vw)
+     in between. This is the size BEFORE the scroll-driven shrink (JS
+     titleStartScale/titleEndScale above multiply on top of this). */
+  .hero-title { font-size: clamp(40px, 6vw, 84px); line-height: 1.05; margin: 0; font-weight: 600; }
+  .hero-title .line-1 { display:block; color:#fff; text-shadow: 0 1px 2px rgba(0,0,0,.15); }
+  /* "TEXT SIZE" (script line) — sized smaller than line-1 on purpose:
+     "Command Attention" is ~1.6x more characters than "Slides That", so at
+     the SAME font-size it was wider than the viewport and wrapped onto a
+     3rd line. This clamp + white-space:nowrap keeps it on one line; if you
+     lengthen/shorten this text, adjust the clamp numbers to match. */
+  .hero-title .line-2 {
+    display:block;
+    font-family: "Segoe Script", cursive, sans-serif;
+    color:#111;
+    font-size: clamp(26px, 4.4vw, 54px);
+    white-space: nowrap;
+  }
+
+  /* --------------------------------------------------------------------------
+     HERO INFO GROUP (description / CTAs / stats)
+     Sits below the title group's resting spot. Hidden until Phase B, when it
+     fades in alongside the navbar entrance.
+     -------------------------------------------------------------------------- */
+  #hero-info-group {
+    position: absolute;
+    left: 50%;
+    top: 68%;
+    transform: translate(-50%, 0);
+    z-index: 5;
+    text-align: center;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0; /* faded in only after the navbar-entrance stage — see JS */
+  }
+
+  .hero-description {
+    max-width: 620px;
+    color: #4a4a4a;
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 0 0 28px;
+  }
+
+  .hero-ctas { display:flex; gap:14px; margin-bottom: 40px; }
+  .btn-primary, .btn-secondary { padding: 14px 26px; border-radius: 999px; font-size:15px; border:1px solid #222; cursor:pointer; }
+  .btn-primary { background:#1a1a1a; color:#fff; }
+  .btn-secondary { background:transparent; color:#1a1a1a; }
+
+  .hero-stats { display:flex; gap:48px; }
+  .hero-stat b { display:block; font-size:22px; }
+  .hero-stat span { display:block; font-size:12px; color:#666; text-transform:uppercase; letter-spacing:.05em; }
+
+  /* --------------------------------------------------------------------------
+     NAVBAR — reused existing navbar, animated in only after icon stage ends.
+     Starts translated above the viewport + transparent (Section 13).
+     -------------------------------------------------------------------------- */
+  #site-navbar {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translate(-50%, -140%);
+    opacity: 0;
+    z-index: 20;
+    width: min(1200px, 92%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    padding: 14px 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+  }
+  #site-navbar .logo { font-weight: 700; }
+  #site-navbar nav { display:flex; gap: 22px; font-size: 14px; }
+  #site-navbar .order-now { background:#1a1a1a; color:#fff; padding:10px 18px; border-radius:999px; font-size:14px; }
+
+  /* ==========================================================================
+     HERO ICONS
+     Positioned via CSS custom properties updated every scroll frame in JS.
+     left/top carry the real viewport-relative percentage (same pattern as
+     #hero-title-group); transform only re-centers the box on that point
+     (-50%,-50%, which IS supposed to be relative to the element itself) and
+     applies scale/rotate. Each icon is a fully independent element (Section 4).
+     ========================================================================== */
+  .hero-icon {
+    position: absolute;
+    /* --x / --y are percentages of the hero viewport, --s is scale,
+       --r is rotation in degrees, --o is opacity. All set from JS. */
+    --x: 50%;
+    --y: 50%;
+    --s: 0;
+    --r: 0deg;
+    --o: 0;
+    left: var(--x);
+    top: var(--y);
+    /* "ICON SIZE" (base) — the box every icon scales from. end.scale in
+       iconConfig (JS) multiplies THIS number, so raise/lower it to change
+       every icon's overall size at once, or edit end.scale per-icon to
+       make just one bigger/smaller. */
+    width: 130px;
+    height: 130px;
+    transform: translate(-50%, -50%)
+               scale(var(--s))
+               rotate(var(--r));
+    opacity: var(--o);
+    z-index: 10;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .hero-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,.18));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-icon { display: none; }
+    #hero-title-group { --ty: 56% !important; --ts: 0.3 !important; }
+    #hero-info-group { opacity: 1 !important; }
+    #site-navbar { transform: translate(-50%, 0) !important; opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================== HERO START ============================== -->
+<div id="hero-pin-wrap">
+  <div id="hero-viewport">
+
+    <div id="hero-decorative-bg"></div>
+
+    <!--
+      >>> FUTURE BACKGROUND FRAME SEQUENCE <<<
+      Leave this canvas empty for now. See "BACKGROUND FRAME SEQUENCE" in the
+      JS for where the real frame images get connected later.
+    -->
+    <canvas id="hero-background-frames"></canvas>
+
+    <!-- Reused existing navbar — do not duplicate elsewhere on the page -->
+    <header id="site-navbar">
+      <div class="logo">SlideCraft</div>
+      <nav>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="order-now" href="#order">Order Now</a>
+    </header>
+
+    <!-- Reused existing hero title — split into spans (Section 15). Starts at
+         full size near the bottom of the viewport, shrinks to 30% and settles
+         a little below mid-screen as the icons fountain out (driven by
+         updateTitle() in the JS, same iconProgress as the icons). -->
+    <div id="hero-title-group">
+      <div class="hero-eyebrow">Premium Presentation Studio</div>
+      <h1 class="hero-title">
+        <span class="line-1">Slides That</span>
+        <span class="line-2">Command Attention</span>
+      </h1>
+    </div>
+
+    <!-- Reused existing description / CTAs / stats — fades in during Phase B,
+         once the title has finished shrinking and the icons have landed. -->
+    <div id="hero-info-group">
+      <p class="hero-description">
+        Bespoke presentation design crafted with precision and intentionality.
+        We transform your ideas into visual stories that leave a lasting impression.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-primary">Start Your Project →</button>
+        <button class="btn-secondary">View Portfolio</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>240+</b><span>Projects Delivered</span></div>
+        <div class="hero-stat"><b>98%</b><span>Client Satisfaction</span></div>
+        <div class="hero-stat"><b>4.7★</b><span>Average Rating</span></div>
+        <div class="hero-stat"><b>48h</b><span>Delivery Time</span></div>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         SLIDECRAFT HERO ICONS
+         Five independent elements (Section 4). Positions are driven
+         entirely by JS (see iconConfig) — do not hand-place these.
+         ===================================================== -->
+    <div class="hero-icon" id="icon-canva"><img id="icon-canva-img" alt="Canva"></div>
+    <div class="hero-icon" id="icon-figma"><img id="icon-figma-img" alt="Figma"></div>
+    <div class="hero-icon" id="icon-powerpoint"><img id="icon-powerpoint-img" alt="PowerPoint"></div>
+    <div class="hero-icon" id="icon-arduino"><img id="icon-arduino-img" alt="Arduino"></div>
+    <div class="hero-icon" id="icon-word"><img id="icon-word-img" alt="Microsoft Word"></div>
+
+  </div>
+</div>
+<!-- =============================== HERO END ================================ -->
+
+<!-- Demo-only filler so you can actually scroll this preview. Remove when merging. -->
+<div class="page-filler">
+  <h2>Rest of the existing SlideCraft page continues below unchanged</h2>
+  <p>Portfolio, Why SlideCraft, Pricing, Reviews, FAQ, Contact, Footer — all untouched.</p>
+  <p style="height:1400px;">Scroll to test the pinned hero sequence above ↑</p>
+</div>
+
+<script id="hero-anim-script">
+(function () {
+  "use strict";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ============================================================================
+     QUICK CUSTOMIZATION GUIDE — everything below is cross-referenced here.
+     ============================================================================
+     ICON POSITION   → iconConfig[iconName].end.x / .end.y   ("ICON POSITION" tag)
+     ICON SIZE        → iconConfig[iconName].end.scale        ("ICON SIZE" tag)
+                         + .hero-icon { width / height } in the <style> block
+     ICON SPREAD      → SPREAD_ORIGIN (where they burst FROM) + arcLift
+                         (how high each one arcs on its way out)   ("SPREAD" tag)
+     ICON START SIZE  → SPREAD_ORIGIN.scale (how tiny they are before bursting)
+     TEXT POSITION    → HERO_ANIMATION_CONFIG.titleStartY / titleEndY
+     TEXT SIZE        → HERO_ANIMATION_CONFIG.titleStartScale / titleEndScale
+                         + .hero-title / .hero-eyebrow { font-size } in <style>
+     MOBILE SPREAD    → spreadFactor() (how much the fan shrinks on phones)
+     Search for the ALL-CAPS tags in quotes above to jump straight to each knob.
+     ============================================================================ */
+
+  /* ==========================================================================
+     SELECTORS
+     If your real site uses different class/ID names for these elements,
+     change them here only — nothing below this block needs to change.
+     ========================================================================== */
+  const SEL = {
+    pinWrap:   "#hero-pin-wrap",
+    viewport:  "#hero-viewport",
+    navbar:    "#site-navbar",
+    titleGroup: "#hero-title-group",
+    infoGroup: "#hero-info-group",
+    decorativeBg: "#hero-decorative-bg",
+    frameCanvas: "#hero-background-frames"
+  };
+
+  /* =====================================================
+     YOUR ICON FILES
+     Replace these paths with the icon images you provide.
+     Do NOT use downloaded/stock icons or emoji — these are
+     placeholders only, clearly marked for swapping.
+     ===================================================== */
+  const HERO_ICONS = {
+    // >>> REPLACE WITH YOUR CANVA ICON <<<
+    canva:      "D:/SlideCraft/web/assets/icons/canva.png",
+    // >>> REPLACE WITH YOUR FIGMA ICON <<<
+    figma:      "D:/SlideCraft/web/assets/icons/figma.png",
+    // >>> REPLACE WITH YOUR POWERPOINT ICON <<<
+    powerpoint: "D:/SlideCraft/web/assets/icons/ppt.webp",
+    // >>> REPLACE WITH YOUR ARDUINO ICON <<<
+    arduino:    "D:/SlideCraft/web/assets/icons/arduino.webp",
+    // >>> REPLACE WITH YOUR MICROSOFT WORD ICON <<<
+    word:       "D:/SlideCraft/web/assets/icons/word.png"
+  };
+
+  // Wire up the <img> src attributes from the asset map above.
+  Object.keys(HERO_ICONS).forEach(function (key) {
+    const img = document.getElementById("icon-" + key + "-img");
+    if (img) img.src = HERO_ICONS[key];
+  });
+
+  /* ==========================================================================
+     ANIMATION DEBUG CONFIG
+     Tune the feel of the sequence here.
+     ========================================================================== */
+  const HERO_ANIMATION_CONFIG = {
+    // How much scrolling (in viewport-heights) it takes to complete the icon
+    // fly-in stage. Higher = slower, more deliberate scroll-scrub.
+    iconStageHeight: 1.4,
+
+    // How much additional scroll (in viewport-heights) the hero-exit +
+    // navbar-entrance + crossfade stage consumes after icons finish.
+    heroExitDistance: 1.0,
+
+    // Fraction of the icon-stage progress (0–1) reserved for icons to arrive
+    // vs. hold still before the gate releases. 0.7 = icons finish arriving by
+    // 70% of the stage, then hold/settle for the remaining 30% (matches the
+    // brief hold seen in the reference video before it transitions).
+    iconArriveFraction: 0.7,
+
+    // Per-icon stagger: each icon's own travel window is offset slightly so
+    // they don't all move in perfect unison (matches Figma/PowerPoint leading
+    // Canva/Arduino/Word by a beat in the reference video).
+    iconStagger: 0.12,
+
+    // Show GSAP ScrollTrigger markers while tuning. Set false before shipping.
+    debugMarkers: false,
+
+    // ---- Title group (Section: bottom → shrink to mid-screen) ----
+    // "TEXT POSITION" — both are % of viewport HEIGHT (0 = top, 100 = bottom).
+    // Raise/lower where the title starts and where it ends up settling.
+    // was 88 — with the eyebrow + 3 title lines ("Slides That" / "Command" /
+    // "Attention") that put the block's CENTER 88% down the screen, so its
+    // bottom half spilled off the bottom edge and needed a scroll to read.
+    // 70 keeps it low/near-the-bottom-feeling but fully inside the viewport.
+    titleStartY: 70,   // resting spot BEFORE you scroll (near the bottom)
+    titleEndY: 60,     // resting spot AFTER the icon stage finishes
+
+    // "TEXT SIZE" — scale multiplier applied on top of the CSS font-size
+    // below (1 = 100% of that font-size, 0.3 = shrunk to 30% of it).
+    titleStartScale: 1,     // size BEFORE you scroll
+    titleEndScale: 0.6      // size AFTER the icon stage finishes
+  };
+
+  /* ==========================================================================
+     ICON MOVEMENT CONFIG — CENTER-BURST MODEL
+     All 5 icons now originate from the CENTER of the hero viewport, stacked
+     tiny on top of one another right behind the title, then burst outward on
+     scroll and land in a fan spread AROUND the title — two upper corners, a
+     top-center, and two mid sides — rather than fountaining out of a corner.
+     Each icon still gets its own end point + arcLift so the motion bows
+     naturally instead of moving in a straight line.
+     ========================================================================== */
+  // "SPREAD" — this is the single point all 5 icons burst OUT FROM. Move it
+  // to relocate the whole burst (e.g. yPct: 30 starts them higher up).
+  const SPREAD_ORIGIN = {
+    xPct: 50,   // dead center, horizontally (0 = left edge, 100 = right edge)
+    yPct: 46,   // a touch above vertical middle (0 = top, 100 = bottom)
+    scale: 0.12,   // "ICON START SIZE" — how tiny icons are before bursting
+                   // (0.12 = 12% of their resting size; 0 = invisible dot)
+    rotation: 0
+  };
+
+  /* ----------------------------------------------------------------------
+     PER-ICON SETTINGS — this is the one you'll edit most.
+     For each icon, only touch the "end" line and arcLift:
+       end.x / end.y   → "ICON POSITION": where it lands, in % of the
+                          viewport (x: 0=left edge...100=right edge,
+                          y: 0=top edge...100=bottom edge)
+       end.scale       → "ICON SIZE": size once landed (1.00 = the CSS
+                          width/height below, i.e. 130x130px; 1.3 = 30%
+                          bigger, 0.7 = 30% smaller)
+       end.rotation    → resting tilt in degrees (0 = upright)
+       arcLift         → "SPREAD" shape: how high the icon bows above a
+                          straight line on its way out (bigger = more of
+                          an arc/fountain feel, 0 = flies out in a straight
+                          line)
+       staggerIndex    → which of the 3 timing groups (0,1,2) this icon
+                          joins — icons that share a number move together;
+                          higher numbers start their travel a beat later
+     Leave "start" as-is — it just reads from SPREAD_ORIGIN above so every
+     icon bursts from the same point.
+     ---------------------------------------------------------------------- */
+  const iconConfig = {
+    figma: {
+      start: { x: SPREAD_ORIGIN.xPct, y: SPREAD_ORIGIN.yPct, scale: SPREAD_ORIGIN.scale, rotation: 20 },
+      end:   { x: 32, y: 20, scale: 1.50, rotation: -14 },   // upper-left
+      arcLift: 16,
+      ease: "back.out(1.7)",
+      staggerIndex: 0
+    },
+    powerpoint: {
+      start: { x: SPREAD_ORIGIN.xPct, y: SPREAD_ORIGIN.yPct, scale: SPREAD_ORIGIN.scale, rotation: -15 },
+      end:   { x: 70, y: 30, scale: 1.00, rotation: 14 },    // upper-right
+      arcLift: 16,
+      ease: "back.out(1.7)",
+      staggerIndex: 0
+    },
+    arduino: {
+      start: { x: SPREAD_ORIGIN.xPct, y: SPREAD_ORIGIN.yPct, scale: SPREAD_ORIGIN.scale, rotation: -8 },
+      end:   { x: 50, y: 35, scale: 0.80, rotation: 20 },     // top-center
+      arcLift: 20,
+      ease: "back.out(1.6)",
+      staggerIndex: 1
+    },
+    word: {
+      start: { x: SPREAD_ORIGIN.xPct, y: SPREAD_ORIGIN.yPct, scale: SPREAD_ORIGIN.scale, rotation: -10 },
+      end:   { x: 75, y: 58, scale: 0.80, rotation: -10 },    // mid-left
+      arcLift: 14,
+      ease: "back.out(1.6)",
+      staggerIndex: 2
+    },
+    canva: {
+      start: { x: SPREAD_ORIGIN.xPct, y: SPREAD_ORIGIN.yPct, scale: SPREAD_ORIGIN.scale, rotation: 18 },
+      end:   { x: 25, y: 58, scale: 1.00, rotation: -10 },   // mid-right
+      arcLift: 14,
+      ease: "back.out(1.6)",
+      staggerIndex: 2
+    }
+  };
+
+  const iconEls = {};
+  Object.keys(iconConfig).forEach(function (key) {
+    iconEls[key] = document.getElementById("icon-" + key);
+  });
+
+  // Pre-parse eases once (cheap lookup during scroll instead of per-frame).
+  const easeFns = {};
+  Object.keys(iconConfig).forEach(function (key) {
+    easeFns[key] = gsap.parseEase(iconConfig[key].ease);
+  });
+
+  /* --------------------------------------------------------------------------
+     Maps overall icon-stage progress (0–1) to each icon's own eased local
+     progress, honoring the per-icon stagger. Scroll position stays fully
+     authoritative — this is pure math against the current progress value,
+     never a running/independent timeline, so icons stop exactly where the
+     scrollbar says they should (Section 5 / Section 10).
+     -------------------------------------------------------------------------- */
+  function localProgress(rawProgress, staggerIndex) {
+    const staggerCount = 3; // 0,1,2 groups above
+    const offset = (staggerIndex / staggerCount) * HERO_ANIMATION_CONFIG.iconStagger;
+    const arrive = HERO_ANIMATION_CONFIG.iconArriveFraction;
+    // remap [offset, arrive] -> [0,1], clamp outside that window
+    const t = (rawProgress - offset) / Math.max(0.0001, (arrive - offset));
+    return Math.max(0, Math.min(1, t));
+  }
+
+  /* --------------------------------------------------------------------------
+     RESPONSIVE ICON SPREAD (Section 19)
+     The umbrella-arc endpoints above are tuned for desktop widths. On narrow
+     viewports we don't just shrink those coordinates — we pull each icon's
+     end position proportionally in toward the vertical center line (50%) so
+     the fan doesn't clip off the edge of a phone-width hero, while keeping
+     the same relative fan-out shape and travel angles.
+     -------------------------------------------------------------------------- */
+  // "MOBILE SPREAD" — controls how tightly the fan pulls in on small
+  // screens. 1024px+ = full desktop spread (factor 1). 480px and below =
+  // pulled in to 55% of the desktop spread (factor 0.55). Raise/lower the
+  // 0.55 to make phones show a wider or narrower fan.
+  function spreadFactor() {
+    const w = window.innerWidth;
+    if (w >= 1024) return 1;
+    if (w <= 480) return 0.55;
+    // linear ramp between 480px and 1024px
+    return 0.55 + (w - 480) / (1024 - 480) * 0.45;
+  }
+
+  function responsiveEnd(cfg) {
+    const f = spreadFactor();
+    if (f === 1) return cfg.end;
+    return {
+      x: 50 + (cfg.end.x - 50) * f,
+      y: cfg.end.y, // keep vertical layout; only pull horizontal spread in
+      scale: cfg.end.scale * (0.75 + 0.25 * f),
+      rotation: cfg.end.rotation
+    };
+  }
+
+  // Quadratic bezier: point(t) = (1-t)²·p0 + 2(1-t)t·control + t²·p1
+  function bezier(p0, control, p1, t) {
+    const mt = 1 - t;
+    return mt * mt * p0 + 2 * mt * t * control + t * t * p1;
+  }
+
+  function updateIcons(rawProgress) {
+    Object.keys(iconConfig).forEach(function (key) {
+      const cfg = iconConfig[key];
+      const el = iconEls[key];
+      if (!el) return;
+
+      const end = responsiveEnd(cfg);
+      const t = localProgress(rawProgress, cfg.staggerIndex);
+      const eased = easeFns[key](t);
+
+      // Fountain arc: bow the path through a control point raised above the
+      // straight line between start and end (smaller y = higher on screen),
+      // so the icon arcs up and out before settling — not a straight shot.
+      const controlX = (cfg.start.x + end.x) / 2;
+      const controlY = Math.min(cfg.start.y, end.y) - cfg.arcLift;
+
+      const x = bezier(cfg.start.x, controlX, end.x, eased);
+      const y = bezier(cfg.start.y, controlY, end.y, eased);
+      const s = gsap.utils.interpolate(cfg.start.scale, end.scale, eased);
+      const r = gsap.utils.interpolate(cfg.start.rotation, end.rotation, eased);
+      // opacity ramps in fast over the first 20% of this icon's own travel,
+      // independent of the overshoot ease so icons don't flicker mid-bounce
+      const o = Math.max(0, Math.min(1, t / 0.2));
+
+      el.style.setProperty("--x", x + "%");
+      el.style.setProperty("--y", y + "%");
+      el.style.setProperty("--s", s);
+      el.style.setProperty("--r", r + "deg");
+      el.style.setProperty("--o", o);
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     TITLE GROUP: bottom (full size) → a little below mid-screen (30% scale).
+     Driven by the SAME iconProgress as the fountain, so both happen at once
+     as the user scrolls (per your latest note) rather than the title waiting
+     for Phase B.
+     -------------------------------------------------------------------------- */
+  const titleEase = gsap.parseEase("power2.out");
+  function updateTitle(iconProgress) {
+    const eased = titleEase(iconProgress);
+    const y = gsap.utils.interpolate(HERO_ANIMATION_CONFIG.titleStartY, HERO_ANIMATION_CONFIG.titleEndY, eased);
+    const s = gsap.utils.interpolate(HERO_ANIMATION_CONFIG.titleStartScale, HERO_ANIMATION_CONFIG.titleEndScale, eased);
+    const el = document.querySelector(SEL.titleGroup);
+    el.style.setProperty("--ty", y + "%");
+    el.style.setProperty("--ts", s);
+  }
+
+  /* ==========================================================================
+     BACKGROUND FRAME SEQUENCE
+     Placeholder only — do not wire real frames in yet. This section is
+     intentionally inert until the navbar-entrance stage begins.
+     Replace FRAME_PATH / TOTAL_FRAMES once frames exist, then flesh out
+     drawFrameForProgress() to draw the right frame to the canvas.
+     ========================================================================== */
+  // TODO: point this at the real frame folder once it exists.
+  const FRAME_PATH = "/assets/hero-frames/frame_";
+  const TOTAL_FRAMES = 120;
+  // TODO: preload frames (Image objects) here once FRAME_PATH is real.
+
+  function drawFrameForProgress(progress /* 0–1, only meaningful after navbar entrance */) {
+    // const frameIndex = Math.round(progress * (TOTAL_FRAMES - 1));
+    // ctx.drawImage(loadedFrames[frameIndex], 0, 0, canvas.width, canvas.height);
+    // Left empty on purpose — background frames are not ready yet.
+  }
+
+  /* ==========================================================================
+     SCROLLTRIGGER — SINGLE PIN, TWO PHASES
+     One ScrollTrigger pins the hero for the full gated sequence. Its single
+     scroll-authoritative progress value (0–1) is split into two phases:
+
+       Phase A — ICON SCROLL GATE (Sections 5–10)
+         0 .. iconFrac        → icons fly in / hold. Nothing else moves.
+       Phase B — HERO EXIT + NAVBAR ENTRANCE (Sections 11–13)
+         iconFrac .. 1        → hero drifts up, navbar enters, description/
+                                 CTAs/stats fade in, background frame layer
+                                 switches on. Icons hold their final spots.
+
+     Using one pin (rather than two chained ScrollTriggers) avoids any
+     double-pin edge cases and keeps "screen stays still until icons are
+     100% done" trivially true — Phase B literally cannot start until
+     progress passes iconFrac.
+
+     scrub:true (no smoothing number) means every value below is a pure
+     function of scroll position — nothing keeps moving once the user stops
+     scrolling, and reversing scroll reverses everything (Section 5).
+     ========================================================================== */
+  const iconFrac = HERO_ANIMATION_CONFIG.iconStageHeight /
+    (HERO_ANIMATION_CONFIG.iconStageHeight + HERO_ANIMATION_CONFIG.heroExitDistance);
+
+  const heroST = ScrollTrigger.create({
+    trigger: SEL.pinWrap,
+    start: "top top",
+    end: "bottom bottom",
+    pin: SEL.viewport,
+    scrub: true,          // no smoothing lag — everything freezes exactly on stop
+    anticipatePin: 1,
+    markers: HERO_ANIMATION_CONFIG.debugMarkers,
+    onUpdate: function (self) {
+      const overall = self.progress;
+
+      // ---- Phase A: fountain icons + title bottom→mid shrink, together ----
+      const iconProgress = Math.max(0, Math.min(1, overall / iconFrac));
+      updateIcons(iconProgress);
+      updateTitle(iconProgress);
+
+      // ---- Phase B: hero exit + navbar entrance ----
+      // 0 until icons/title are 100% done (self-enforcing scroll gate —
+      // Section 7), then ramps 0→1 across the remaining scroll distance.
+      const exitProgress = Math.max(0, Math.min(1, (overall - iconFrac) / (1 - iconFrac)));
+
+      gsap.set(SEL.decorativeBg, { opacity: 1 - exitProgress });
+
+      // Navbar entrance (Section 13): translateY(-140%→0) + opacity 0→1
+      gsap.set(SEL.navbar, {
+        yPercent: -140 + exitProgress * 140,
+        opacity: exitProgress
+      });
+
+      // Description / CTAs / stats fade in together, just below the now-
+      // settled title
+      gsap.set(SEL.infoGroup, { opacity: exitProgress });
+
+      // BACKGROUND = SCROLL CONTROLLED (Section 17/18) — only from here on
+      gsap.set(SEL.frameCanvas, { opacity: exitProgress });
+      drawFrameForProgress(exitProgress);
+    }
+  });
+
+  /* --------------------------------------------------------------------------
+     Give the pin wrapper the right total height so both phases have room to
+     scrub against (kept in JS so HERO_ANIMATION_CONFIG stays the single
+     source of truth instead of duplicating numbers in CSS).
+     -------------------------------------------------------------------------- */
+  function sizePinWrap() {
+    const totalVh = HERO_ANIMATION_CONFIG.iconStageHeight + HERO_ANIMATION_CONFIG.heroExitDistance;
+    document.querySelector(SEL.pinWrap).style.height = (totalVh * 100) + "vh";
+    ScrollTrigger.refresh();
+  }
+  sizePinWrap();
+  window.addEventListener("resize", sizePinWrap);
+
+  // Initialize icons + title at rest (progress 0) before any scroll happens.
+  updateIcons(0);
+  updateTitle(0);
+
+})();
+</script>
+
+</body>
+</html>

@@ -43,35 +43,53 @@
         });
       }
 
-      /* Loading screen background video: fade in once it can actually
-         play. If the file is missing/unsupported it just never gets
-         the .is-ready class, so the loader falls back to its plain
-         background color underneath the overlay — no broken-video UI. */
-      const loaderBgVideo = document.getElementById('loaderBgVideo');
-      if (loaderBgVideo) {
-        loaderBgVideo.addEventListener('canplay', () => {
-          loaderBgVideo.classList.add('is-ready');
-        });
-        loaderBgVideo.addEventListener('error', () => {
-          loaderBgVideo.style.display = 'none';
-        });
-      }
+      /* NOTE: the loading-screen background video and its canplay/error
+         wiring have been removed — the loading screen is now a static
+         logo + progress bar only (see index.html / css/loading-screen.css). */
     }
 
     /* ════════════════════════════════════════════════════════════════
        INIT — runs on page load
     ════════════════════════════════════════════════════════════════ */
-    document.addEventListener('DOMContentLoaded', () => {
-      buildCards();
-      buildWhy();
-      buildPricingGrid(PPT_PRICING, 'ppt-pricing-grid');
-      buildPricingGrid(PROJECT_PRICING, 'arduino-pricing-grid');
-      showView('home');
-      initStaticEventWiring();
+ document.addEventListener('DOMContentLoaded', () => {
+  /* Lock scroll while the loading screen covers the page — otherwise
+     any wheel/touch/keyboard scroll during the 3s intro silently
+     advances the pinned hero ScrollTrigger behind it, so by the time
+     the loading screen fades out you're dropped mid/end-animation
+     instead of seeing the icon fountain play from the start. */
+  document.body.style.overflow = 'hidden';
 
-      /* ── Loading screen: hide after 1 second ── */
-      setTimeout(() => {
-        const ls = document.getElementById('loading-screen');
-        if (ls) ls.classList.add('hidden');
-      }, 5000);
+  buildCards();
+  buildWhy();
+  buildPricingGrid(PPT_PRICING, 'ppt-pricing-grid');
+  buildPricingGrid(PROJECT_PRICING, 'arduino-pricing-grid');
+  showView('home');
+  initStaticEventWiring();
+
+  /* The grids just built add a lot of height below the hero pin —
+     resync ScrollTrigger's start/end distances now that the real
+     document height is known (hero-animation.js calculated them
+     earlier, before this content existed). */
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
+
+setTimeout(() => {
+  const ls = document.getElementById('loading-screen');
+
+  // Reset scroll BEFORE removing the overflow lock — the lock's
+  // removal is itself a layout shift (scrollbar reappears, 100vh
+  // values get re-measured), which can cause scroll-anchoring to
+  // jump us into the middle of the pinned hero range.
+  window.scrollTo(0, 0);
+  document.body.style.overflow = '';
+  if (ls) ls.classList.add('hidden');
+
+  // Re-assert scroll position + resync ScrollTrigger once that
+  // layout shift has actually finished settling.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
     });
+  });
+}, 3000);
+});
