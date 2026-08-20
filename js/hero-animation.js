@@ -411,7 +411,12 @@
       updateNavbar(fadeProgress);
     }
   });
-
+// hero-animation.js — expose a reset hook
+window.__heroAnimReset = function () {
+  updateIcons(0);
+  updateTitle(0);
+  updateNavbar(0);
+};
   /* --------------------------------------------------------------------------
      FIX: previously this set pinWrap height to just
      (iconStageHeight + infoFadeDistance) * 100vh, which made the ACTUAL

@@ -25,7 +25,7 @@
     const FRAME_CONFIG_DESKTOP = {
       folder: 'images/scroll-frames/',      // CUSTOMIZE: desktop frame folder
       prefix: 'frame_',
-      count: 660,                           // CUSTOMIZE: total desktop frames
+      count: 200,                           // CUSTOMIZE: total desktop frames
       pad: 3,                               // frame_001.jpg → 3 digits
       ext: '.webp'
     };
@@ -33,7 +33,7 @@
     const FRAME_CONFIG_MOBILE = {
       folder: 'images/scroll-frames-mobile/', // CUSTOMIZE: mobile frame folder (smaller/lighter images)
       prefix: 'frame_',
-      count: 655,                             // CUSTOMIZE: total mobile frames (fewer than desktop)
+      count: 200,                             // CUSTOMIZE: total mobile frames (fewer than desktop)
       pad: 3,                                 // frame_001.jpg → 3 digits
       ext: '.webp'
     };
