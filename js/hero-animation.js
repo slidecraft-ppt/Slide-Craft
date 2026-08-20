@@ -416,6 +416,7 @@ window.__heroAnimReset = function () {
   updateIcons(0);
   updateTitle(0);
   updateNavbar(0);
+  
 };
   /* --------------------------------------------------------------------------
      FIX: previously this set pinWrap height to just
@@ -436,9 +437,9 @@ window.__heroAnimReset = function () {
   sizePinWrap();
   window.addEventListener("resize", sizePinWrap);
 
-  // Initialize icons + title at rest (progress 0) before any scroll happens.
-  updateIcons(0);
+  //Initialize icons + title at rest (progress 0) before any scroll happens.
+ updateIcons(0);
   updateTitle(0);
-  updateNavbar(0);
+   updateNavbar(0);
 
 })();

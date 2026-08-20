@@ -33,7 +33,7 @@
     const FRAME_CONFIG_MOBILE = {
       folder: 'images/scroll-frames-mobile/', // CUSTOMIZE: mobile frame folder (smaller/lighter images)
       prefix: 'frame_',
-      count: 200,                             // CUSTOMIZE: total mobile frames (fewer than desktop)
+      count: 100,                             // CUSTOMIZE: total mobile frames (fewer than desktop)
       pad: 3,                                 // frame_001.jpg → 3 digits
       ext: '.webp'
     };
