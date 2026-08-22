@@ -4024,9 +4024,30 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* BUG FIX (report #5): this block used to force #hero-title-group to
+     `top: 50% !important` while leaving it `position: absolute`. #hero-inner
+     (which wraps #hero-info-group) is centered by .hero's own
+     `display:flex; align-items:center`, i.e. also ~50% — so on any reduced-
+     motion device both groups landed in the same spot and rendered on top
+     of each other (title text through the stat numbers), because forcing
+     opacity:1 on both was only ever tested against the SCROLL-DRIVEN
+     positions, not this static top:50% override, which nothing had
+     actually separated from #hero-inner's own centering.
+     Fix: take #hero-title-group out of absolute positioning entirely and
+     let it sit in normal flow, stacked above #hero-inner, with .hero
+     switched to a column flex layout for this case. It's already #hero-
+     info-group's DOM sibling immediately before it, so this alone puts
+     them in the right order with no overlap regardless of content height. */
   .hero-icon { display: none; }
+  .hero {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
   #hero-title-group {
-    top: 50% !important;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
     --ts: 1 !important;
     opacity: 1 !important;
   }
@@ -6957,40 +6978,60 @@
     updateNavbar(fadeProgress);
   }
 
-  const heroST = ScrollTrigger.create({
-    trigger: SEL.pinWrap,
-    start: "top top",
-    end: "bottom bottom",
-    pin: SEL.viewport,
-    scrub: true,
-    anticipatePin: 1,
-    markers: HERO_ANIMATION_CONFIG.debugMarkers,
-    onUpdate: function (self) {
-      applyHeroProgress(self.progress);
-    }
-  });
+  // BUG FIX (report #5): the pin/scrub sequence below was being created
+  // unconditionally, even for prefers-reduced-motion users. The CSS reduced-
+  // motion fallback (hero-animation.css) already shows icons/title/info/
+  // navbar in a static resting state regardless of what this JS does — but
+  // nothing stopped sizePinWrap() from still stretching #hero-pin-wrap to
+  // ~3 viewport-heights tall and nothing stopped ScrollTrigger from still
+  // pinning #hero-viewport across that whole distance. Net effect: reduced-
+  // motion users scrolled through several empty, frozen screens before the
+  // pin released, with no icon/title/info animation happening because
+  // reduced motion had (correctly) suppressed it — this is what made the
+  // overlap "stay even while scrolling" instead of resolving.
+  // Skip creating the pin entirely when reduced motion is requested, so the
+  // hero just behaves like a normal ~100vh section and scrolling continues
+  // straight into the rest of the page.
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // BUG FIX (report #4): applyHeroProgress() was only ever called from the
-  // two spots THIS file remembers to call it from (__heroAnimReset and
-  // sizePinWrap). Any OTHER ScrollTrigger.refresh() — e.g. the plain
-  // `ScrollTrigger.refresh()` calls in main.js's post-grid-build and
-  // loading-screen-dismiss sequence, or any refresh triggered by GSAP's own
-  // internal (undebounced) resize handling — recalculates progress without
-  // going through either of those, so it can leave icons/title/navbar/
-  // #hero-info-group stale relative to the new pin range same as before.
-  // Hooking GSAP's own global "refresh" event guarantees a re-sync after
-  // EVERY refresh, from every source, without relying on each call site
-  // remembering to resync itself.
-  ScrollTrigger.addEventListener("refresh", function () {
-    applyHeroProgress(heroST.progress);
-  });
+  let heroST = null;
+  if (!prefersReducedMotion) {
+    heroST = ScrollTrigger.create({
+      trigger: SEL.pinWrap,
+      start: "top top",
+      end: "bottom bottom",
+      pin: SEL.viewport,
+      scrub: true,
+      anticipatePin: 1,
+      markers: HERO_ANIMATION_CONFIG.debugMarkers,
+      onUpdate: function (self) {
+        applyHeroProgress(self.progress);
+      }
+    });
+
+    // BUG FIX (report #4): applyHeroProgress() was only ever called from the
+    // two spots THIS file remembers to call it from (__heroAnimReset and
+    // sizePinWrap). Any OTHER ScrollTrigger.refresh() — e.g. the plain
+    // `ScrollTrigger.refresh()` calls in main.js's post-grid-build and
+    // loading-screen-dismiss sequence, or any refresh triggered by GSAP's own
+    // internal (undebounced) resize handling — recalculates progress without
+    // going through either of those, so it can leave icons/title/navbar/
+    // #hero-info-group stale relative to the new pin range same as before.
+    // Hooking GSAP's own global "refresh" event guarantees a re-sync after
+    // EVERY refresh, from every source, without relying on each call site
+    // remembering to resync itself.
+    ScrollTrigger.addEventListener("refresh", function () {
+      applyHeroProgress(heroST.progress);
+    });
+  }
 // hero-animation.js — expose a reset hook
 window.__heroAnimReset = function () {
   // Sync from the ScrollTrigger's actual current progress rather than
   // hardcoding 0 — correct even if real scroll isn't exactly 0 when this
   // runs, and keeps icons/title/navbar/info-group consistent with each
-  // other by construction (same function onUpdate itself uses).
-  applyHeroProgress(heroST.progress);
+  // other by construction (same function onUpdate itself uses). No-op under
+  // reduced motion, where heroST was never created.
+  if (heroST) applyHeroProgress(heroST.progress);
 };
   /* --------------------------------------------------------------------------
      FIX: previously this set pinWrap height to just
@@ -7002,6 +7043,9 @@ window.__heroAnimReset = function () {
      scroll distance matches iconStageHeight + infoFadeDistance exactly.
      -------------------------------------------------------------------------- */
   function sizePinWrap() {
+    // Reduced motion: no pin was created, so there's no pin distance to
+    // size — leave #hero-pin-wrap at its natural (content) height.
+    if (!heroST) return;
     const totalVh = 1 + HERO_ANIMATION_CONFIG.iconStageHeight + HERO_ANIMATION_CONFIG.infoFadeDistance;
     const wrap = document.querySelector(SEL.pinWrap);
     if (!wrap) return;
