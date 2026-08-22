@@ -1,4 +1,4 @@
-F<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6619,11 +6619,11 @@ F<!DOCTYPE html>
      these are placeholders only, clearly marked for swapping.
      ===================================================== */
   const HERO_ICONS = {
-  canva:      "images/icons/canva.webp",
-  figma:      "images/icons/figma.webp",
+  canva:      "images/icons/canva.png",
+  figma:      "images/icons/figma.png",
   powerpoint: "images/icons/ppt.webp",
   arduino:    "images/icons/arduino.webp",
-  word:       "images/icons/word.webp"
+  word:       "images/icons/word.png"
 };
 
   Object.keys(HERO_ICONS).forEach(function (key) {
@@ -6935,6 +6935,28 @@ F<!DOCTYPE html>
   const iconFrac = HERO_ANIMATION_CONFIG.iconStageHeight /
     (HERO_ANIMATION_CONFIG.iconStageHeight + HERO_ANIMATION_CONFIG.infoFadeDistance);
 
+  // BUG FIX: this used to live only inline inside onUpdate below, making it
+  // the ONLY place that touched icons/title/navbar/#hero-info-group. Any
+  // ScrollTrigger.refresh() that isn't immediately followed by a genuine
+  // onUpdate tick (the loading-screen layout shift, or — on mobile — the
+  // browser's address bar showing/hiding as the user scrolls, which fires
+  // a resize that sizePinWrap() below now correctly reacts to) could leave
+  // these four pieces out of sync with each other and with real scroll
+  // position. Pulling this out into a named function lets it be called
+  // from anywhere a refresh happens, not just from onUpdate.
+  function applyHeroProgress(overall) {
+    const iconProgress = Math.max(0, Math.min(1, overall / iconFrac));
+    updateIcons(iconProgress);
+    updateTitle(iconProgress);
+
+    const fadeProgress = Math.max(0, Math.min(1, (overall - iconFrac) / (1 - iconFrac)));
+    const infoEl = document.querySelector(SEL.infoGroup);
+    if (infoEl) gsap.set(infoEl, { opacity: fadeProgress });
+
+    // Navbar flies in alongside the info-group, only after icons finish.
+    updateNavbar(fadeProgress);
+  }
+
   const heroST = ScrollTrigger.create({
     trigger: SEL.pinWrap,
     start: "top top",
@@ -6944,35 +6966,16 @@ F<!DOCTYPE html>
     anticipatePin: 1,
     markers: HERO_ANIMATION_CONFIG.debugMarkers,
     onUpdate: function (self) {
-      const overall = self.progress;
-
-      const iconProgress = Math.max(0, Math.min(1, overall / iconFrac));
-      updateIcons(iconProgress);
-      updateTitle(iconProgress);
-
-      const fadeProgress = Math.max(0, Math.min(1, (overall - iconFrac) / (1 - iconFrac)));
-      const infoEl = document.querySelector(SEL.infoGroup);
-      if (infoEl) gsap.set(infoEl, { opacity: fadeProgress });
-
-      // Navbar flies in alongside the info-group, only after icons finish.
-      updateNavbar(fadeProgress);
+      applyHeroProgress(self.progress);
     }
   });
 // hero-animation.js — expose a reset hook
 window.__heroAnimReset = function () {
-  updateIcons(0);
-  updateTitle(0);
-  updateNavbar(0);
-  // BUG FIX: #hero-info-group (badge + stats row) only ever had its opacity
-  // set inside the ScrollTrigger onUpdate callback below, as `fadeProgress`.
-  // If the layout shift while the loading screen's grids get built causes
-  // onUpdate to fire once with a stray non-zero progress, this group is
-  // left visible on top of the title group's rest position — visible right
-  // after the loading screen, until the next real scroll recalculates it
-  // correctly. Reset it here too so this hook returns the whole hero to a
-  // consistent rest state, not just part of it.
-  const infoEl = document.querySelector(SEL.infoGroup);
-  if (infoEl) gsap.set(infoEl, { opacity: 0 });
+  // Sync from the ScrollTrigger's actual current progress rather than
+  // hardcoding 0 — correct even if real scroll isn't exactly 0 when this
+  // runs, and keeps icons/title/navbar/info-group consistent with each
+  // other by construction (same function onUpdate itself uses).
+  applyHeroProgress(heroST.progress);
 };
   /* --------------------------------------------------------------------------
      FIX: previously this set pinWrap height to just
@@ -6989,6 +6992,13 @@ window.__heroAnimReset = function () {
     if (!wrap) return;
     wrap.style.height = (totalVh * 100) + "vh";
     ScrollTrigger.refresh();
+    // BUG FIX (mobile): on phones, the browser's address bar showing/
+    // hiding as the user scrolls fires a resize here just like a manual
+    // window resize would — this isn't a one-off like the initial load.
+    // The refresh() above can leave icons/title/navbar/info-group stale
+    // relative to the recalculated pin range, with no guaranteed onUpdate
+    // tick to correct them, so re-sync explicitly every time this runs.
+    applyHeroProgress(heroST.progress);
   }
   sizePinWrap();
   // BUG FIX: expose this globally (same pattern as __heroAnimReset above) so
