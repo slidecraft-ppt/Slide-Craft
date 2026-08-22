@@ -6619,11 +6619,11 @@
      these are placeholders only, clearly marked for swapping.
      ===================================================== */
   const HERO_ICONS = {
-  canva:      "images/icons/canva.png",
-  figma:      "images/icons/figma.png",
+  canva:      "images/icons/canva.webp",
+  figma:      "images/icons/figma.webp",
   powerpoint: "images/icons/ppt.webp",
   arduino:    "images/icons/arduino.webp",
-  word:       "images/icons/word.png"
+  word:       "images/icons/word.webp"
 };
 
   Object.keys(HERO_ICONS).forEach(function (key) {
@@ -6969,6 +6969,21 @@
       applyHeroProgress(self.progress);
     }
   });
+
+  // BUG FIX (report #4): applyHeroProgress() was only ever called from the
+  // two spots THIS file remembers to call it from (__heroAnimReset and
+  // sizePinWrap). Any OTHER ScrollTrigger.refresh() — e.g. the plain
+  // `ScrollTrigger.refresh()` calls in main.js's post-grid-build and
+  // loading-screen-dismiss sequence, or any refresh triggered by GSAP's own
+  // internal (undebounced) resize handling — recalculates progress without
+  // going through either of those, so it can leave icons/title/navbar/
+  // #hero-info-group stale relative to the new pin range same as before.
+  // Hooking GSAP's own global "refresh" event guarantees a re-sync after
+  // EVERY refresh, from every source, without relying on each call site
+  // remembering to resync itself.
+  ScrollTrigger.addEventListener("refresh", function () {
+    applyHeroProgress(heroST.progress);
+  });
 // hero-animation.js — expose a reset hook
 window.__heroAnimReset = function () {
   // Sync from the ScrollTrigger's actual current progress rather than
@@ -7129,6 +7144,29 @@ document.addEventListener('DOMContentLoaded', () => {
       if (window.__sizePinWrap) window.__sizePinWrap();
     }, 150);
   });
+
+  // BUG FIX (report #4 — mobile, still overlapping after report #3): report
+  // #3 assumed the mobile address-bar collapse/expand reliably fires a
+  // plain `window` resize event, and wired the resync to that. In practice
+  // that event is inconsistent on iOS Safari specifically for this case —
+  // it can fire late, fire as a `scroll` event instead, or not fire at all,
+  // which means __sizePinWrap() (and therefore applyHeroProgress()) never
+  // runs and the stale-overlap bug reappears exactly as before, just now
+  // only on the browsers where `resize` doesn't fire reliably.
+  // window.visualViewport is the API actually built to track this — it's
+  // what changes when the address bar animates, independent of whether the
+  // browser also fires a window resize event — so listen there too, as a
+  // second, more reliable trigger for the same debounced resync. Feature-
+  // guarded since visualViewport isn't in every older browser.
+  if (window.visualViewport) {
+    let vvResizeTimer;
+    window.visualViewport.addEventListener('resize', () => {
+      clearTimeout(vvResizeTimer);
+      vvResizeTimer = setTimeout(() => {
+        if (window.__sizePinWrap) window.__sizePinWrap();
+      }, 150);
+    });
+  }
 });
   </script>
 </body>
