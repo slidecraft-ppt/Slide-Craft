@@ -1247,84 +1247,175 @@
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, .7), inset 0 0 0 1px rgba(192, 57, 43, .15)
     }
 
-    /* ── Card thumbnail / video preview ──────────────────────────
-   The card thumbnail now supports THREE types of media:
-   1. Static image  (thumbnail: 'images/foo.png')
-   2. Video preview (video: 'videos/foo.mp4') — plays on hover
-   3. Placeholder   (neither set)   — shows letter + label
+    /* ── Card thumbnail: real project image + animated "open folder" ──
+   The thumbnail is the project's actual image (`thumbnail`) filling
+   the full card, with a soft scrim for contrast. Sitting on top is a
+   folder built from the project's own accent colours (`color` /
+   `color2`, passed in as --folder-color / --folder-color2). On hover
+   it opens and the papers inside fan out — those papers show REAL
+   thumbnails pulled from the project's `showcase` gallery (poster
+   frame if a video item).
+   Folder concept: Uiverse.io by Cobp — rebuilt in plain CSS, with a
+   cleaner back-tab/body/flap construction, and wired up to real
+   project imagery instead of flat colour panels.
 ──────────────────────────────────────────────────────────────  */
     .card-thumb {
       height: 250px;
       position: relative;
-      overflow: hidden
+      overflow: hidden;
+      background: linear-gradient(180deg, #efe4d2 0%, #e6d8c1 100%)
     }
 
-
-    /* ── VIDEO PREVIEW on card hover ──────────────────────────────
-   The card-video element starts as invisible and crossfades in
-   when the user hovers the card. It autoplays muted & looped.
-   CUSTOMIZE: Change the transition duration by editing opacity .3s
-──────────────────────────────────────────────────────────────  */
-    .card-video {
+    /* The project's real image, full-bleed behind the folder */
+    .card-image {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0;
-      /* hidden at rest */
-      transition: opacity 0.4s ease;
-      /* fade-in on hover */
-      z-index: 2;
-      /* sits above the image */
+      transition: transform .6s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 0
     }
 
-    /* When the card is hovered AND a video is present, fade it in */
-    .project-card:hover .card-video {
-      opacity: 1
+    .project-card:hover .card-image {
+      transform: scale(1.08)
     }
 
-    /* ── Video play badge on card thumb ────────────────────────── */
-    .card-video-badge {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%) translateY(4px);
-      background: rgba(255, 252, 245, 0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 252, 245, 0.3);
-      border-radius: 20px;
-      padding: 0.3rem 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(245, 237, 224, 0.9);
-      z-index: 3;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .project-card:hover .card-video-badge {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0)
-    }
-
-    .card-video-badge svg {
-      width: 10px;
-      height: 10px
-    }
-
-    .card-overlay {
+    /* Vignette so the folder + chips stay readable over any photo */
+    .card-thumb-scrim {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, .45), rgba(0, 0, 0, .05));
+      background: linear-gradient(180deg, rgba(17, 14, 9, .38) 0%, rgba(17, 14, 9, .12) 35%, rgba(17, 14, 9, .1) 60%, rgba(17, 14, 9, .55) 100%);
       z-index: 1
+    }
+
+    /* Frosted "spotlight" platform behind the folder — keeps the folder
+       readable and intentional-looking no matter what colours are in
+       the photo behind it (reuses the site's liquid-glass language) */
+    .folder-stage {
+      position: absolute;
+      left: 50%;
+      top: 53%;
+      width: 224px;
+      height: 172px;
+      transform: translate(-50%, -50%);
+      border-radius: 22px;
+      background: linear-gradient(160deg, rgba(255, 255, 255, .26) 0%, rgba(255, 255, 255, .05) 100%);
+      backdrop-filter: blur(7px) saturate(150%);
+      -webkit-backdrop-filter: blur(7px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, .32);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, .28);
+      transition: box-shadow .5s ease, border-color .5s ease;
+      z-index: 1
+    }
+
+    .project-card:hover .folder-stage {
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .34);
+      border-color: rgba(255, 255, 255, .46)
+    }
+
+    .folder-scene {
+      position: absolute;
+      left: 50%;
+      top: 53%;
+      width: 196px;
+      height: 144px;
+      perspective: 1400px;
+      transform: translate(-50%, -50%) translateY(6px) scale(.95);
+      transition: transform .5s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 2
+    }
+
+    .project-card:hover .folder-scene {
+      transform: translate(-50%, -50%) translateY(-4px) scale(1)
+    }
+
+    /* Grounding shadow cast by the folder onto the glass stage */
+    .folder-scene::after {
+      content: '';
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: -12px;
+      height: 16px;
+      background: radial-gradient(50% 100% at 50% 50%, rgba(0, 0, 0, .5), transparent 75%);
+      filter: blur(3px);
+      opacity: .55;
+      transition: opacity .4s ease
+    }
+
+    .project-card:hover .folder-scene::after {
+      opacity: .85
+    }
+
+    /* Back tab — the little flag sticking up, like a real hanging folder */
+    .folder-tab {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 42%;
+      height: 18px;
+      background: color-mix(in srgb, var(--folder-color, var(--accent)) 82%, black 18%);
+      border-radius: 7px 9px 0 0
+    }
+
+    /* Back panel — sits behind the papers, only its edge shows */
+    .folder-back {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 15px;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--folder-color, var(--accent)) 82%, black 18%) 0%, var(--folder-color, var(--accent)) 100%);
+      border-radius: 3px 15px 15px 15px
+    }
+
+    /* Content thumbnails ("papers") stacked inside the folder — these
+       fan open on hover using the project's real showcase images */
+    .folder-paper {
+      position: absolute;
+      top: 23px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border-radius: 11px;
+      background-color: #f7f1e6;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 3px 10px rgba(20, 20, 20, .22);
+      transform-origin: bottom;
+      transition: transform .5s cubic-bezier(0.23, 1, 0.32, 1)
+    }
+
+    .project-card:hover .folder-paper-3 {
+      transform: rotateX(-16deg)
+    }
+
+    .project-card:hover .folder-paper-2 {
+      transform: rotateX(-26deg)
+    }
+
+    .project-card:hover .folder-paper-1 {
+      transform: rotateX(-34deg)
+    }
+
+    /* Front flap of the folder — flips open on hover to reveal the papers */
+    .folder-front {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 27px;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--folder-color2, var(--folder-color, var(--accent))) 92%, white 8%) 0%, var(--folder-color2, var(--folder-color, var(--accent))) 55%, color-mix(in srgb, var(--folder-color, var(--accent)) 85%, black 15%) 100%);
+      border-radius: 5px 15px 15px 15px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 6px 16px rgba(0, 0, 0, .2);
+      transform-origin: bottom;
+      transition: transform .5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow .5s ease
+    }
+
+    .project-card:hover .folder-front {
+      transform: rotateX(-42deg) translateY(1px);
+      box-shadow: inset 0 16px 30px rgba(255, 255, 255, .3), inset 0 -16px 30px rgba(0, 0, 0, .25)
     }
 
     .card-tag {
@@ -1349,11 +1440,16 @@
       top: 14px;
       right: 14px;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
+      font-size: 1.05rem;
       font-weight: 600;
-      opacity: .18;
-      z-index: 4;
-      color: var(--navy)
+      letter-spacing: .02em;
+      color: #f5ede0;
+      background: rgba(17, 14, 9, .32);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: .28rem .62rem;
+      border-radius: 2px;
+      z-index: 4
     }
 
     .card-body {
@@ -1419,25 +1515,6 @@
       background: var(--navy);
       border-color: var(--navy);
       color: #f5ede0
-    }
-
-    /* The static image inside the card */
-    .card-image {
-      position: absolute;
-      inset: 0;
-
-      width: 100%;
-      height: 100%;
-
-      object-fit: cover;
-
-      transition: transform .6s cubic-bezier(0.23, 1, 0.32, 1);
-
-      z-index: 1;
-    }
-
-    .project-card:hover .card-image {
-      transform: scale(1.08)
     }
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -5285,7 +5362,7 @@
           'images/Arduino/Picture1.webp',
         ]
       },
-      {
+     /* {
         id: 'Design Service',
         title: 'Website Design',
         thumbnail: 'images/Site.webp',
@@ -5305,7 +5382,7 @@
           { type: 'video', src: 'videos/Website/Slidecraft.mp4', poster: 'images/Site.webp' },
 
         ]
-      },
+      },*/
       {
         id: 'Academic',
         title: 'Final Year Project Report',
@@ -5346,8 +5423,8 @@
           'images/RFID_Attendance_Report/RFID_Attendance_Report-24.webp',
           'images/RFID_Attendance_Report/RFID_Attendance_Report-25.webp',
         ]
-      },
-      {
+      }
+     /*, {
         id: 'Design Service',
         title: 'Restaurant Menu Card',
         thumbnail: 'images/Menu.webp',
@@ -5366,7 +5443,7 @@
           'images/menu4.webp',
           'images/menu5.webp',
         ]
-      },
+      }*/,
       {
         id: 'Branding',
         title: 'Startup Logo & Brand Identity',
@@ -5491,10 +5568,14 @@
     /* ════════════════════════════════════════════════════════════════
        BUILD PORTFOLIO CARDS (home grid)
        ──────────────────────────────────────────────────────────────
-       Supports:
-         • Static thumbnail image (always shown)
-         • Optional hover-preview video (crossfades in on card hover)
-           — Add  video: 'videos/preview.mp4'  to a project object
+       Each card thumbnail is an animated folder (see .folder-scene in
+       portfolio.css). On hover, the folder opens and the three papers
+       inside fan out — each paper shows a REAL thumbnail pulled from
+       that project's `showcase` array (video items use their poster
+       frame), so the folder previews actual delivered work instead of
+       a flat placeholder colour.
+       CUSTOMIZE: the folder's colours come from each project's own
+       `color` / `color2` fields — no extra setup needed per project.
     ════════════════════════════════════════════════════════════════ */
     function buildCards() {
       const grid = document.getElementById('cardsGrid');
@@ -5503,37 +5584,28 @@
         const card = document.createElement('div');
         card.className = 'project-card reveal';
 
-        // ── Static thumbnail HTML ──
-        const thumbImg = p.thumbnail
-          ? `<img class="card-image" src="${p.thumbnail}" alt="${p.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">`
-          : '';
-
-        // ── Hover-preview video HTML (only if project.video is set) ──
-        // CUSTOMIZE: Set  video: 'videos/your-file.mp4'  in the project object.
-        // The video will fade in on hover and fade out when mouse leaves.
-        const hoverVideo = p.video
-          ? `<video class="card-video"
-               src="${p.video}"
-               muted playsinline loop preload="none"
-               aria-hidden="true"></video>`
-          : '';
-
-        // ── "▶ Preview" badge shown when card is hovered (only if video exists) ──
-        const videoBadge = p.video
-          ? `<div class="card-video-badge">
-           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-           Preview
-         </div>`
-          : '';
+        // ── Pick up to 3 real content thumbnails for the folder papers ──
+        // Pulls from `showcase` (poster frame for videos), falling back
+        // to the project's main `thumbnail` if showcase is short/empty.
+        const gallery = (p.showcase || [])
+          .map(item => isVideoItem(item) ? itemPoster(item) : item)
+          .filter(Boolean);
+        const papers = [0, 1, 2].map(n => gallery[n] || p.thumbnail || gallery[0] || '');
 
         card.innerHTML = `
-      <div class="card-thumb">
-        ${thumbImg}
-        ${hoverVideo}
-        <div class="card-overlay"></div>
-        ${videoBadge}
+      <div class="card-thumb" style="--folder-color:${p.color || ''};--folder-color2:${p.color2 || p.color || ''}">
+        <img class="card-image" src="${p.thumbnail}" alt="${p.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">
+        <div class="card-thumb-scrim"></div>
         <span class="card-tag">${p.category}</span>
         <span class="card-num">0${i + 1}</span>
+        <div class="folder-scene">
+          <div class="folder-tab"></div>
+          <div class="folder-back"></div>
+          <div class="folder-paper folder-paper-3" style="background-image:url('${papers[2]}')"></div>
+          <div class="folder-paper folder-paper-2" style="background-image:url('${papers[1]}')"></div>
+          <div class="folder-paper folder-paper-1" style="background-image:url('${papers[0]}')"></div>
+          <div class="folder-front"></div>
+        </div>
       </div>
       <div class="card-body">
         <div class="card-title">${p.title}</div>
@@ -5546,46 +5618,6 @@
         </div>
       </div>`;
 
-        // ── Wire up hover-video play/pause ──
-        if (p.video) {
-
-          const vid = card.querySelector('.card-video');
-
-          // preload for smoother playback
-          vid.load();
-
-          card.addEventListener('mouseenter', async () => {
-
-            if (!vid) return;
-
-            try {
-
-              vid.currentTime = 0;
-
-              const playPromise = vid.play();
-
-              if (playPromise !== undefined) {
-                await playPromise;
-              }
-
-            } catch (err) {
-
-              console.log('Video play failed:', err);
-
-            }
-
-          });
-
-          card.addEventListener('mouseleave', () => {
-
-            if (!vid) return;
-
-            vid.pause();
-            vid.currentTime = 0;
-
-          });
-
-        }
         card.onclick = () => openProject(p);
 
         grid.appendChild(card);
