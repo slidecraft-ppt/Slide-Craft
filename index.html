@@ -2,12 +2,7 @@
 <html lang="en">
 
 <head>
-  <!-- FIX: stop the browser from restoring a previous scroll position on
-       reload/back-forward navigation. Without this, if the page was
-       reloaded while scrolled partway through the pinned hero animation,
-       ScrollTrigger would initialize mid-sequence — icons already landed,
-       navbar already visible, title/badge still large — instead of the
-       clean "at rest" starting state. Must run before anything else. -->
+  <!-- prevents the browser from restoring scroll position on reload, so the hero animation always starts from a clean state -->
   <script>
     if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
     window.scrollTo(0, 0);
@@ -16,156 +11,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f5ede0">
 
-  <!-- ═══════════════════════════════════════════════════════════════
-  SLIDECRAFT — Premium Presentation Design Studio
-  ─────────────────────────────────────────────────────────────────
-  HOW TO CUSTOMIZE THIS SITE — READ THIS FIRST:
-
-  1. BUSINESS INFO     → Search "CUSTOMIZE:" comments below
-  2. PROJECTS/WORK     → Edit the PROJECTS array in js/data.js
-  3. VIDEOS            → Add video paths to showcase[] in each project
-  4. PRICING           → Edit the pricing arrays in js/data.js
-  5. WHY CARDS         → Edit the WHY_CARDS array in js/data.js
-  6. COLORS & FONTS    → Edit :root CSS variables in css/variables.css
-  7. WHATSAPP NUMBER   → Change WA_NUMBER constant in js/config.js
-  8. STATS (hero)      → Edit .hero-stat spans in the HTML below
-  9. MARQUEE TEXT      → Edit .marquee-item spans in the HTML below
-
-  FILE STRUCTURE:
-  ├── index.html          (markup only)
-  ├── css/                (one stylesheet per section/component)
-  │   ├── variables.css   (design tokens)
-  │   ├── base.css        (reset, cursor, scrollbar, background, transitions)
-  │   ├── navigation.css  (navbar, hamburger, mobile drawer)
-  │   ├── hero.css
-  │   ├── buttons.css
-  │   ├── marquee.css
-  │   ├── section-headings.css
-  │   ├── portfolio.css
-  │   ├── why.css
-  │   ├── pricing.css
-  │   ├── cta.css
-  │   ├── contact.css
-  │   ├── sticky-cta.css
-  │   ├── footer.css
-  │   ├── project-page.css
-  │   ├── slider.css
-  │   ├── lightbox.css
-  │   ├── related-projects.css
-  │   ├── loading-screen.css
-  │   ├── testimonials.css
-  │   ├── faq.css
-  │   ├── utility.css
-  │   └── responsive.css  (mobile breakpoints — kept last)
-  ├── js/                 (one script per section/component)
-  │   ├── config.js       (WhatsApp number, slider settings)
-  │   ├── background-frames.js
-  │   ├── data.js         (PROJECTS, WHY_CARDS, pricing arrays)
-  │   ├── portfolio.js
-  │   ├── why.js
-  │   ├── pricing.js
-  │   ├── slider.js
-  │   ├── lightbox.js
-  │   ├── project-page.js
-  │   ├── navigation.js
-  │   ├── whatsapp.js
-  │   ├── ui-interactions.js
-  │   └── main.js         (event wiring + init — kept last)
-  └── images/             (put your images here)
-      ├── PPT.webpWebsite_Logo.webp
-      ├── Arduino.webpWebsite_Logo.webp
-      ├── Fest.webpWebsite_Logo.webp
-      ├── Report.webpWebsite_Logo.webp
-      ├── Menu.webpWebsite_Logo.webp
-      └── Logo.webpWebsite_Logo.webp
-  └── videos/             (put your showcase videos here)
-      └── example.mp4
-═══════════════════════════════════════════════════════════════ -->
+  <!-- SlideCraft — premium presentation design studio -->
 
   <title>SlideCraft — Premium Presentation Design Studio</title>
 
-  <!-- ── FAVICON ───────────────────────────────────────────────────
-  CUSTOMIZE: Replace images/favicon.webpWebsite_Logo.webp with your logo/icon file.
-  Supported formats: .webpWebsite_Logo.webp, .ico, .svg
-  ──────────────────────────────────────────────────────────────── -->
+  <!-- favicon -->
   <!-- <link rel="icon" type="image.webpWebsite_Logo.webp" href="images/favicon.webpWebsite_Logo.webp"> -->
 
-  <!-- ── FONTS ─────────────────────────────────────────────────────
-  CUSTOMIZE: Replace these Google Font imports to change typography.
-  Current pairing: Cormorant Garamond (display) + Jost (body)
-  Good alternatives:
-    Display: Playfair Display, Fraunces, Libre Baskerville
-    Body:    Outfit, Manrope, DM Sans
-──────────────────────────────────────────────────────────────── -->
+  <!-- fonts: Cormorant Garamond (display) + Jost (body) -->
   <link rel="icon" type="image.webpWebsite_Logo.webp" href="images/Site_Icon.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@200;300;400;500;600&family=Cinzel:wght@400;600&display=swap"
     rel="stylesheet">
-  <!-- ── HERO SCROLL ANIMATION (icon fountain + title shrink) ─────────
-  CUSTOMIZE: See "QUICK CUSTOMIZATION GUIDE" at the top of js/hero-animation.js
-  for icon position/size, title position/size, and mobile-specific knobs.
-  ──────────────────────────────────────────────────────────────── -->
+  <!-- hero scroll animation: icon fountain + title shrink -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- responsive.css loads last so its mobile-breakpoint overrides win -->
+  <!-- responsive.css loads last so its overrides win -->
   <style>
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: variables.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   VARIABLES.CSS
-   Design tokens (CSS custom properties) — retheme the whole site from here.
-═══════════════════════════════════════════════════════════════ */
+/* Design tokens (CSS custom properties) — retheme the whole site from here. */
 
-    /* ═══════════════════════════════════════════════════════════════
-   CSS CUSTOM PROPERTIES — SITE-WIDE DESIGN TOKENS
-   ─────────────────────────────────────────────────────────────
-   CUSTOMIZE: Change these to retheme the entire site at once.
-   Every color, spacing, and effect references these variables.
-═══════════════════════════════════════════════════════════════ */
+    /* CSS custom properties — Change these to retheme the entire site at once. Every color, spacing, and effect references these variables. */
     :root {
-      /* ── Background palette ── */
+      /* Background palette */
       --bg: #f5ede0;
-      /* CUSTOMIZE: main page background */
+      /* main page background */
       --bg2: #75757469;
       /* slightly darker background */
       --bg3: #e8dccb;
       /* darkest background tone */
 
-      /* ── Border colors ── */
+      /* Border colors */
       --border: rgba(139, 100, 60, 0.15);
       /* subtle borders */
       --border2: rgba(139, 100, 60, 0.28);
       /* hover/active borders */
 
-      /* ── Text colors ── */
+      /* Text colors */
       --text: #010100;
-      /* CUSTOMIZE: primary text */
+      /* primary text */
       --muted: #000000;
-      /* CUSTOMIZE: secondary/muted text */
+      /* secondary/muted text */
 
-      /* ── Brand accent colors ── */
+      /* Brand accent colors */
       --accent: #c0392b;
-      /* CUSTOMIZE: primary accent (red) */
+      /* primary accent (red) */
       --accent2: #040404;
       /* darker shade of accent */
       --navy: #1d2d44;
-      /* CUSTOMIZE: secondary brand color */
+      /* secondary brand color */
       --navy2: #152233;
       /* darker navy */
       --gold: #b8860b;
-      /* CUSTOMIZE: tertiary highlight */
+      /* tertiary highlight */
       --gold2: #d4a017;
       /* lighter gold */
 
-      /* ── Glass / frosted effects ── */
+      /* Glass / frosted effects */
       --glass: rgba(255, 252, 245, 0.329);
       --glass2: rgba(255, 252, 245, 0.531);
       --glass3: rgba(255, 252, 245, 0.769);
 
-      /* ── Liquid glassmorphism (cards) ──
-      CUSTOMIZE: Tune these to change the "liquid glass" card look site-wide. */
+      /* Liquid glassmorphism (cards) — Tune these to change the "liquid glass" card look site-wide. */
       --liquid-blur: blur(5px) saturate(280%);
       --liquid-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.406) 0%, rgba(255, 255, 255, .16) 45%, rgba(255, 255, 255, .07) 100%);
       --liquid-border: rgba(255, 255, 255, .6);
@@ -174,7 +81,7 @@
       --liquid-dark-bg: linear-gradient(135deg, rgba(255, 255, 255, .14) 0%, rgba(255, 255, 255, .04) 45%, rgba(255, 255, 255, .02) 100%);
       --liquid-dark-border: rgba(8, 8, 8, 0.22);
 
-      /* ── Slider / media settings ── */
+      /* Slider / media settings */
       --slider-speed: 0.5s;
       /* slide transition duration */
       --slider-ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -185,15 +92,9 @@
       /* thumbnail strip height */
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: base.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   BASE.CSS
-   Reset, base body/html styles, custom cursor, scrollbar, background canvas layers, page-transition wipe, view system.
-═══════════════════════════════════════════════════════════════ */
+/* Reset, base body/html styles, custom cursor, scrollbar, background canvas layers, page-transition wipe, view system. */
 
-    /* ── Reset & base ──────────────────────────────────────────── */
+    /* Reset & base */
     *,
     *::before,
     *::after {
@@ -215,15 +116,11 @@
       cursor: none;
       overflow-anchor: none;
       /* custom cursor is rendered via JS below */
-      /* Removes the gray flash Android/iOS show on tap; buttons/links
-         already have their own hover/active states for feedback */
+      /* Removes the gray flash Android/iOS show on tap; buttons/links already have their own hover/active states for feedback */
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Custom cursor ─────────────────────────────────────────
-   CUSTOMIZE: Change cursor colors or remove the #cursor
-   and #cursor-ring divs from HTML to use default cursor.
-──────────────────────────────────────────────────────────── */
+    /* Custom cursor — Change cursor colors or remove the #cursor and #cursor-ring divs from HTML to use default cursor. */
     #cursor {
       position: fixed;
       width: 8px;
@@ -259,9 +156,7 @@
       opacity: 0
     }
 
-    /* ── Scrollbar ─────────────────────────────────────────────
-   CUSTOMIZE: Change scrollbar colors or remove for default.
-──────────────────────────────────────────────────────────── */
+    /* Scrollbar — Change scrollbar colors or remove for default. */
     ::-webkit-scrollbar {
       width: 3px
     }
@@ -300,7 +195,7 @@
       align-items: center;
     }
 
-    /* ── Background system ────────────────────────────────────── */
+    /* Background system */
     #bg-canvas {
       position: fixed;
       inset: 0;
@@ -309,15 +204,7 @@
       overflow: hidden
     }
 
-    /* ── Scroll-frames background ──────────────────────────────
-    A full-bleed image-sequence that scrubs frame-by-frame as the
-    page scrolls (Apple-style "scrollytelling" background), sitting
-    behind the ambient gradient/noise/vignette layers so the warm
-    site palette still tints it.
-    CUSTOMIZE: See FRAME CONFIG in the <script> below to point this
-    at your own frame_001.jpg … frame_NNN.jpg sequence and set the
-    correct frame count.
-    ──────────────────────────────────────────────────────────── */
+    /* Scroll-frames background — A full-bleed image-sequence that scrubs frame-by-frame as the page scrolls (Apple-style "scrollytelling" background), sitting behind the ambient gradient/noise/vignette layers so the warm site palette still tints it. See FRAME CONFIG in the <script> below to point this at your own frame_001.jpg … frame_NNN.jpg sequence and set the correct frame count. */
     #scroll-frames {
       position: absolute;
       inset: 0;
@@ -338,7 +225,7 @@
     .bg-layer {
       position: absolute;
       inset: 0;
-      /* CUSTOMIZE: Change these radial-gradient colors for a different ambient feel */
+      /* Change these radial-gradient colors for a different ambient feel */
       background:
         radial-gradient(ellipse 80% 60% at 20% 10%, rgba(192, 57, 43, 0.04) 0%, transparent 55%),
         radial-gradient(ellipse 60% 70% at 80% 80%, rgba(29, 45, 68, 0.03) 0%, transparent 50%),
@@ -414,7 +301,7 @@
       }
     }
 
-    /* ── Page transition wipe ─────────────────────────────────── */
+    /* Page transition wipe */
     #page-transition {
       position: fixed;
       top: 0;
@@ -448,18 +335,8 @@
 
 
 
-    /* ── View system ──────────────────────────────────────────── */
-    /* FIXED: this used to also animate `transform: translateY(...)`.
-       A `transform` on ANY ancestor of a pinned element creates a new CSS
-       containing block, which silently turns `position: fixed` pins
-       (used by GSAP ScrollTrigger for the hero icon/title animation)
-       into something that behaves like `position: absolute` relative to
-       this element instead of the real viewport. Since #hero-pin-wrap
-       lives inside #view-home (a `.view`), that transform was the reason
-       the pinned hero never actually held still on screen — the title,
-       icons, and navbar fly-in scrolled away with the page instead of
-       staying pinned while they animated. Kept the opacity fade, dropped
-       the translateY so `.view` never has a transform. */
+    /* View system */
+    /* No transform here on purpose — a transform on an ancestor of #hero-pin-wrap breaks GSAP's position:fixed pin (turns it into position:absolute), so the hero used to scroll away instead of staying pinned. Opacity fade only. */
     .view {
       display: none;
       min-height: 100vh;
@@ -478,15 +355,9 @@
       opacity: 1
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: navigation.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   NAVIGATION.CSS
-   Top navbar, nav links, back button, hamburger button, and the mobile slide-out drawer.
-═══════════════════════════════════════════════════════════════ */
+/* Top navbar, nav links, back button, hamburger button, and the mobile slide-out drawer. */
 
-    /* ── Navigation ───────────────────────────────────────────── */
+    /* Navigation */
     nav {
       position: fixed;
       top: 10px;
@@ -525,7 +396,7 @@
       color: var(--accent)
     }
 
-    /* CUSTOMIZE: Remove the ::before to remove the spinning star from the logo */
+    /* Remove the ::before to remove the spinning star from the logo */
     .nav-logo::before {
       content: '✦';
       font-size: .6rem;
@@ -549,7 +420,7 @@
       position: relative;
     }
 
-    /* ── Scroll-tracking indicator pill ── */
+    /* Scroll-tracking indicator pill */
     .nav-indicator {
       position: absolute;
       bottom: -6px;
@@ -640,7 +511,7 @@
 
 
 
-    /* ── Hamburger Menu Button ─────────────────────────────────── */
+    /* Hamburger Menu Button */
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -674,7 +545,7 @@
       transform: translateY(-7px) rotate(-45deg);
     }
 
-    /* ── Mobile Drawer ─────────────────────────────────────────── */
+    /* Mobile Drawer */
     .nav-drawer {
       display: none;
       position: fixed;
@@ -730,15 +601,9 @@
       padding: .85rem 2.5rem !important;
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: hero.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   HERO.CSS
-   Homepage hero section (badge, headline, sub-copy, stat row, glows).
-═══════════════════════════════════════════════════════════════ */
+/* Homepage hero section (badge, headline, sub-copy, stat row, glows). */
 
-    /* ── Hero section ─────────────────────────────────────────── */
+    /* Hero section */
     .hero {
       padding: 6rem 3rem 4rem;
       text-align: center;
@@ -774,7 +639,7 @@
       animation: fadeUp .7s ease both
     }
 
-    /* CUSTOMIZE: Change the badge dot color by editing this background */
+    /* Change the badge dot color by editing this background */
     .hero-badge-dot {
       width: 5px;
       height: 5px;
@@ -986,15 +851,9 @@
       margin-bottom: 0.5rem;
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: buttons.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   BUTTONS.CSS
-   Shared .btn-primary / .btn-ghost button styles used across the whole site.
-═══════════════════════════════════════════════════════════════ */
+/* Shared .btn-primary / .btn-ghost button styles used across the whole site. */
 
-    /* ── Buttons ──────────────────────────────────────────────── */
+    /* Buttons */
     .btn-primary {
       background: var(--navy);
       color: #f5ede0;
@@ -1052,15 +911,9 @@
       transform: translateY(-2px)
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: marquee.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   MARQUEE.CSS
-   Scrolling logo/text marquee strip on the homepage.
-═══════════════════════════════════════════════════════════════ */
+/* Scrolling logo/text marquee strip on the homepage. */
 
-    /* ── Marquee strip ────────────────────────────────────────── */
+    /* Marquee strip */
     .marquee-wrap {
       overflow: hidden;
       border-top: 1px solid var(--border);
@@ -1102,15 +955,9 @@
       margin-left: 2.5rem
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: section-headings.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   SECTION-HEADINGS.CSS
-   Shared .section-label / .section-head heading kicker styles, dividers, and scroll-reveal animation.
-═══════════════════════════════════════════════════════════════ */
+/* Shared .section-label / .section-head heading kicker styles, dividers, and scroll-reveal animation. */
 
-    /* ── Section labels & headings ────────────────────────────── */
+    /* Section labels & headings */
     .section-label {
       display: inline-flex;
       align-items: center;
@@ -1164,15 +1011,9 @@
       transform: translateY(0)
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: portfolio.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   PORTFOLIO.CSS
-   Portfolio grid, project cards, card thumbnails/video previews, and the video play badge.
-═══════════════════════════════════════════════════════════════ */
+/* Portfolio grid, project cards, card thumbnails/video previews, and the video play badge. */
 
-    /* ── Portfolio cards grid ─────────────────────────────────── */
+    /* Portfolio cards grid */
     .portfolio-section {
       padding: 5rem 3rem 6rem;
       max-width: 1400px;
@@ -1196,7 +1037,7 @@
       gap: 1.5rem
     }
 
-    /* ── Project card ─────────────────────────────────────────── */
+    /* Project card */
     .project-card {
       background: var(--liquid-bg);
       backdrop-filter: var(--liquid-blur);
@@ -1247,18 +1088,7 @@
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, .7), inset 0 0 0 1px rgba(192, 57, 43, .15)
     }
 
-    /* ── Card thumbnail: real project image + animated "open folder" ──
-   The thumbnail is the project's actual image (`thumbnail`) filling
-   the full card, with a soft scrim for contrast. Sitting on top is a
-   folder built from the project's own accent colours (`color` /
-   `color2`, passed in as --folder-color / --folder-color2). On hover
-   it opens and the papers inside fan out — those papers show REAL
-   thumbnails pulled from the project's `showcase` gallery (poster
-   frame if a video item).
-   Folder concept: Uiverse.io by Cobp — rebuilt in plain CSS, with a
-   cleaner back-tab/body/flap construction, and wired up to real
-   project imagery instead of flat colour panels.
-──────────────────────────────────────────────────────────────  */
+    /* Card thumbnail: real project image + animated "open folder" The thumbnail is the project's actual image (`thumbnail`) filling the full card, with a soft scrim for contrast. Sitting on top is a folder built from the project's own accent colours (`color` / `color2`, passed in as --folder-color / --folder-color2). On hover it opens and the papers inside fan out — those papers show REAL thumbnails pulled from the project's `showcase` gallery (poster frame if a video item). Folder concept: Uiverse.io by Cobp — rebuilt in plain CSS, with a cleaner back-tab/body/flap construction, and wired up to real project imagery instead of flat colour panels. */
     .card-thumb {
       height: 250px;
       position: relative;
@@ -1289,9 +1119,7 @@
       z-index: 1
     }
 
-    /* Frosted "spotlight" platform behind the folder — keeps the folder
-       readable and intentional-looking no matter what colours are in
-       the photo behind it (reuses the site's liquid-glass language) */
+    /* Frosted "spotlight" platform behind the folder — keeps the folder readable and intentional-looking no matter what colours are in the photo behind it (reuses the site's liquid-glass language) */
     .folder-stage {
       position: absolute;
       left: 50%;
@@ -1370,8 +1198,7 @@
       border-radius: 3px 15px 15px 15px
     }
 
-    /* Content thumbnails ("papers") stacked inside the folder — these
-       fan open on hover using the project's real showcase images */
+    /* Content thumbnails ("papers") stacked inside the folder — these fan open on hover using the project's real showcase images */
     .folder-paper {
       position: absolute;
       top: 23px;
@@ -1517,15 +1344,9 @@
       color: #f5ede0
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: why.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   WHY.CSS
-   Why SlideCraft grid section.
-═══════════════════════════════════════════════════════════════ */
+/* Why SlideCraft grid section. */
 
-    /* ── Why Us section ───────────────────────────────────────── */
+    /* Why Us section */
     .why-section {
       padding: 5rem 3rem;
       background: rgba(29, 45, 68, 0.03)
@@ -1572,13 +1393,7 @@
       font-weight: 300
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: pricing.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   PRICING.CSS
-   Pricing cards/grids for both the Presentation and Arduino project tiers, including the dark Arduino-section theme.
-═══════════════════════════════════════════════════════════════ */
+/* Pricing cards/grids for both the Presentation and Arduino project tiers, including the dark Arduino-section theme. */
 
     .arduino-section {
       max-width: 1180px;
@@ -1610,7 +1425,7 @@
       padding: 0 24px;
     }
 
-    /* ── Pricing cards inside the dark Arduino section ── */
+    /* Pricing cards inside the dark Arduino section */
     .arduino-section .pricing-card {
       background: var(--liquid-dark-bg);
       backdrop-filter: var(--liquid-blur);
@@ -1679,7 +1494,7 @@
     }
 
 
-    /* ── Pricing section ──────────────────────────────────────── */
+    /* Pricing section */
     .pricing-section {
       padding: 5rem 3rem
     }
@@ -1854,11 +1669,7 @@
       background: rgba(29, 45, 68, .04)
     }
 
-    /* ── "Get Started" pill CTA (Uiverse.io by cssbuttons-io, adapted) ──
-       Replaces the old .pricing-cta button. Scoped under .cta-learnmore
-       so its .circle / .icon / .button-text children never collide with
-       any other .icon or .circle elsewhere on the site.
-    ──────────────────────────────────────────────────────────────── */
+    /* "Get Started" pill CTA (Uiverse.io by cssbuttons-io, adapted) Replaces the old .pricing-cta button. Scoped under .cta-learnmore so its .circle / .icon / .button-text children never collide with any other .icon or .circle elsewhere on the site. */
     .cta-learnmore {
       position: relative;
       display: block;
@@ -1968,15 +1779,9 @@
       background: var(--navy);
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: cta.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   CTA.CSS
-   Mid-page call-to-action banner.
-═══════════════════════════════════════════════════════════════ */
+/* Mid-page call-to-action banner. */
 
-    /* ── CTA banner ───────────────────────────────────────────── */
+    /* CTA banner */
     .cta-banner {
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -2009,15 +1814,9 @@
       flex-wrap: wrap
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: contact.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   CONTACT.CSS
-   Contact form section.
-═══════════════════════════════════════════════════════════════ */
+/* Contact form section. */
 
-    /* ── Contact form ─────────────────────────────────────────── */
+    /* Contact form */
     .contact-section {
       padding: 5rem 3rem;
       max-width: 700px;
@@ -2058,7 +1857,7 @@
       resize: vertical
     }
 
-    /* ── Social icons row (Uiverse.io by david-mohseni, adapted) ──── */
+    /* Social icons row (Uiverse.io by david-mohseni, adapted) */
     .contact-social {
       display: inline-flex;
       list-style: none;
@@ -2144,15 +1943,9 @@
       color: #fff;
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: sticky-cta.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   STICKY-CTA.CSS
-   Floating sticky WhatsApp CTA button.
-═══════════════════════════════════════════════════════════════ */
+/* Floating sticky WhatsApp CTA button. */
 
-    /* ── Sticky WhatsApp CTA ──────────────────────────────────── */
+    /* Sticky WhatsApp CTA */
     .sticky-cta {
       position: fixed;
       bottom: 1.5rem;
@@ -2195,15 +1988,9 @@
       flex-shrink: 0;
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: footer.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   FOOTER.CSS
-   Site footer.
-═══════════════════════════════════════════════════════════════ */
+/* Site footer. */
 
-    /* ── Footer ───────────────────────────────────────────────── */
+    /* Footer */
     footer {
       border-top: 1px solid var(--border);
       padding: 2rem 3rem;
@@ -2218,17 +2005,9 @@
       text-align: right;
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: project-page.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   PROJECT-PAGE.CSS
-   Individual project detail page: hero, meta, info boxes, and floating hero-showcase panels.
-═══════════════════════════════════════════════════════════════ */
+/* Individual project detail page: hero, meta, info boxes, and floating hero-showcase panels. */
 
-    /* ══════════════════════════════════════════════════════════════
-   PROJECT PAGE STYLES
-══════════════════════════════════════════════════════════════ */
+    /* PROJECT PAGE STYLES */
     .proj-hero {
       padding: 3rem 3rem 2rem;
       position: relative;
@@ -2341,7 +2120,7 @@
       align-self: stretch
     }
 
-    /* ── Hero showcase panels ─────────────────────────────────── */
+    /* Hero showcase panels */
     .proj-showcase {
       margin: 0 3rem 3rem;
       background: linear-gradient(135deg, rgba(29, 45, 68, .04), rgba(184, 134, 11, .03));
@@ -2549,21 +2328,9 @@
       font-weight: 400
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: slider.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   SLIDER.CSS
-   Reusable image/video slider module used on project pages.
-═══════════════════════════════════════════════════════════════ */
+/* Reusable image/video slider module used on project pages. */
 
-    /* ══════════════════════════════════════════════════════════════
-   MEDIA SLIDER SYSTEM
-   ─────────────────────────────────────────────────────────────
-   Supports BOTH images and videos in the same slider.
-   Videos autoplay muted on slide activation.
-   Click main viewport → opens fullscreen lightbox.
-══════════════════════════════════════════════════════════════ */
+    /* MEDIA SLIDER SYSTEM — Supports BOTH images and videos in the same slider. Videos autoplay muted on slide activation. Click main viewport → opens fullscreen lightbox. */
     .pslider-wrap {
       margin: 0 3rem 3rem;
       position: relative
@@ -2603,7 +2370,7 @@
       will-change: transform
     }
 
-    /*Pricing Marquee*/
+    /* Pricing Marquee */
     .pricing-marquee {
       margin: 40px 0;
       overflow: hidden;
@@ -2643,10 +2410,7 @@
       }
     }
 
-    /* ── Individual slide ───────────────────────────────────────
-   Each slide can contain either a <img> or a <video>.
-   Videos are muted & autoplay when the slide is active.
-──────────────────────────────────────────────────────────── */
+    /* Individual slide — Each slide can contain either a <img> or a <video>. Videos are muted & autoplay when the slide is active. */
     .pslide {
       min-width: 100%;
       height: 100%;
@@ -2673,7 +2437,7 @@
       transform: scale(1.02) translateZ(0)
     }
 
-    /* ── Video controls overlay (shown on video slides) ────────── */
+    /* Video controls overlay (shown on video slides) */
     .pslide-video-controls {
       position: absolute;
       bottom: 14px;
@@ -2745,7 +2509,7 @@
       height: 9px
     }
 
-    /* ── Slider placeholder ─────────────────────────────────────── */
+    /* Slider placeholder */
     .pslide-placeholder {
       width: 100%;
       height: 100%;
@@ -2793,7 +2557,7 @@
       background: linear-gradient(to top, rgba(26, 18, 8, .45) 0%, transparent 40%), linear-gradient(to bottom, rgba(26, 18, 8, .15) 0%, transparent 30%)
     }
 
-    /* ── Counter, arrows, thumbs ─────────────────────────────────── */
+    /* Counter, arrows, thumbs */
     .pslider-counter {
       position: absolute;
       top: 16px;
@@ -2976,20 +2740,9 @@
       user-select: none
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: lightbox.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   LIGHTBOX.CSS
-   Fullscreen lightbox used to view slider media at full size.
-═══════════════════════════════════════════════════════════════ */
+/* Fullscreen lightbox used to view slider media at full size. */
 
-    /* ═══════════════════════════════════════════════════════════════
-   FULLSCREEN LIGHTBOX
-   ─────────────────────────────────────────────────────────────
-   ESC key closes. Arrow keys navigate. Swipe left/right.
-   Videos keep playing in the lightbox.
-═══════════════════════════════════════════════════════════════ */
+    /* FULLSCREEN LIGHTBOX — ESC key closes. Arrow keys navigate. Swipe left/right. Videos keep playing in the lightbox. */
     #pslider-lightbox {
       position: fixed;
       inset: 0;
@@ -3258,15 +3011,9 @@
       color: rgba(245, 237, 224, .85)
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: related-projects.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   RELATED-PROJECTS.CSS
-   Related projects grid shown at the bottom of a project page.
-═══════════════════════════════════════════════════════════════ */
+/* Related projects grid shown at the bottom of a project page. */
 
-    /* ── Related projects ─────────────────────────────────────── */
+    /* Related projects */
     .related-section {
       padding: 0 3rem 4rem
     }
@@ -3449,19 +3196,9 @@
       transform: translateX(3px)
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: loading-screen.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   LOADING-SCREEN.CSS
-   Branded loading screen shown briefly on first paint (static logo +
-   progress bar only — no background video; see js/main.js for the
-   3-second auto-hide timer).
-═══════════════════════════════════════════════════════════════ */
+/* Branded loading screen shown briefly on first paint (static logo + progress bar only — no background video; see js/main.js for the 3-second auto-hide timer). */
 
-    /* ══════════════════════════════════════════════════════
-     LOADING SCREEN
-  ══════════════════════════════════════════════════════ */
+    /* LOADING SCREEN */
     #loading-screen {
       position: fixed;
       inset: 0;
@@ -3477,9 +3214,7 @@
       pointer-events: none;
     }
 
-    /* Subtle tint layer, kept in case you want to drop a background
-       image/gradient behind the logo later. CUSTOMIZE: adjust this
-       color/opacity if you add one. */
+    /* Subtle tint layer, kept in case a background image/gradient goes behind the logo later */
     .loader-bg-overlay {
       position: absolute;
       inset: 0;
@@ -3564,17 +3299,9 @@
       }
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: testimonials.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   TESTIMONIALS.CSS
-   Client testimonials/reviews carousel.
-═══════════════════════════════════════════════════════════════ */
+/* Client testimonials/reviews carousel. */
 
-    /* ══════════════════════════════════════════════════════
-     TESTIMONIALS SECTION
-  ══════════════════════════════════════════════════════ */
+    /* TESTIMONIALS SECTION */
     .testimonials-section {
       padding: 6rem 0 6rem 3rem;
     }
@@ -3714,17 +3441,9 @@
       margin-top: .1rem;
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: faq.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   FAQ.CSS
-   FAQ accordion section.
-═══════════════════════════════════════════════════════════════ */
+/* FAQ accordion section. */
 
-    /* ══════════════════════════════════════════════════════
-     FAQ SECTION
-  ══════════════════════════════════════════════════════ */
+    /* FAQ SECTION */
     .faq-section {
       padding: 6rem 3rem;
       background: var(--bg2);
@@ -3843,20 +3562,9 @@
       }
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: utility.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   UTILITY.CSS
-   Small utility classes extracted from inline style attributes (kept together since they are one-off, cross-cutting helpers rather than a single component).
-═══════════════════════════════════════════════════════════════ */
+/* Small utility classes extracted from inline style attributes (kept together since they are one-off, cross-cutting helpers rather than a single component). */
 
-/* ═══════════════════════════════════════════════════════════════
-   UTILITY CLASSES
-   ─────────────────────────────────────────────────────────────
-   Extracted from inline style="" attributes that used to live in
-   index.html, so all presentation lives in this stylesheet only.
-═══════════════════════════════════════════════════════════════ */
+/* UTILITY CLASSES — Extracted from inline style="" attributes that used to live in index.html, so all presentation lives in this stylesheet only. */
 
 /* Loading screen fallback text-logo (shown only if the image 404s) */
 .loader-logo-fallback {
@@ -3964,49 +3672,15 @@
   letter-spacing: .04em;
 }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: hero-animation.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ============================================================================
-   HERO SCROLL ANIMATION — icon fountain + title shrink + navbar fly-in
-   Merged from the standalone drop-in build into the real site's markup.
-   Loaded AFTER hero.css (adds to it, doesn't fight it) and BEFORE
-   responsive.css (so your existing mobile breakpoints there still get the
-   final say if you ever need to override anything here).
+/* Hero scroll animation: icon fountain + title shrink + navbar fly-in. Loads after hero.css, before responsive.css, so mobile overrides still win. #hero-title-group is a direct child of #hero-viewport, absolutely positioned with top:var(--ty) as a % of viewport height — it starts low and eases up slightly while scaling down, driven by the same scroll progress as the icon fountain. */
 
-   FIXED (this pass):
-   #hero-title-group previously sat in normal flex flow inside #hero-inner
-   and was animated with `transform: translateY(var(--ty))`. Because #hero-
-   inner is flex-centered and only a few px of offset were configured, this
-   LOOKED fine in isolation, but combined with the pin + real page scroll it
-   was sliding the title straight off the top edge of the pinned viewport
-   instead of staying anchored on screen.
-
-   #hero-title-group is now a DIRECT CHILD of #hero-viewport (see index.html)
-   and absolutely positioned against it, anchored with `top: var(--ty)` as a
-   PERCENTAGE of the viewport height (not a px offset). It starts low
-   ("fixed on the bottom") and eases to a slightly higher resting spot while
-   scaling down — driven by the exact same scroll progress (iconProgress)
-   that drives the icon fountain and, indirectly, the background-frame
-   scrub — so all three move together.
-   ============================================================================ */
-
-/* --------------------------------------------------------------------------
-   PIN WRAPPER
-   #hero-pin-wrap is the element GSAP ScrollTrigger pins in place while the
-   icon animation plays out. Its height is set dynamically in JS (from
-   HERO_ANIMATION_CONFIG) so it always matches how much scroll distance the
-   gated sequence should consume.
-   -------------------------------------------------------------------------- */
+/* Pin wrapper — GSAP ScrollTrigger pins this while the icon animation plays. Height is set dynamically in JS from HERO_ANIMATION_CONFIG. */
 #hero-pin-wrap {
   position: relative;
   width: 100%;
 }
 
-/* #hero-viewport reuses your existing .hero section (background, glow,
-   padding — all untouched) and just adds the sizing/clipping this effect
-   needs. .hero was already position:relative (for the .hero-glow orbs and
-   now also for #hero-title-group's absolute anchoring below). */
+/* #hero-viewport reuses the .hero section's background/glow/padding and just adds the sizing/clipping the animation needs. */
 #hero-viewport {
   position: relative;
   overflow: hidden;
@@ -4014,17 +3688,10 @@
   min-height: 100vh;
 }
 
-/* ==========================================================================
-   HERO ICONS
-   Positioned via CSS custom properties updated every scroll frame in JS.
-   left/top carry the viewport-relative percentage; transform re-centers the
-   box on that point and applies scale/rotate. Each icon is a fully
-   independent element.
-   ========================================================================== */
+/* Hero icons — positioned via CSS custom properties updated every scroll frame in JS. left/top are viewport-relative %, transform re-centers and applies scale/rotate. */
 .hero-icon {
   position: absolute;
-  /* --x / --y are percentages of #hero-viewport, --s is scale, --r is
-     rotation in degrees, --o is opacity. All set from JS. */
+  /* x / --y are percentages of #hero-viewport, --s is scale, --r is rotation in degrees, --o is opacity. All set from JS. */
   --x: 50%;
   --y: 50%;
   --s: 0;
@@ -4032,8 +3699,7 @@
   --o: 0;
   left: var(--x);
   top: var(--y);
-  /* "ICON SIZE" (base) — the box every icon scales from. end.scale in
-     iconConfig (JS) multiplies THIS number. */
+  /* "ICON SIZE" (base) — the box every icon scales from. end.scale in iconConfig (JS) multiplies THIS number. */
   width: 110px;
   height: 110px;
   transform: translate(-50%, -50%) scale(var(--s)) rotate(var(--r));
@@ -4049,17 +3715,7 @@
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .18));
 }
 
-/* ==========================================================================
-   TITLE GROUP (badge + h1 + divider)
-   FIXED: now absolutely positioned against #hero-viewport (its nearest
-   positioned ancestor) instead of living in #hero-inner's flex flow. --ty is
-   a PERCENTAGE (of viewport height, e.g. "82%") set from JS each frame, so
-   the group starts anchored near the bottom of the pinned screen and only
-   drifts up slightly (to its configured resting spot) while it shrinks via
-   --ts — it never scrolls/translates fully off-screen because it's always
-   re-centered by `top: var(--ty)` rather than accumulating a translateY
-   offset.
-   ========================================================================== */
+/* Title group (badge + h1 + divider) — absolutely positioned against #hero-viewport. --ty is a % of viewport height set from JS each frame, so it starts near the bottom and drifts up slightly while shrinking via --ts. */
 #hero-title-group {
   position: absolute;
   left: 50%;
@@ -4069,19 +3725,13 @@
   --ty: 82%;  /* set from JS: vertical anchor as % of viewport height */
   --ts: 1;    /* set from JS: scale */
   top: var(--ty);
-  opacity: 1; /* set from JS: fades out once the icon stage finishes,
-                 before #hero-info-group fades in underneath it */
+  opacity: 1; /* set from JS: fades out once the icon stage finishes, before #hero-info-group fades in underneath it */
   transform: translate(-50%, -50%) scale(var(--ts));
   transform-origin: center center;
   will-change: transform, top, opacity;
 }
 
-/* ==========================================================================
-   INFO GROUP (description / CTAs / stats)
-   Hidden until the icon stage finishes, then fades in. #hero-inner now wraps
-   ONLY this group (title-group was pulled out to be a sibling above), so it
-   keeps its own centered flex layout from hero.css untouched.
-   ========================================================================== */
+/* Info group (description / CTAs / stats) — hidden until the icon stage finishes, then fades in. #hero-inner wraps only this group now. */
 #hero-info-group {
   opacity: 0; /* faded in after the icon stage — see JS */
   will-change: opacity;
@@ -4089,32 +3739,13 @@
   z-index: 5;
 }
 
-/* ==========================================================================
-   NAVBAR FLY-IN
-   #navbar is fixed-positioned by navigation.css already (top/left/right,
-   border-radius pill, blur, etc.) — this rule only adds will-change so the
-   GSAP-driven transform/opacity (set inline via gsap.set() in JS) animates
-   smoothly. JS sets the actual translateY/opacity values.
-   ========================================================================== */
+/* Navbar fly-in — #navbar is already fixed-positioned by navigation.css; this just adds will-change so the GSAP-driven transform/opacity animates smoothly. */
 #navbar {
   will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* BUG FIX (report #5): this block used to force #hero-title-group to
-     `top: 50% !important` while leaving it `position: absolute`. #hero-inner
-     (which wraps #hero-info-group) is centered by .hero's own
-     `display:flex; align-items:center`, i.e. also ~50% — so on any reduced-
-     motion device both groups landed in the same spot and rendered on top
-     of each other (title text through the stat numbers), because forcing
-     opacity:1 on both was only ever tested against the SCROLL-DRIVEN
-     positions, not this static top:50% override, which nothing had
-     actually separated from #hero-inner's own centering.
-     Fix: take #hero-title-group out of absolute positioning entirely and
-     let it sit in normal flow, stacked above #hero-inner, with .hero
-     switched to a column flex layout for this case. It's already #hero-
-     info-group's DOM sibling immediately before it, so this alone puts
-     them in the right order with no overlap regardless of content height. */
+  /* Reduced motion: #hero-title-group used to force top:50% while staying absolute, which landed it right on top of #hero-inner (also ~50% centered) — title text overlapping the stat numbers. Now it sits in normal flow, stacked above #hero-inner, with .hero as a column flex. */
   .hero-icon { display: none; }
   .hero {
     flex-direction: column;
@@ -4136,39 +3767,24 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   Mobile: keep the title comfortably clear of the bottom edge/notch area and
-   don't let it get too wide. responsive.css loads AFTER this file so it can
-   still override anything here if you need device-specific tweaks.
-   -------------------------------------------------------------------------- */
+/* Mobile: keep the title clear of the bottom edge/notch and not too wide. responsive.css loads after this so it can still override. */
 @media (max-width: 768px) {
   #hero-title-group {
     width: 92%;
   }
 }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: responsive.css
-  ══════════════════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE.CSS
-   Shared mobile breakpoints (max-width 768px / 380px) that adjust many components at once. Loaded last so it can override component styles at small viewports.
-═══════════════════════════════════════════════════════════════ */
+/* Shared mobile breakpoints (max-width 768px / 380px) that adjust many components at once. Loaded last so it can override component styles at small viewports. */
 
-    /* ── Mobile ───────────────────────────────────────────────── */
+    /* Mobile */
     @media (max-width: 768px) {
 
-      /* Lighter "glass" blur site-wide: backdrop-filter is one of the
-         most expensive effects to repaint on mobile GPUs, especially
-         inside scrolling containers. A cheaper blur here keeps every
-         .liquid-glass-style card smooth without changing the look much. */
+      /* Lighter glass blur site-wide — backdrop-filter is expensive to repaint on mobile GPUs, especially in scrolling containers. */
       :root {
         --liquid-blur: blur(2px) saturate(160%);
       }
 
-      /* Cheaper ambient-orb blur radius (blur cost grows roughly with
-         the square of the radius, so this meaningfully reduces paint
-         cost on lower-end phones while keeping the same soft-glow look) */
+      /* Cheaper ambient-orb blur radius — cost grows with the square of the radius, so this saves real paint time on low-end phones. */
       .ambient-orb {
         filter: blur(46px);
       }
@@ -4177,8 +3793,7 @@
         filter: blur(40px);
       }
 
-      /* Prevent iOS Safari's automatic zoom-in when a form field with
-         font-size under 16px receives focus */
+      /* Prevent iOS Safari's automatic zoom-in when a form field with font-size under 16px receives focus */
       .contact-form input,
       .contact-form select,
       .contact-form textarea {
@@ -4512,11 +4127,7 @@
 
 <body>
 
-  <!-- ══════════════════════════════════════════════════════
-     LOADING SCREEN — branded intro (static, no background video)
-     CUSTOMIZE: swap images/Website_Logo.webp for your own logo.
-     Auto-hides after 3s (see the setTimeout in js/main.js).
-  ══════════════════════════════════════════════════════ -->
+  <!-- loading screen -->
   <div id="loading-screen">
     <div class="loader-bg-overlay"></div>
 
@@ -4530,13 +4141,13 @@
     </div>
   </div>
 
-  <!-- ── Custom cursor elements (remove to use default cursor) ──── -->
+  <!-- custom cursor elements -->
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
 
-  <!-- ── Decorative background layers ──────────────────────────── -->
+  <!-- decorative background layers -->
   <div id="bg-canvas">
-    <!-- CUSTOMIZE: scroll-scrubbed frame sequence — see FRAME CONFIG in js/background-frames.js -->
+    <!-- scroll-scrubbed background frame sequence -->
     <canvas id="scroll-frames" aria-hidden="true"></canvas>
     <div class="bg-layer"></div>
     <div class="bg-noise"></div>
@@ -4546,30 +4157,21 @@
     <div class="ambient-orb amb3"></div>
   </div>
 
-  <!-- ── Page transition wipe overlay ──────────────────────────── -->
+  <!-- page transition wipe overlay -->
   <div id="page-transition"></div>
 
-  <!-- ════════════════════════════════════════════════════════════
-     NAVIGATION BAR
-     CUSTOMIZE: Edit link labels, logo text, CTA button text
-════════════════════════════════════════════════════════════ -->
+  <!-- navigation bar -->
   <nav id="navbar">
-    <!-- CUSTOMIZE: Logo in navbar.
-         OPTION A — Use an image logo (recommended):
-           1. Put your logo file in the images/ folder (e.g. images/logo.webpWebsite_Logo.webp)
-           2. Uncomment the <img> line below and remove the text spans.
-         OPTION B — Keep the text logo: just edit the SLIDE / CRAFT spans.
-    -->
+    <!-- navbar logo: swap to an image logo by uncommenting the <img> below and dropping the text spans -->
     <div class="nav-logo" data-action="home">
-      <!-- OPTION A: uncomment this line and add your logo path -->
+      <!-- image logo -->
       <img src="images/Website_Logo.webp" alt="SlideCraft Logo" class="navbar-logo-img">
 
-      <!-- OPTION B: text logo (remove these two spans when using image) -->
+      <!-- text logo -->
 
     </div>
     <div class="nav-links" id="navLinks">
       <div class="nav-indicator" id="navIndicator"></div>
-      <!-- CUSTOMIZE: Add/remove nav links as needed -->
       <a data-section="portfolio-anchor" data-action="scroll:portfolio-anchor">Portfolio</a>
       <a data-section="why-anchor" data-action="scroll:why-anchor">Why Us</a>
       <a data-section="pricing-anchor" data-action="scroll:pricing-anchor">Pricing</a>
@@ -4584,7 +4186,6 @@
         </svg>
         Back
       </button>
-      <!-- CUSTOMIZE: Change "Order Now" text and openWA('nav') source -->
       <button class="nav-cta" data-action="scroll:pricing-anchor">Order Now</button>
       <button class="nav-hamburger" id="navHamburger" data-action="drawer-toggle" aria-label="Menu">
         <span></span>
@@ -4594,7 +4195,7 @@
     </div>
   </nav>
 
-  <!-- ── Mobile Nav Drawer ──────────────────────────────────────── -->
+  <!-- mobile nav drawer -->
   <div class="nav-drawer" id="navDrawer">
     <a data-action="drawer-nav:portfolio-anchor">Portfolio</a>
     <a data-action="drawer-nav:why-anchor">Why Us</a>
@@ -4605,59 +4206,36 @@
     <a class="nav-drawer-cta" data-action="wa-drawer:nav">Order on WhatsApp →</a>
   </div>
 
-  <!-- ── Sticky floating CTA button (appears after scroll) ─────── -->
+  <!-- sticky floating CTA -->
   <button class="sticky-cta" id="stickyCTA" data-action="wa:sticky"><svg viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg">
       <path
         d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
     </svg>Order on WhatsApp</button>
 
-  <!-- ════════════════════════════════════════════════════════════
-     HOME VIEW
-════════════════════════════════════════════════════════════ -->
+  <!-- home view -->
   <div class="view" id="view-home">
 
-    <!-- ── HERO SECTION ─────────────────────────────────────────────
-       CUSTOMIZE (animation): see js/hero-animation.js — icon files,
-       icon positions/sizes, title shrink amount, and mobile overrides
-       are all controlled from there (search "QUICK CUSTOMIZATION GUIDE").
-
-       #hero-title-group is now a DIRECT CHILD of #hero-viewport (not
-       nested inside #hero-inner). This is intentional: it lets
-       hero-animation.css position it with `position:absolute` against
-       the pinned viewport itself (bottom-anchored, shrinking in place)
-       instead of sitting in normal flex flow, which was letting it
-       translate straight off the top of the screen during the pinned
-       scroll instead of staying put and shrinking.
-
-       #hero-inner now wraps only #hero-info-group (description / CTAs
-       / stats), which still fades in after the icon stage as before.
-  ──────────────────────────────────────────────────────────────── -->
+    <!-- #hero-title-group sits directly under #hero-viewport (not nested in #hero-inner) so it can be absolutely positioned and pinned in place while shrinking, instead of scrolling off with the flex flow -->
     <div id="hero-pin-wrap">
       <section class="hero" id="hero-viewport">
         <div class="hero-glow hg1"></div>
         <div class="hero-glow hg2"></div>
         <div class="hero-glow hg3"></div>
 
-        <!-- =====================================================
-             SLIDECRAFT HERO ICONS — fly in on scroll, then hold.
-             Five independent elements, positions driven entirely by
-             JS (iconConfig in js/hero-animation.js) — do not hand-place.
-             ===================================================== -->
+        <!-- hero icons: fly in on scroll then hold, positions driven by iconConfig in hero-animation.js -->
         <div class="hero-icon" id="icon-canva"><img id="icon-canva-img" alt="Canva"></div>
         <div class="hero-icon" id="icon-figma"><img id="icon-figma-img" alt="Figma"></div>
         <div class="hero-icon" id="icon-powerpoint"><img id="icon-powerpoint-img" alt="PowerPoint"></div>
         <div class="hero-icon" id="icon-arduino"><img id="icon-arduino-img" alt="Arduino"></div>
         <div class="hero-icon" id="icon-word"><img id="icon-word-img" alt="Microsoft Word"></div>
 
-        <!-- ── TITLE GROUP — bottom-anchored, shrinks in place on scroll ── -->
+        <!-- title group: bottom-anchored, shrinks in place on scroll -->
         <div id="hero-title-group">
-          <!-- CUSTOMIZE: Change badge text -->
           <div class="hero-badge">
             <span class="hero-badge-dot"></span>
             Premium Presentation Studio
           </div>
-          <!-- CUSTOMIZE: Change headline (keep <em> for italic colored line) -->
           <h1 class="hero-h1">
             Slides That
             <em>Command Attention</em>
@@ -4669,14 +4247,10 @@
 
         <div class="hero-inner">
           <div id="hero-info-group">
-            <!-- CUSTOMIZE: Change sub-heading description -->
-           <!-- <p class="hero-sub">Bespoke presentation design crafted with precision and intentionality. We transform
-              your ideas into visual stories that leave a lasting impression.</p-->
             <div class="hero-btns">
               <button class="btn-primary" data-action="scroll:pricing-anchor">Start Your Project →</button>
               <button class="btn-ghost" data-action="scroll:portfolio-anchor">View Portfolio</button>
             </div>
-            <!-- CUSTOMIZE: Change these 4 stat numbers and labels -->
             <div class="hero-stats">
               <div class="hero-stat"><span class="hero-stat-val">240+</span><span class="hero-stat-lbl">Projects
                   Delivered</span></div>
@@ -4694,10 +4268,7 @@
       </section>
     </div>
 
-    <!-- ── MARQUEE STRIP ─────────────────────────────────────────
-       CUSTOMIZE: Add/remove .marquee-item spans.
-       The track is duplicated (14 items × 2) for seamless loop.
-  ──────────────────────────────────────────────────────────── -->
+    <!-- marquee strip: track duplicated (14 items x2) for a seamless loop -->
     <div class="marquee-wrap">
       <div class="marquee-track">
         <span class="marquee-item">College Presentations<span class="marquee-dot">◆</span></span>
@@ -4708,7 +4279,7 @@
         <span class="marquee-item">Startup Logo Design<span class="marquee-dot">◆</span></span>
         <span class="marquee-item">Brand Identity Design<span class="marquee-dot">◆</span></span>
 
-        <!-- Duplicated for infinite loop -->
+        <!-- duplicated for infinite loop -->
         <span class="marquee-item">College Presentations<span class="marquee-dot">◆</span></span>
         <span class="marquee-item">Arduino Projects<span class="marquee-dot">◆</span></span>
         <span class="marquee-item">Poster Design<span class="marquee-dot">◆</span></span>
@@ -4721,7 +4292,7 @@
 
     <div class="divider"></div>
 
-    <!-- ── PORTFOLIO GRID (populated by JS) ──────────────────────── -->
+    <!-- portfolio grid, populated by JS -->
     <section class="portfolio-section" id="portfolio-anchor">
       <div class="portfolio-header reveal">
         <div class="section-label"><span></span>Our Work</div>
@@ -4733,7 +4304,7 @@
 
     <div class="divider"></div>
 
-    <!-- ── WHY US GRID (populated by JS) ─────────────────────────── -->
+    <!-- why-us grid, populated by JS -->
     <section class="why-section" id="why-anchor">
       <div class="section-wrap-1200">
         <div class="reveal">
@@ -4745,7 +4316,7 @@
     </section>
 
     <div class="divider"></div>
-    <!-- Different Pricing sections-->
+    <!-- pricing sections -->
     <div class="arduino-wrapper">
 
       <section class="pricing-category" id="pricing-anchor">
@@ -4767,7 +4338,7 @@
 
     </div>
 
-    <!-- ── PRICING GRID (populated by JS) ────────────────────────── -->
+    <!-- pricing grid, populated by JS -->
 
 
     <div class="pricing-marquee">
@@ -4787,7 +4358,7 @@
 
     <div class="divider"></div>
 
-    <!-- ── TESTIMONIALS SECTION ──────────────────────────────────────── -->
+    <!-- testimonials -->
     <section class="testimonials-section" id="testimonials-anchor">
       <div class="testimonials-header">
         <div class="reveal">
@@ -4870,7 +4441,7 @@
 
     <div class="divider"></div>
 
-    <!-- ── FAQ SECTION ────────────────────────────────────────────────── -->
+    <!-- faq -->
     <section class="faq-section" id="faq-anchor">
       <div class="section-wrap-1200">
         <div class="reveal text-center">
@@ -4946,7 +4517,7 @@
 
     <div class="divider"></div>
 
-    <!-- ── CTA BANNER ──────────────────────────────────────────────── -->
+    <!-- cta banner -->
     <section class="cta-section-wrap">
       <div class="cta-banner reveal">
         <div class="section-label center mb-1"><span></span>Get Started</div>
@@ -4960,10 +4531,7 @@
       </div>
     </section>
 
-    <!-- ── CONTACT FORM ─────────────────────────────────────────────
-       CUSTOMIZE: Add/remove select options for your services.
-       The form submits directly to WhatsApp on submit.
-  ──────────────────────────────────────────────────────────── -->
+    <!-- contact form, submits straight to WhatsApp -->
     <section class="contact-section" id="contact-anchor">
       <div class="reveal">
         <div class="section-label"><span></span>Contact</div>
@@ -4974,7 +4542,6 @@
 
       <form class="contact-form reveal" id="contactForm">
         <input type="text" placeholder="Your Name" required>
-        <!-- CUSTOMIZE: Add/remove service options here -->
         <select required>
           <option value="" disabled selected>Select a Service</option>
           <option>Presentation</option>
@@ -4991,10 +4558,7 @@
         <button class="btn-primary align-start" type="submit">Send via WhatsApp →</button>
       </form>
 
-      <!-- ── Social links ──────────────────────────────────────────
-           CUSTOMIZE: Replace href="#" on each <li> with your real
-           profile URLs (Facebook, Instagram, YouTube).
-      ──────────────────────────────────────────────────────────── -->
+      <!-- social links: replace href="#" with your real profile URLs -->
       <ul class="contact-social reveal">
         <a href="https://www.facebook.com/share/1Bge3Q35rY/" target="_blank">
           <li class="icon facebook" >
@@ -5027,13 +4591,10 @@
       </ul>
     </section>
 
-    <!-- ── FOOTER ───────────────────────────────────────────────── -->
+    <!-- footer -->
     <footer>
 
-      <!-- CUSTOMIZE: Footer logo (bottom-left).
-           OPTION A — image logo: uncomment <img> and remove the text div.
-           OPTION B — text logo: keep the div below as-is.
-      -->
+      <!-- footer logo: swap to an image logo by uncommenting the <img> below -->
       <!-- <img src="images/logo.webpWebsite_Logo.webp" alt="SlideCraft" style="height:30px;width:auto;opacity:.7"> -->
       <img src="images/Website_Logo.webp" alt="SlideCraft Logo" class="footer-logo-img" data-action="home">
 
@@ -5042,21 +4603,15 @@
         <a class="footer-link" data-action="scroll:pricing-anchor">Pricing</a>
         <a class="footer-link" data-action="wa:footer">WhatsApp</a>
       </div>
-      <!-- CUSTOMIZE: Update copyright year/name -->
       <p class="footer-copy">© 2026 SlideCraft — All rights reserved</p>
     </footer>
 
   </div><!-- /view-home -->
 
-  <!-- ════════════════════════════════════════════════════════════
-     PROJECT DETAIL VIEW (rendered dynamically by openProject())
-════════════════════════════════════════════════════════════ -->
+  <!-- project detail view, rendered dynamically by openProject() -->
   <div class="view" id="view-project"></div>
 
-  <!-- ════════════════════════════════════════════════════════════
-     FULLSCREEN LIGHTBOX (shared across all projects)
-     Opened when user clicks the main slider image.
-════════════════════════════════════════════════════════════ -->
+  <!-- fullscreen lightbox, shared across all projects, opens on slider image click -->
   <div id="pslider-lightbox">
     <div class="plb-inner" id="plbInner">
       <button class="plb-close" id="plbClose">✕</button>
@@ -5082,71 +4637,35 @@
   </div>
   <!-- main.js wires up data-action handlers and runs init; load it last -->
   <script>
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: config.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   CONFIG.JS
-   Global site configuration: WhatsApp number and slider/media settings. Edit these constants to reconfigure the site.
-════════════════════════════════════════════════════════════════ */
+/* Global site configuration: WhatsApp number and slider/media settings. Edit these constants to reconfigure the site. */
 
-    /* ════════════════════════════════════════════════════════════════
-       SITE CONFIGURATION
-    ════════════════════════════════════════════════════════════════ */
+    /* SITE CONFIGURATION */
 
-    // CUSTOMIZE: Replace with your WhatsApp number (country code + number, no + sign)
+    // Replace with your WhatsApp number (country code + number, no + sign)
     const WA_NUMBER = '919998329419';
     const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
 
-    /* ════════════════════════════════════════════════════════════════
-       SLIDER CONFIGURATION
-       ──────────────────────────────────────────────────────────────
-       CUSTOMIZE: Tweak these global slider/media settings.
-    ════════════════════════════════════════════════════════════════ */
+    /* SLIDER CONFIGURATION — Tweak these global slider/media settings. */
     const SLIDER_AUTOPLAY = false;  // set true to enable slide autoplay
     const SLIDER_AUTOPLAY_MS = 4500;   // autoplay interval in milliseconds
     const PARALLAX_STRENGTH = 12;     // px of parallax shift on mouse move
     const SLIDER_LOOP = true;   // infinite loop when navigating past last
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: background-frames.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   BACKGROUND-FRAMES.JS
-   Scroll-scrubbed image-sequence background (renders to the #scroll-frames canvas).
-════════════════════════════════════════════════════════════════ */
+/* Scroll-scrubbed image-sequence background (renders to the #scroll-frames canvas). */
 
-    /* ════════════════════════════════════════════════════════════════
-       SCROLL-FRAMES BACKGROUND
-       ──────────────────────────────────────────────────────────────
-       Renders a full-bleed image sequence to the #scroll-frames canvas
-       and scrubs through it as the visitor scrolls down the page —
-       the site's entire background becomes a scroll-driven animation.
-
-       Desktop and mobile use SEPARATE frame sequences (mobile's is
-       meant to be a smaller/lighter set — fewer frames and/or smaller
-       source images — since phones shouldn't download 660 desktop-res
-       JPEGs). Both still scrub live with scroll.
-
-       CUSTOMIZE:
-       1. folder → put your images/frames/frame_001.jpg … files here
-       2. count  → set this to the exact number of frames you have
-       3. pad    → digits in the filename number (frame_001 → 3)
-       4. ext    → file extension of your frames
-       Do this for BOTH the desktop and mobile configs below.
-    ════════════════════════════════════════════════════════════════ */
+    /* SCROLL-FRAMES BACKGROUND — Renders a full-bleed image sequence to the #scroll-frames canvas and scrubs through it as the visitor scrolls down the page the site's entire background becomes a scroll-driven animation. Desktop and mobile use SEPARATE frame sequences (mobile's is meant to be a smaller/lighter set — fewer frames and/or smaller source images — since phones shouldn't download 660 desktop-res JPEGs). Both still scrub live with scroll. 1. folder → put your images/frames/frame_001.jpg … files here 2. count → set this to the exact number of frames you have 3. pad → digits in the filename number (frame_001 → 3) 4. ext → file extension of your frames Do this for BOTH the desktop and mobile configs below. */
     const FRAME_CONFIG_DESKTOP = {
-      folder: 'images/scroll-frames/',      // CUSTOMIZE: desktop frame folder
+      folder: 'images/scroll-frames/',      // desktop frame folder
       prefix: 'frame_',
-      count: 200,                           // CUSTOMIZE: total desktop frames
+      count: 200,                           // total desktop frames
       pad: 3,                               // frame_001.jpg → 3 digits
       ext: '.webp'
     };
 
     const FRAME_CONFIG_MOBILE = {
-      folder: 'images/scroll-frames-mobile/', // CUSTOMIZE: mobile frame folder (smaller/lighter images)
+      folder: 'images/scroll-frames-mobile/', // mobile frame folder (smaller/lighter images)
       prefix: 'frame_',
-      count: 100,                             // CUSTOMIZE: total mobile frames (fewer than desktop)
+      count: 100,                             // total mobile frames (fewer than desktop)
       pad: 3,                                 // frame_001.jpg → 3 digits
       ext: '.webp'
     };
@@ -5165,9 +4684,8 @@
       const isSmallViewport = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
       const FRAME_CONFIG = isSmallViewport ? FRAME_CONFIG_MOBILE : FRAME_CONFIG_DESKTOP;
 
-      // Accessibility / data-saver preferences still fall back to a single
-      // static frame regardless of device — these are about respecting a
-      // user preference, not about screen size.
+      // Accessibility / data-saver preferences fall back to a single
+      // static frame regardless of device.
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isDataSaver = !!(navigator.connection && navigator.connection.saveData);
       const useLightweightMode = prefersReducedMotion || isDataSaver;
@@ -5260,61 +4778,15 @@
       window.addEventListener('scroll', onScroll, { passive: true });
     })();
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: data.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   DATA.JS
-   All editable content data: portfolio PROJECTS, WHY_CARDS, and pricing tiers (PPT_PRICING / PROJECT_PRICING).
-════════════════════════════════════════════════════════════════ */
+/* All editable content data: portfolio PROJECTS, WHY_CARDS, and pricing tiers (PPT_PRICING / PROJECT_PRICING). */
 
-    /* ════════════════════════════════════════════════════════════════
-       PROJECTS DATA
-       ──────────────────────────────────────────────────────────────
-       CUSTOMIZE: Edit this array to add/remove projects.
-    
-       Each project object has these fields:
-       ─────────────────────────────────────
-       id          — string, used in WhatsApp messages & related matching
-       title       — displayed name of the project
-       thumbnail   — path to the card thumbnail image (relative to HTML)
-       video       — (OPTIONAL) path to an mp4 video; shown on card hover
-                     e.g.  video: 'videos/my-ppt-preview.mp4'
-                     Leave out or set to '' to show no video on the card.
-       tagline     — short one-line subtitle
-       category    — shown as the category chip (top-left of card)
-       desc        — paragraph description of the project
-       tags        — array of short tag labels shown on the card
-       color       — primary accent color for this project page
-       color2      — darker version of the accent (unused currently)
-       bg          — rgba background for decorative elements
-       deliverables— array of 4 deliverable labels (project page)
-       features    — array of feature bullet points (project page)
-       showcase    — array of media items for the project page slider.
-                     ─────────────────────────────────────────────────
-                     Each item can be:
-                       • A string path to an IMAGE: 'images/foo.webp'
-                       • An OBJECT for a VIDEO:
-                         {
-                           type: 'video',
-                           src:  'videos/foo.mp4',
-                           poster: 'images/foo-poster.webp'  ← optional
-                         }
-                     ─────────────────────────────────────────────────
-                     Mix images and videos freely in the array.
-                     Example:
-                       showcase: [
-                         'images/slide1.webp',
-                         { type:'video', src:'videos/demo.mp4', poster:'images/poster.webp' },
-                         'images/slide3.webp',
-                       ]
-    ════════════════════════════════════════════════════════════════ */
+    /* PROJECTS DATA — Edit this array to add/remove projects. Each project object has these fields: id — string, used in WhatsApp messages & related matching title — displayed name of the project thumbnail — path to the card thumbnail image (relative to HTML) video — (OPTIONAL) path to an mp4 video; shown on card hover e.g. video: 'videos/my-ppt-preview.mp4' Leave out or set to '' to show no video on the card. tagline — short one-line subtitle category — shown as the category chip (top-left of card) desc — paragraph description of the project tags — array of short tag labels shown on the card color — primary accent color for this project page color2 — darker version of the accent (unused currently) bg — rgba background for decorative elements deliverables— array of 4 deliverable labels (project page) features — array of feature bullet points (project page) showcase — array of media items for the project page slider. Each item can be: • A string path to an IMAGE: 'images/foo.webp' • An OBJECT for a VIDEO: { type: 'video', src: 'videos/foo.mp4', poster: 'images/foo-poster.webp' ← optional } Mix images and videos freely in the array. Example: showcase: [ 'images/slide1.webp', { type:'video', src:'videos/demo.mp4', poster:'images/poster.webp' }, 'images/slide3.webp', ] */
     const PROJECTS = [
       {
         id: 'PPT',
         title: 'College Presentations',
         thumbnail: 'images/PPT.webp',
-        // CUSTOMIZE: Add a hover-preview video for this card:
+        // Add a hover-preview video for this card:
         // video: 'videos/ppt-preview.mp4',
         video: '',
         tagline: 'Present Ideas That Get Remembered',
@@ -5324,10 +4796,10 @@
         color: '#c0392b', color2: '#962d22', bg: 'rgba(192,57,43,0.08)',
         deliverables: ['PowerPoint + PDF files', 'Custom slide designs', 'Animated transitions', 'Presentation assets'],
         features: ['Modern slide layouts', 'Infographics & charts', 'Animations & transitions', 'Professional storytelling'],
-        // CUSTOMIZE: Add images and/or videos to the slider below.
+        // Add images and/or videos to the slider below.
         // Mix types freely — images shown as <img>, videos as <video>.
         showcase: [
-          //'images/PPT.webp',
+          // 'images/PPT.webp',
           // Example video slide — uncomment and set your path:
           // { type: 'video', src: 'videos/ppt-showcase.mp4', poster: 'images/PPT.webp' },
           { type: 'video', src: 'videos/PPT/ParkinngGate.mp4', poster: 'images/PPT/ParkinngGate.webp' },
@@ -5342,7 +4814,7 @@
         id: 'Tech Service',
         title: 'Arduino Projects',
         thumbnail: 'images/Arduino.png',
-        // CUSTOMIZE: Add a hover video for this card:
+        // Add a hover video for this card:
         // video: 'videos/arduino-preview.mp4',
         video: '',
         tagline: 'Where Innovation Meets Real-World Circuits',
@@ -5366,7 +4838,7 @@
         id: 'Design Service',
         title: 'Website Design',
         thumbnail: 'images/Site.webp',
-        // CUSTOMIZE: Add a hover video for this card:
+        // add a hover video for this card:
         // video: 'videos/fest-preview.mp4',
         video: '',
         tagline: 'Websites That Capture Attention Instantly.',
@@ -5378,7 +4850,7 @@
         features: ['Smooth animations', 'Custom sections', 'SEO-friendly structure', 'Fast-loading pages'],
         showcase: [
           'images/Site.webp',
-          // CUSTOMIZE: Replace with a real video slide:
+          // or a real video slide:
           { type: 'video', src: 'videos/Website/Slidecraft.mp4', poster: 'images/Site.webp' },
 
         ]
@@ -5467,10 +4939,7 @@
       },
     ];
 
-    /* ════════════════════════════════════════════════════════════════
-       WHY US CARDS DATA
-       CUSTOMIZE: Edit these 6 cards to describe your strengths.
-    ════════════════════════════════════════════════════════════════ */
+    /* WHY US CARDS DATA — Edit these 6 cards to describe your strengths. */
     const WHY_CARDS = [
       {  title: 'Strategic Clarity', desc: 'Every slide has a purpose. We structure your story for maximum impact and comprehension.' },
       {  title: 'Refined Aesthetics', desc: 'Beautiful, intentional design that reflects the quality of your brand and thinking.' },
@@ -5480,10 +4949,7 @@
       {  title: 'Ongoing Support', desc: 'Post-delivery guidance and editable source files so you can adapt decks with ease.' },
     ];
 
-    /* ════════════════════════════════════════════════════════════════
-       PRICING DATA
-       CUSTOMIZE: Edit tiers, prices, features. Mark one as featured.
-    ════════════════════════════════════════════════════════════════ */
+    /* PRICING DATA — Edit tiers, prices, features. Mark one as featured. */
     const PPT_PRICING = [
       {
         tier: 'Essential', price: '₹199', featured: false,
@@ -5491,7 +4957,7 @@
         features: ['Up to 10 slides', '2 revision rounds', 'PDF + PPTX', '1 custom colour scheme'],
       },
       {
-        tier: 'Professional', price: '₹299', featured: true, /* CUSTOMIZE: set featured:true on your preferred plan */
+        tier: 'Professional', price: '₹299', featured: true, /* set featured:true on your preferred plan */
         desc: 'Our most popular option for ambitious projects.',
         features: ['Up to 20 slides', 'Unlimited revisions', 'PDF + PPTX + Keynote', 'Custom illustration set', 'Data visualisation pack'],
       },
@@ -5546,17 +5012,9 @@
       },
     ];
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: portfolio.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   PORTFOLIO.JS
-   Builds the homepage portfolio cards grid, including hover-preview video handling.
-════════════════════════════════════════════════════════════════ */
+/* Builds the homepage portfolio cards grid, including hover-preview video handling. */
 
-    /* ════════════════════════════════════════════════════════════════
-       HELPER: Is a showcase item a video?
-    ════════════════════════════════════════════════════════════════ */
+    /* HELPER: Is a showcase item a video? */
     function isVideoItem(item) {
       return item && typeof item === 'object' && item.type === 'video';
     }
@@ -5565,18 +5023,7 @@
     function itemSrc(item) { return isVideoItem(item) ? item.src : item; }
     function itemPoster(item) { return isVideoItem(item) ? (item.poster || '') : item; }
 
-    /* ════════════════════════════════════════════════════════════════
-       BUILD PORTFOLIO CARDS (home grid)
-       ──────────────────────────────────────────────────────────────
-       Each card thumbnail is an animated folder (see .folder-scene in
-       portfolio.css). On hover, the folder opens and the three papers
-       inside fan out — each paper shows a REAL thumbnail pulled from
-       that project's `showcase` array (video items use their poster
-       frame), so the folder previews actual delivered work instead of
-       a flat placeholder colour.
-       CUSTOMIZE: the folder's colours come from each project's own
-       `color` / `color2` fields — no extra setup needed per project.
-    ════════════════════════════════════════════════════════════════ */
+    /* BUILD PORTFOLIO CARDS (home grid) — Each card thumbnail is an animated folder (see .folder-scene in portfolio.css). On hover, the folder opens and the three papers inside fan out — each paper shows a REAL thumbnail pulled from that project's `showcase` array (video items use their poster frame), so the folder previews actual delivered work instead of a flat placeholder colour. the folder's colours come from each project's own `color` / `color2` fields — no extra setup needed per project. */
     function buildCards() {
       const grid = document.getElementById('cardsGrid');
 
@@ -5584,7 +5031,7 @@
         const card = document.createElement('div');
         card.className = 'project-card reveal';
 
-        // ── Pick up to 3 real content thumbnails for the folder papers ──
+        // Pick up to 3 real content thumbnails for the folder papers
         // Pulls from `showcase` (poster frame for videos), falling back
         // to the project's main `thumbnail` if showcase is short/empty.
         const gallery = (p.showcase || [])
@@ -5625,41 +5072,24 @@
       });
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: why.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   WHY.JS
-   Builds the "Why SlideCraft" cards grid.
-════════════════════════════════════════════════════════════════ */
+/* Builds the "Why SlideCraft" cards grid. */
 
-    /* ════════════════════════════════════════════════════════════════
-       BUILD WHY-US CARDS
-    ════════════════════════════════════════════════════════════════ */
+    /* BUILD WHY-US CARDS */
     function buildWhy() {
       const grid = document.getElementById('whyGrid');
       WHY_CARDS.forEach(w => {
         const el = document.createElement('div');
         el.className = 'why-card reveal';
         el.innerHTML = `
-    
       <div class="why-title">${w.title}</div>
       <div class="why-desc">${w.desc}</div>`;
         grid.appendChild(el);
       });
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: pricing.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   PRICING.JS
-   Builds the pricing card grids (both Presentation and Arduino tiers).
-════════════════════════════════════════════════════════════════ */
+/* Builds the pricing card grids (both Presentation and Arduino tiers). */
 
-    /* ════════════════════════════════════════════════════════════════
-       BUILD PRICING CARDS
-    ════════════════════════════════════════════════════════════════ */
+    /* BUILD PRICING CARDS */
     function buildPricingGrid(data, gridId) {
       const grid = document.getElementById(gridId);
 
@@ -5693,40 +5123,20 @@
       });
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: slider.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   SLIDER.JS
-   Reusable image/video slider module used on individual project pages.
-════════════════════════════════════════════════════════════════ */
+/* Reusable image/video slider module used on individual project pages. */
 
-    /* ════════════════════════════════════════════════════════════════
-       SLIDER MODULE
-       ──────────────────────────────────────────────────────────────
-       Renders a slide track that supports both <img> and <video>.
-       Videos autoplay (muted) when their slide becomes active and
-       pause when navigating away.
-    
-       MEDIA TYPES in showcase[]:
-         • 'images/foo.png'             → standard image slide
-         • { type:'video', src:'...' }  → video slide (autoplays)
-    ════════════════════════════════════════════════════════════════ */
+    /* SLIDER MODULE — Renders a slide track that supports both <img> and <video>. Videos autoplay (muted) when their slide becomes active and pause when navigating away. MEDIA TYPES in showcase[]: • 'images/foo.png' → standard image slide • { type:'video', src:'...' } → video slide (autoplays) */
 
     let _sliderState = null;
     let _autoplayTimer = null;
     let _sliderKeyHandler = null;
 
-    /**
-     * buildInteractiveSlider(p)
-     * Returns HTML string for the full media slider section.
-     * Called from buildShowcaseGallery() → openProject().
-     */
+    /* * buildInteractiveSlider(p) — * Returns HTML string for the full media slider section. * Called from buildShowcaseGallery() → openProject(). */
     function buildInteractiveSlider(p) {
       const items = p.showcase && p.showcase.length > 0 ? p.showcase : [null];
       const count = items.length;
 
-      // ── Build each slide ──────────────────────────────────────
+      // Build each slide
       const slidesHtml = items.map((item, i) => {
         let mediaEl = '';
 
@@ -5737,7 +5147,7 @@
         <div class="pslide-ph-label">${p.tagline}</div>
       </div>`;
         } else if (isVideoItem(item)) {
-          // ── VIDEO SLIDE ──
+          // VIDEO SLIDE
           // autoplay + loop + muted (required for autoplay in browsers)
           // poster is the first-frame preview image (optional but recommended)
           mediaEl = `
@@ -5747,12 +5157,12 @@
                muted playsinline loop preload="metadata"
                data-video-slide="true"></video>
         <div class="pslide-overlay"></div>
-        <!-- VIDEO type badge (top-left, always visible) -->
+        <!-- video type badge -->
         <div class="pslide-type-badge">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           Video
         </div>
-        <!-- Mute/unmute toggle (bottom-right) -->
+        <!-- mute/unmute toggle -->
         <div class="pslide-video-controls">
           <button class="pslide-mute-btn" onclick="toggleSlideVideoMute(this)" title="Toggle sound">
             <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -5768,7 +5178,7 @@
           </button>
         </div>`;
         } else {
-          // ── IMAGE SLIDE ──
+          // IMAGE SLIDE
           mediaEl = `
         <img class="pslide-img"
              src="${item}"
@@ -5786,7 +5196,7 @@
         return `<div class="pslide${i === 0 ? ' active' : ''}" data-idx="${i}">${mediaEl}</div>`;
       }).join('');
 
-      // ── Build thumbnail strip ────────────────────────────────
+      // Build thumbnail strip
       const thumbsHtml = items.map((item, i) => {
         let thumbContent = '';
 
@@ -5846,10 +5256,7 @@
   </div>`;
     }
 
-    /**
-     * Toggle mute on a video slide from its button.
-     * Called by the inline onclick on .pslide-mute-btn.
-     */
+    /* * Toggle mute on a video slide from its button. * Called by the inline onclick on .pslide-mute-btn. */
     function toggleSlideVideoMute(btn) {
       const slide = btn.closest('.pslide');
       const vid = slide && slide.querySelector('video');
@@ -5860,10 +5267,7 @@
       btn.childNodes[btn.childNodes.length - 1].textContent = vid.muted ? ' Muted' : ' Sound on';
     }
 
-    /**
-     * initSlider(p)
-     * Wires all slider interactivity after HTML is injected.
-     */
+    /* * initSlider(p) — * Wires all slider interactivity after HTML is injected. */
     function initSlider(p) {
       const items = p.showcase && p.showcase.length > 0 ? p.showcase : [null];
       const viewport = document.getElementById('psliderViewport');
@@ -5874,19 +5278,19 @@
       _sliderState = { p, items, total: items.length, cur: 0, isAnimating: false };
       clearAutoplay();
 
-      // ── Helper: pause all video slides ──────────────────────
+      // Helper: pause all video slides
       function pauseAllVideos() {
         track.querySelectorAll('video').forEach(v => v.pause());
       }
 
-      // ── Helper: play video on the active slide if it's a video ──
+      // Helper: play video on the active slide if it's a video
       function playActiveVideo(idx) {
         const activeSlide = track.querySelector(`.pslide[data-idx="${idx}"]`);
         const vid = activeSlide && activeSlide.querySelector('video');
         if (vid) vid.play().catch(() => { });
       }
 
-      // ── goTo: move the track to a given index ────────────────
+      // goTo: move the track to a given index
       function goTo(idx, animate = true) {
         if (_sliderState.isAnimating && animate) return;
         const s = _sliderState;
@@ -5932,7 +5336,7 @@
         if (el) el.textContent = String(idx + 1).padStart(2, '0');
       }
 
-      // ── Arrow buttons ────────────────────────────────────────
+      // Arrow buttons
       document.getElementById('psliderPrev')?.addEventListener('click', e => {
         e.stopPropagation(); goTo(_sliderState.cur - 1); resetAutoplay();
       });
@@ -5940,17 +5344,17 @@
         e.stopPropagation(); goTo(_sliderState.cur + 1); resetAutoplay();
       });
 
-      // ── Click viewport → open lightbox ───────────────────────
+      // Click viewport → open lightbox
       viewport.addEventListener('click', () => {
         openPremiumLightbox(_sliderState.items, _sliderState.cur, p);
       });
 
-      // ── Thumbnail clicks ─────────────────────────────────────
+      // Thumbnail clicks
       thumbsEl?.querySelectorAll('.pslider-thumb').forEach((t, i) => {
         t.addEventListener('click', e => { e.stopPropagation(); goTo(i); resetAutoplay(); });
       });
 
-      // ── Keyboard navigation ──────────────────────────────────
+      // Keyboard navigation
       if (_sliderKeyHandler) document.removeEventListener('keydown', _sliderKeyHandler);
       _sliderKeyHandler = e => {
         if (document.getElementById('pslider-lightbox')?.classList.contains('open')) return;
@@ -5959,7 +5363,7 @@
       };
       document.addEventListener('keydown', _sliderKeyHandler);
 
-      // ── Touch/swipe ──────────────────────────────────────────
+      // Touch/swipe
       let touchX = 0, touchY = 0, isSwiping = false;
       viewport.addEventListener('touchstart', e => {
         touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; isSwiping = false;
@@ -5978,7 +5382,7 @@
         e.preventDefault();
       }, { passive: false });
 
-      // ── Parallax on mouse move ───────────────────────────────
+      // Parallax on mouse move
       const wrap = document.getElementById('psliderWrap');
       wrap?.addEventListener('mousemove', e => {
         const rect = viewport.getBoundingClientRect();
@@ -5992,7 +5396,7 @@
         if (media) media.style.transform = 'scale(1) translate(0,0)';
       });
 
-      // ── Autoplay (disabled by default; set SLIDER_AUTOPLAY=true) ─
+      // Autoplay (disabled by default; set SLIDER_AUTOPLAY=true)
       function startAutoplay() {
         if (!SLIDER_AUTOPLAY || _sliderState.total <= 1) return;
         _autoplayTimer = setInterval(() => goTo(_sliderState.cur + 1), SLIDER_AUTOPLAY_MS);
@@ -6013,21 +5417,9 @@
     /* Convenience wrapper called by openProject() */
     function buildShowcaseGallery(p) { return buildInteractiveSlider(p); }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: lightbox.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   LIGHTBOX.JS
-   Fullscreen lightbox module for viewing slider media at full size.
-════════════════════════════════════════════════════════════════ */
+/* Fullscreen lightbox module for viewing slider media at full size. */
 
-    /* ════════════════════════════════════════════════════════════════
-       FULLSCREEN LIGHTBOX MODULE
-       ──────────────────────────────────────────────────────────────
-       Opened when user clicks the main slider viewport.
-       Supports both images and video in the lightbox.
-       ESC key closes. Arrow keys navigate. Swipe on mobile.
-    ════════════════════════════════════════════════════════════════ */
+    /* FULLSCREEN LIGHTBOX MODULE — Opened when user clicks the main slider viewport. Supports both images and video in the lightbox. ESC key closes. Arrow keys navigate. Swipe on mobile. */
     let _lb = { items: [], idx: 0, p: null };
 
     function openPremiumLightbox(items, startIdx, p) {
@@ -6055,7 +5447,7 @@
       <div class="plb-ph-text">${p.tagline}</div>
     </div>`;
       } else if (isVideoItem(item)) {
-        // ── Video in lightbox: controls visible, click to play/pause ──
+        // Video in lightbox: controls visible, click to play/pause
         slot.innerHTML = `
       <video class="plb-main-video"
              src="${item.src}"
@@ -6149,17 +5541,9 @@
       }, { passive: true });
     })();
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: project-page.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   PROJECT-PAGE.JS
-   Renders an individual project's detail page: hero showcase panels, related projects, and the main project page renderer (openProject).
-════════════════════════════════════════════════════════════════ */
+/* Renders an individual project's detail page: hero showcase panels, related projects, and the main project page renderer (openProject). */
 
-    /* ════════════════════════════════════════════════════════════════
-       HERO SHOWCASE (floating panels on the project page)
-    ════════════════════════════════════════════════════════════════ */
+    /* HERO SHOWCASE (floating panels on the project page) */
     function buildHeroShowcase(p) {
       const items = p.showcase || [];
       const mainItem = items[0] || null;
@@ -6206,9 +5590,7 @@
   </div>`;
     }
 
-    /* ════════════════════════════════════════════════════════════════
-       RELATED PROJECTS
-    ════════════════════════════════════════════════════════════════ */
+    /* RELATED PROJECTS */
     function buildRelatedProjects(p) {
       const related = PROJECTS
         .filter(r => !(r.id === p.id && r.title === p.title))
@@ -6249,9 +5631,7 @@
   </div>`;
     }
 
-    /* ════════════════════════════════════════════════════════════════
-       PROJECT PAGE RENDERER
-    ════════════════════════════════════════════════════════════════ */
+    /* PROJECT PAGE RENDERER */
     function openProject(p) {
       transitionTo(() => {
         showView('project');
@@ -6343,17 +5723,9 @@
       });
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: navigation.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   NAVIGATION.JS
-   Navigation helpers (view switching, scroll-to-section, back/home), the custom cursor, scroll effects (navbar/sticky CTA/nav indicator), and the mobile hamburger drawer.
-════════════════════════════════════════════════════════════════ */
+/* Navigation helpers (view switching, scroll-to-section, back/home), the custom cursor, scroll effects (navbar/sticky CTA/nav indicator), and the mobile hamburger drawer. */
 
-    /* ════════════════════════════════════════════════════════════════
-       NAVIGATION HELPERS
-    ════════════════════════════════════════════════════════════════ */
+    /* NAVIGATION HELPERS */
     function navigateHome() {
       transitionTo(() => {
         showView('home');
@@ -6390,9 +5762,7 @@
       });
     }
 
-    /* ════════════════════════════════════════════════════════════════
-       CUSTOM CURSOR
-    ════════════════════════════════════════════════════════════════ */
+    /* CUSTOM CURSOR */
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursor-ring');
     document.addEventListener('mousemove', e => {
@@ -6401,9 +5771,7 @@
       setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 50);
     });
 
-    /* ════════════════════════════════════════════════════════════════
-       SCROLL EFFECTS (navbar + sticky CTA + nav indicator)
-    ════════════════════════════════════════════════════════════════ */
+    /* SCROLL EFFECTS (navbar + sticky CTA + nav indicator) */
 
     /* Move the indicator pill to sit under the currently-active nav link */
     function updateNavIndicator() {
@@ -6460,9 +5828,7 @@
       updateNavIndicator();
     });
 
-    /* ════════════════════════════════════════════════════════════════
-       MOBILE HAMBURGER DRAWER
-    ════════════════════════════════════════════════════════════════ */
+    /* MOBILE HAMBURGER DRAWER */
     function toggleDrawer() {
       const drawer = document.getElementById('navDrawer');
       const hamburger = document.getElementById('navHamburger');
@@ -6490,18 +5856,9 @@
       }, 320);
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: whatsapp.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   WHATSAPP.JS
-   WhatsApp integration: builds and opens wa.me links for CTAs and the contact form.
-════════════════════════════════════════════════════════════════ */
+/* WhatsApp integration: builds and opens wa.me links for CTAs and the contact form. */
 
-    /* ════════════════════════════════════════════════════════════════
-       WHATSAPP INTEGRATION
-       CUSTOMIZE: Add new source keys and messages to the msgs object.
-    ════════════════════════════════════════════════════════════════ */
+    /* WHATSAPP INTEGRATION — Add new source keys and messages to the msgs object. */
     function openWA(source) {
       const msgs = {
         'nav': `Hi SlideCraft! I'd like to place an order.`,
@@ -6537,17 +5894,9 @@
       window.open(WA_BASE + encodeURIComponent(waMsg), '_blank');
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: ui-interactions.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   UI-INTERACTIONS.JS
-   Small shared UI behaviors: scroll-reveal animations, the hex-to-rgb color helper, testimonials drag-to-scroll, and FAQ accordion toggling.
-════════════════════════════════════════════════════════════════ */
+/* Small shared UI behaviors: scroll-reveal animations, the hex-to-rgb color helper, testimonials drag-to-scroll, and FAQ accordion toggling. */
 
-    /* ════════════════════════════════════════════════════════════════
-       SCROLL REVEAL (intersection observer)
-    ════════════════════════════════════════════════════════════════ */
+    /* SCROLL REVEAL (intersection observer) */
     function initReveal() {
       const obs = new IntersectionObserver(entries => {
         entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
@@ -6555,17 +5904,13 @@
       document.querySelectorAll('.reveal:not(.revealed)').forEach(el => obs.observe(el));
     }
 
-    /* ════════════════════════════════════════════════════════════════
-       UTILITY: hex color → "r,g,b" string for rgba() usage
-    ════════════════════════════════════════════════════════════════ */
+    /* UTILITY: hex color → "r,g,b" string for rgba() usage */
     function hexToRgb(hex) {
       const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return r ? `${parseInt(r[1], 16)},${parseInt(r[2], 16)},${parseInt(r[3], 16)}` : null;
     }
 
-    /* ════════════════════════════════════════════════════════════════
-       TESTIMONIALS DRAG-TO-SCROLL
-    ════════════════════════════════════════════════════════════════ */
+    /* TESTIMONIALS DRAG-TO-SCROLL */
     (function () {
       const track = document.getElementById('testiTrack');
       if (!track) return;
@@ -6586,76 +5931,21 @@
       });
     })();
 
-    /* ════════════════════════════════════════════════════════════════
-       FAQ TOGGLE
-    ════════════════════════════════════════════════════════════════ */
+    /* FAQ TOGGLE */
     function toggleFaq(item) {
       const isOpen = item.classList.contains('open');
       document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
       if (!isOpen) item.classList.add('open');
     }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: hero-animation.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ============================================================================
-   SLIDECRAFT — HERO SCROLL ANIMATION
-   Icon fountain (Canva/Figma/PowerPoint/Arduino/Word fly in) + title shrink,
-   driven by scroll position while the hero is pinned. Merged from the
-   standalone drop-in build into the real site's #navbar / .hero markup.
-
-   FIXED (see audit):
-   1. sizePinWrap() accounts for the pinned element's own 100vh, so the pin
-      holds for the FULL scroll distance configured by iconStageHeight +
-      infoFadeDistance instead of releasing at roughly half that distance.
-   2. #navbar flies in (translateY + fade) during the same window the
-      info-group fades in, instead of just sitting static on screen. It's
-      hidden on load and only becomes interactive once faded in.
-   3. TITLE ANCHORING REWORKED: the title group used to be animated with a
-      small px `translateY` offset while sitting in normal flex flow inside
-      #hero-inner. Combined with the pin + real page scroll, that let it
-      drift/scroll off the top of the screen instead of staying put.
-      #hero-title-group is now a direct child of #hero-viewport (see
-      index.html) and absolutely positioned via `top: <percent>` — it starts
-      anchored low ("fixed on the bottom") and eases to a slightly higher
-      resting spot while shrinking (--ts), driven by the SAME iconProgress
-      that drives the icon fountain, so title shrink / icon fly-in / and
-      (indirectly, since background-frames.js reads real scroll position)
-      the background-frame scrub all move together.
-
-   Background frame sequence is left alone — already handled separately by
-   background-frames.js + #scroll-frames, and it reads scroll position
-   proportionally so it keeps working correctly with the larger pin height.
-   ============================================================================
-   QUICK CUSTOMIZATION GUIDE — everything below is cross-referenced here.
-   ============================================================================
-   ICON FILES         → HERO_ICONS                              ("ICON FILES" tag)
-   ICON POSITION       → iconConfig[iconName].end.x / .end.y     ("ICON POSITION" tag)
-   ICON SIZE           → iconConfig[iconName].end.scale          ("ICON SIZE" tag)
-                          + .hero-icon { width / height } in css/hero-animation.css
-   ICON SPREAD         → SPREAD_ORIGIN (where they burst FROM) + arcLift ("SPREAD" tag)
-   ICON START SIZE     → SPREAD_ORIGIN.scale (how tiny icons are before bursting)
-   TITLE POSITION       → HERO_ANIMATION_CONFIG.titleStartY / titleEndY   ("TITLE POSITION" tag)
-                          — both are % of viewport HEIGHT (0=top, 100=bottom)
-   TITLE SIZE           → HERO_ANIMATION_CONFIG.titleStartScale / titleEndScale
-   MOBILE SPREAD       → spreadFactor() (how much the fan shrinks on phones)
-   MOBILE ICON POSITION → iconConfig[iconName].mobile.x / .y / .scale / .rotation
-                          ("MOBILE ICON POSITION" tag) — set per-icon, only used
-                          at/under MOBILE_BREAKPOINT; leave an icon's "mobile"
-                          key out to keep using the auto spreadFactor() scaling.
-   MOBILE TITLE POSITION/SIZE → MOBILE_TITLE_CONFIG below ("MOBILE TITLE" tag)
-   NAVBAR FLY-IN        → navEl gsap.set() calls below ("NAVBAR" tag)
-   Search for the ALL-CAPS tags in quotes above to jump straight to each knob.
-   ============================================================================ */
+/* SLIDECRAFT — HERO SCROLL ANIMATION — Icon fountain (Canva/Figma/PowerPoint/Arduino/Word fly in) + title shrink, driven by scroll position while the hero is pinned. Merged from the standalone drop-in build into the real site's #navbar / .hero markup. FIXED (see audit): 1. sizePinWrap() accounts for the pinned element's own 100vh, so the pin holds for the FULL scroll distance configured by iconStageHeight + infoFadeDistance instead of releasing at roughly half that distance. 2. #navbar flies in (translateY + fade) during the same window the info-group fades in, instead of just sitting static on screen. It's hidden on load and only becomes interactive once faded in. 3. TITLE ANCHORING REWORKED: the title group used to be animated with a small px `translateY` offset while sitting in normal flex flow inside #hero-inner. Combined with the pin + real page scroll, that let it drift/scroll off the top of the screen instead of staying put. #hero-title-group is now a direct child of #hero-viewport (see index.html) and absolutely positioned via `top: <percent>` — it starts anchored low ("fixed on the bottom") and eases to a slightly higher resting spot while shrinking (--ts), driven by the SAME iconProgress that drives the icon fountain, so title shrink / icon fly-in / and (indirectly, since background-frames.js reads real scroll position) the background-frame scrub all move together. Background frame sequence is left alone — already handled separately by background-frames.js + #scroll-frames, and it reads scroll position proportionally so it keeps working correctly with the larger pin height. QUICK CUSTOMIZATION GUIDE — everything below is cross-referenced here. ICON FILES → HERO_ICONS ("ICON FILES" tag) ICON POSITION → iconConfig[iconName].end.x / .end.y ("ICON POSITION" tag) ICON SIZE → iconConfig[iconName].end.scale ("ICON SIZE" tag) + .hero-icon { width / height } in css/hero-animation.css ICON SPREAD → SPREAD_ORIGIN (where they burst FROM) + arcLift ("SPREAD" tag) ICON START SIZE → SPREAD_ORIGIN.scale (how tiny icons are before bursting) TITLE POSITION → HERO_ANIMATION_CONFIG.titleStartY / titleEndY ("TITLE POSITION" tag) both are % of viewport HEIGHT (0=top, 100=bottom) TITLE SIZE → HERO_ANIMATION_CONFIG.titleStartScale / titleEndScale MOBILE SPREAD → spreadFactor() (how much the fan shrinks on phones) MOBILE ICON POSITION → iconConfig[iconName].mobile.x / .y / .scale / .rotation ("MOBILE ICON POSITION" tag) — set per-icon, only used at/under MOBILE_BREAKPOINT; leave an icon's "mobile" key out to keep using the auto spreadFactor() scaling. MOBILE TITLE POSITION/SIZE → MOBILE_TITLE_CONFIG below ("MOBILE TITLE" tag) NAVBAR FLY-IN → navEl gsap.set() calls below ("NAVBAR" tag) Search for the ALL-CAPS tags in quotes above to jump straight to each knob. */
 (function () {
   "use strict";
 
   if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ==========================================================================
-     SELECTORS — matches the real site's markup (index.html)
-     ========================================================================== */
+  /* SELECTORS — matches the real site's markup (index.html) */
   const SEL = {
     pinWrap:    "#hero-pin-wrap",
     viewport:   "#hero-viewport",
@@ -6666,11 +5956,7 @@
 
   if (!document.querySelector(SEL.pinWrap)) return; // hero not on this page/view
 
-  /* =====================================================
-     "ICON FILES" — replace these paths with your real icon
-     images. Do NOT use downloaded/stock icons or emoji —
-     these are placeholders only, clearly marked for swapping.
-     ===================================================== */
+  /* "ICON FILES" — replace these paths with your real icon images. Do NOT use downloaded/stock icons or emoji these are placeholders only, clearly marked for swapping. */
   const HERO_ICONS = {
   canva:      "images/icons/canva.webp",
   figma:      "images/icons/figma.webp",
@@ -6684,9 +5970,7 @@
     if (img) img.src = HERO_ICONS[key];
   });
 
-  /* ==========================================================================
-     ANIMATION CONFIG — tune the feel of the sequence here.
-     ========================================================================== */
+  /* ANIMATION CONFIG — tune the feel of the sequence here. */
   const HERO_ANIMATION_CONFIG = {
     // How much scrolling (in viewport-heights) it takes to complete the icon
     // fly-in stage. Higher = slower, more deliberate scroll-scrub.
@@ -6708,7 +5992,7 @@
     // Show GSAP ScrollTrigger markers while tuning. Set false before shipping.
     debugMarkers: false,
 
-    // ---- Title group (badge + h1 + divider) ----
+    // Title group (badge + h1 + divider)
     // "TITLE POSITION" — both % of viewport HEIGHT (0=top edge, 100=bottom
     // edge). Title starts anchored low/near the bottom (matches the initial
     // hero look) and eases up slightly to its resting spot as icons finish
@@ -6722,21 +6006,13 @@
     titleEndScale: 0.6      // size AFTER the icon stage finishes
   };
 
-  /* ==========================================================================
-     MOBILE BREAKPOINT — shared by icon position overrides and title
-     position/scale overrides below.
-     ========================================================================== */
+  /* MOBILE BREAKPOINT — shared by icon position overrides and title position/scale overrides below. */
   const MOBILE_BREAKPOINT = 768;
   function isMobile() {
     return window.innerWidth <= MOBILE_BREAKPOINT;
   }
 
-  /* --------------------------------------------------------------------------
-     "MOBILE TITLE" — title group anchor/scale on phones (≤ MOBILE_BREAKPOINT).
-     Same shape as titleStartY/titleEndY/titleStartScale/titleEndScale above,
-     just a separate set of numbers used only on mobile. Set enabled:false to
-     make mobile just reuse the desktop numbers.
-     -------------------------------------------------------------------------- */
+  /* "MOBILE TITLE" — title group anchor/scale on phones (≤ MOBILE_BREAKPOINT). Same shape as titleStartY/titleEndY/titleStartScale/titleEndScale above, just a separate set of numbers used only on mobile. Set enabled:false to make mobile just reuse the desktop numbers. */
   const MOBILE_TITLE_CONFIG = {
     enabled: true,
     titleStartY: 84,
@@ -6745,12 +6021,7 @@
     titleEndScale: 0.68
   };
 
-  /* ==========================================================================
-     ICON MOVEMENT CONFIG — CENTER-BURST MODEL
-     All 5 icons originate from the CENTER of the hero viewport, stacked tiny
-     on top of one another, then burst outward on scroll and land in a fan
-     spread around the title.
-     ========================================================================== */
+  /* ICON MOVEMENT CONFIG — CENTER-BURST MODEL All 5 icons originate from the CENTER of the hero viewport, stacked tiny on top of one another, then burst outward on scroll and land in a fan spread around the title. */
   // "SPREAD" — the single point all 5 icons burst OUT FROM.
   const SPREAD_ORIGIN = {
     xPct: 50,
@@ -6759,21 +6030,7 @@
     rotation: 0
   };
 
-  /* ----------------------------------------------------------------------
-     PER-ICON SETTINGS — this is the one you'll edit most.
-       end.x / end.y   → "ICON POSITION": where it lands, in % of the
-                          viewport (x: 0=left...100=right, y: 0=top...100=bottom)
-       end.scale       → "ICON SIZE": size once landed (1.00 = the CSS
-                          width/height in hero-animation.css, i.e. 110x110px)
-       end.rotation    → resting tilt in degrees
-       mobile          → "MOBILE ICON POSITION": optional hand-placed
-                          { x, y, scale, rotation } used instead of the
-                          automatic spreadFactor() scaling on phones. Delete
-                          this key on an icon to go back to auto-scaling.
-       arcLift         → "SPREAD" shape: how high the icon bows above a
-                          straight line on its way out
-       staggerIndex    → which of the 3 timing groups (0,1,2) this icon joins
-     ---------------------------------------------------------------------- */
+  /* PER-ICON SETTINGS — this is the one you'll edit most. end.x / end.y → "ICON POSITION": where it lands, in % of the viewport (x: 0=left...100=right, y: 0=top...100=bottom) end.scale → "ICON SIZE": size once landed (1.00 = the CSS width/height in hero-animation.css, i.e. 110x110px) end.rotation → resting tilt in degrees mobile → "MOBILE ICON POSITION": optional hand-placed { x, y, scale, rotation } used instead of the automatic spreadFactor() scaling on phones. Delete this key on an icon to go back to auto-scaling. arcLift → "SPREAD" shape: how high the icon bows above a straight line on its way out staggerIndex → which of the 3 timing groups (0,1,2) this icon joins */
   const iconConfig = {
     figma: {
       start: { x: SPREAD_ORIGIN.xPct, y: SPREAD_ORIGIN.yPct, scale: SPREAD_ORIGIN.scale, rotation: 20 },
@@ -6827,11 +6084,7 @@
     easeFns[key] = gsap.parseEase(iconConfig[key].ease);
   });
 
-  /* --------------------------------------------------------------------------
-     Maps overall icon-stage progress (0–1) to each icon's own eased local
-     progress, honoring the per-icon stagger. Pure function of scroll
-     progress — nothing keeps moving once the user stops scrolling.
-     -------------------------------------------------------------------------- */
+  /* Maps overall icon-stage progress (0–1) to each icon's own eased local progress, honoring the per-icon stagger. Pure function of scroll progress — nothing keeps moving once the user stops scrolling. */
   function localProgress(rawProgress, staggerIndex) {
     const staggerCount = 3;
     const offset = (staggerIndex / staggerCount) * HERO_ANIMATION_CONFIG.iconStagger;
@@ -6840,11 +6093,7 @@
     return Math.max(0, Math.min(1, t));
   }
 
-  /* --------------------------------------------------------------------------
-     "MOBILE SPREAD" — how tightly the fan pulls in on small screens when an
-     icon has no "mobile" override. 1024px+ = full desktop spread. 480px and
-     below = pulled in to 55% of the desktop spread.
-     -------------------------------------------------------------------------- */
+  /* "MOBILE SPREAD" — how tightly the fan pulls in on small screens when an icon has no "mobile" override. 1024px+ = full desktop spread. 480px and below = pulled in to 55% of the desktop spread. */
   function spreadFactor() {
     const w = window.innerWidth;
     if (w >= 1024) return 1;
@@ -6872,14 +6121,7 @@
     return mt * mt * p0 + 2 * mt * t * control + t * t * p1;
   }
 
-  /* --------------------------------------------------------------------------
-     "ICON FADE-OUT" — same idea as the title's fade-out below: icons finish
-     arriving by iconArriveFraction (0.7) of the icon stage and then just sit
-     there fully opaque for the remaining hold window. That hold window is
-     reused here to fade the icons OUT too, in sync with the title, so
-     nothing from the icon-fountain stage is still on screen when
-     #hero-info-group starts fading in.
-     -------------------------------------------------------------------------- */
+  /* "ICON FADE-OUT" — same idea as the title's fade-out below: icons finish arriving by iconArriveFraction (0.7) of the icon stage and then just sit there fully opaque for the remaining hold window. That hold window is reused here to fade the icons OUT too, in sync with the title, so nothing from the icon-fountain stage is still on screen when #hero-info-group starts fading in. */
   function holdFadeOut(rawProgress) {
     const holdStart = HERO_ANIMATION_CONFIG.iconArriveFraction; // 0.7
     if (rawProgress <= holdStart) return 1;
@@ -6915,27 +6157,9 @@
     });
   }
 
-  /* --------------------------------------------------------------------------
-     TITLE GROUP: anchored via `top: <percent of viewport height>` (see
-     hero-animation.css — #hero-title-group is `position:absolute` against
-     #hero-viewport now), NOT a px translateY offset. This is what keeps it
-     "fixed on the bottom" and shrinking in place instead of scrolling off
-     the top: at progress 0 it's near the bottom (titleStartY), and it only
-     eases up to titleEndY (still comfortably on-screen) as the SAME
-     iconProgress that drives the icon fountain advances. Uses
-     MOBILE_TITLE_CONFIG's numbers on phones (unless disabled).
-     -------------------------------------------------------------------------- */
+  /* TITLE GROUP: anchored via `top: <percent of viewport height>` (see hero-animation.css — #hero-title-group is `position:absolute` against #hero-viewport now), NOT a px translateY offset. This is what keeps it "fixed on the bottom" and shrinking in place instead of scrolling off the top: at progress 0 it's near the bottom (titleStartY), and it only eases up to titleEndY (still comfortably on-screen) as the SAME iconProgress that drives the icon fountain advances. Uses MOBILE_TITLE_CONFIG's numbers on phones (unless disabled). */
   const titleEase = gsap.parseEase("power2.out");
-  /* --------------------------------------------------------------------------
-     "TITLE FADE-OUT" — the title only has iconArriveFraction (0–0.7) of the
-     icon stage to travel/shrink; the remaining 0.7–1.0 is just a hold while
-     the icons settle (see localProgress()). We reuse that hold window to
-     fade the title group OUT, so by iconProgress===1 (icon stage fully
-     complete) it's already invisible — BEFORE #hero-info-group starts
-     fading in during the next (fade) phase. Without this the shrunk title
-     was sitting at rest directly on top of the description/buttons/stats
-     as they faded in underneath it.
-     -------------------------------------------------------------------------- */
+  /* "TITLE FADE-OUT" — the title only has iconArriveFraction (0–0.7) of the icon stage to travel/shrink; the remaining 0.7–1.0 is just a hold while the icons settle (see localProgress()). We reuse that hold window to fade the title group OUT, so by iconProgress===1 (icon stage fully complete) it's already invisible — BEFORE #hero-info-group starts fading in during the next (fade) phase. Without this the shrunk title was sitting at rest directly on top of the description/buttons/stats as they faded in underneath it. */
   function titleOpacityFor(iconProgress) {
     const holdStart = HERO_ANIMATION_CONFIG.iconArriveFraction; // 0.7
     if (iconProgress <= holdStart) return 1;
@@ -6954,14 +6178,7 @@
     el.style.opacity = titleOpacityFor(iconProgress);
   }
 
-  /* --------------------------------------------------------------------------
-     "NAVBAR" — fixed site nav (css/navigation.css). Hidden/translated above
-     the viewport while icons are fountaining out, then flies in (translateY
-     + fade) during the SAME window the info-group fades in (fadeProgress),
-     i.e. only once the icon stage is fully complete and the user keeps
-     scrolling. Left interaction-disabled while off-screen so it can't eat
-     clicks/taps meant for content behind it.
-     -------------------------------------------------------------------------- */
+  /* "NAVBAR" — fixed site nav (css/navigation.css). Hidden/translated above the viewport while icons are fountaining out, then flies in (translateY + fade) during the SAME window the info-group fades in (fadeProgress), i.e. only once the icon stage is fully complete and the user keeps scrolling. Left interaction-disabled while off-screen so it can't eat clicks/taps meant for content behind it. */
   const navEl = document.querySelector(SEL.navbar);
   const NAV_HIDDEN_YPCT = -160;
   if (navEl) {
@@ -6977,26 +6194,14 @@
     navEl.style.pointerEvents = fadeProgress > 0.05 ? "auto" : "none";
   }
 
-  /* ==========================================================================
-     SCROLLTRIGGER — SINGLE PIN, TWO PHASES
-     Phase A — ICON SCROLL GATE: icons fly in / hold, title anchors up + shrinks.
-     Phase B — INFO FADE: description/CTAs/stats fade in, navbar flies in.
-     Icons + title hold their final spot. Pin releases once Phase B completes
-     and normal page scroll continues (hero scrolls away naturally — no
-     forced "exit" transform needed on top of that).
-     ========================================================================== */
+  /* SCROLLTRIGGER — SINGLE PIN, TWO PHASES — Phase A — ICON SCROLL GATE: icons fly in / hold, title anchors up + shrinks. Phase B — INFO FADE: description/CTAs/stats fade in, navbar flies in. Icons + title hold their final spot. Pin releases once Phase B completes and normal page scroll continues (hero scrolls away naturally — no forced "exit" transform needed on top of that). */
   const iconFrac = HERO_ANIMATION_CONFIG.iconStageHeight /
     (HERO_ANIMATION_CONFIG.iconStageHeight + HERO_ANIMATION_CONFIG.infoFadeDistance);
 
-  // BUG FIX: this used to live only inline inside onUpdate below, making it
-  // the ONLY place that touched icons/title/navbar/#hero-info-group. Any
-  // ScrollTrigger.refresh() that isn't immediately followed by a genuine
-  // onUpdate tick (the loading-screen layout shift, or — on mobile — the
-  // browser's address bar showing/hiding as the user scrolls, which fires
-  // a resize that sizePinWrap() below now correctly reacts to) could leave
-  // these four pieces out of sync with each other and with real scroll
-  // position. Pulling this out into a named function lets it be called
-  // from anywhere a refresh happens, not just from onUpdate.
+  // Pulled into a named function so it can be called from anywhere a
+  // ScrollTrigger.refresh() happens, not just from onUpdate — otherwise
+  // icons/title/navbar/#hero-info-group can drift out of sync with the
+  // real scroll position.
   function applyHeroProgress(overall) {
     const iconProgress = Math.max(0, Math.min(1, overall / iconFrac));
     updateIcons(iconProgress);
@@ -7010,20 +6215,10 @@
     updateNavbar(fadeProgress);
   }
 
-  // BUG FIX (report #5): the pin/scrub sequence below was being created
-  // unconditionally, even for prefers-reduced-motion users. The CSS reduced-
-  // motion fallback (hero-animation.css) already shows icons/title/info/
-  // navbar in a static resting state regardless of what this JS does — but
-  // nothing stopped sizePinWrap() from still stretching #hero-pin-wrap to
-  // ~3 viewport-heights tall and nothing stopped ScrollTrigger from still
-  // pinning #hero-viewport across that whole distance. Net effect: reduced-
-  // motion users scrolled through several empty, frozen screens before the
-  // pin released, with no icon/title/info animation happening because
-  // reduced motion had (correctly) suppressed it — this is what made the
-  // overlap "stay even while scrolling" instead of resolving.
-  // Skip creating the pin entirely when reduced motion is requested, so the
-  // hero just behaves like a normal ~100vh section and scrolling continues
-  // straight into the rest of the page.
+  // Skip creating the pin entirely under prefers-reduced-motion — the CSS
+  // fallback already shows a static resting state, so pinning here just
+  // stretched the hero across empty frozen screens with nothing animating.
+  // Without the pin it behaves like a normal ~100vh section.
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let heroST = null;
@@ -7041,17 +6236,10 @@
       }
     });
 
-    // BUG FIX (report #4): applyHeroProgress() was only ever called from the
-    // two spots THIS file remembers to call it from (__heroAnimReset and
-    // sizePinWrap). Any OTHER ScrollTrigger.refresh() — e.g. the plain
-    // `ScrollTrigger.refresh()` calls in main.js's post-grid-build and
-    // loading-screen-dismiss sequence, or any refresh triggered by GSAP's own
-    // internal (undebounced) resize handling — recalculates progress without
-    // going through either of those, so it can leave icons/title/navbar/
-    // #hero-info-group stale relative to the new pin range same as before.
-    // Hooking GSAP's own global "refresh" event guarantees a re-sync after
-    // EVERY refresh, from every source, without relying on each call site
-    // remembering to resync itself.
+    // Hook GSAP's global "refresh" event directly instead of relying on
+    // every call site to remember to resync — main.js triggers its own
+    // ScrollTrigger.refresh() calls too, and those were leaving
+    // icons/title/navbar stale otherwise.
     ScrollTrigger.addEventListener("refresh", function () {
       applyHeroProgress(heroST.progress);
     });
@@ -7065,15 +6253,7 @@ window.__heroAnimReset = function () {
   // reduced motion, where heroST was never created.
   if (heroST) applyHeroProgress(heroST.progress);
 };
-  /* --------------------------------------------------------------------------
-     FIX: previously this set pinWrap height to just
-     (iconStageHeight + infoFadeDistance) * 100vh, which made the ACTUAL
-     scrollable pin distance (pinWrap.height − pinnedElement.height, since
-     #hero-viewport is 100vh) only HALF of the intended distance — causing
-     the pin to release early / the whole sequence to feel rushed.
-     Adding the pinned element's own 1 (100vh) fixes the math so the real
-     scroll distance matches iconStageHeight + infoFadeDistance exactly.
-     -------------------------------------------------------------------------- */
+  /* FIX: previously this set pinWrap height to just (iconStageHeight + infoFadeDistance) * 100vh, which made the ACTUAL scrollable pin distance (pinWrap.height − pinnedElement.height, since #hero-viewport is 100vh) only HALF of the intended distance — causing the pin to release early / the whole sequence to feel rushed. Adding the pinned element's own 1 (100vh) fixes the math so the real scroll distance matches iconStageHeight + infoFadeDistance exactly. */
   function sizePinWrap() {
     // Reduced motion: no pin was created, so there's no pin distance to
     // size — leave #hero-pin-wrap at its natural (content) height.
@@ -7083,45 +6263,25 @@ window.__heroAnimReset = function () {
     if (!wrap) return;
     wrap.style.height = (totalVh * 100) + "vh";
     ScrollTrigger.refresh();
-    // BUG FIX (mobile): on phones, the browser's address bar showing/
-    // hiding as the user scrolls fires a resize here just like a manual
-    // window resize would — this isn't a one-off like the initial load.
-    // The refresh() above can leave icons/title/navbar/info-group stale
-    // relative to the recalculated pin range, with no guaranteed onUpdate
-    // tick to correct them, so re-sync explicitly every time this runs.
+    // Mobile address bar show/hide fires a resize too, not just the
+    // initial load, so re-sync explicitly every time this runs.
     applyHeroProgress(heroST.progress);
   }
   sizePinWrap();
-  // BUG FIX: expose this globally (same pattern as __heroAnimReset above) so
-  // main.js's debounced window resize handler can call it. It used to
-  // reference the bare `sizePinWrap` identifier, but this function is
-  // scoped inside this IIFE, so that threw "ReferenceError: sizePinWrap is
-  // not defined" on every resize. Removed the old undebounced listener here
-  // too, so resize is only handled once now (debounced, in main.js).
+  // Expose globally so main.js's debounced resize handler can call it
+  // this function is scoped inside the IIFE otherwise.
   window.__sizePinWrap = sizePinWrap;
 
-  //Initialize icons + title at rest (progress 0) before any scroll happens.
+  // Initialize icons + title at rest (progress 0) before any scroll happens.
  updateIcons(0);
   updateTitle(0);
    updateNavbar(0);
 
 })();
 
-  /* ══════════════════════════════════════════════════════════════════════
-     FILE: main.js
-  ══════════════════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════════════
-   MAIN.JS
-   Wires up all data-action attributes from the static HTML (replacing old inline onclick/onsubmit/onerror handlers) and runs page initialization on DOMContentLoaded. Load this file last.
-════════════════════════════════════════════════════════════════ */
+/* Wires up all data-action attributes from the static HTML (replacing old inline onclick/onsubmit/onerror handlers) and runs page initialization on DOMContentLoaded. Load this file last. */
 
-/* ════════════════════════════════════════════════════════════════
-   STATIC MARKUP EVENT WIRING
-   Replaces the onclick / onsubmit / onerror attributes that used
-   to live directly in index.html. Static elements are wired up
-   declaratively via a single data-action="type:param" attribute,
-   dispatched here through one delegated click listener.
-════════════════════════════════════════════════════════════════ */
+/* STATIC MARKUP EVENT WIRING — Replaces the onclick / onsubmit / onerror attributes that used to live directly in index.html. Static elements are wired up declaratively via a single data-action="type:param" attribute, dispatched here through one delegated click listener. */
 function initStaticEventWiring() {
   /* Delegated click handling for any element carrying data-action */
   document.addEventListener('click', (e) => {
@@ -7145,8 +6305,7 @@ function initStaticEventWiring() {
   const contactForm = document.getElementById('contactForm');
   if (contactForm) contactForm.addEventListener('submit', handleFormSubmit);
 
-  /* Loading screen logo: fall back to text logo if the image fails
-     to load (was an inline onerror="..." handler) */
+  /* Loading screen logo: fall back to text logo if the image fails to load */
   const loaderLogoImg = document.getElementById('loaderLogoImg');
   if (loaderLogoImg) {
     loaderLogoImg.addEventListener('error', () => {
@@ -7156,20 +6315,12 @@ function initStaticEventWiring() {
     });
   }
 
-  /* NOTE: the loading-screen background video and its canplay/error
-     wiring have been removed — the loading screen is now a static
-     logo + progress bar only (see index.html / css/loading-screen.css). */
+  /* Loading screen is a static logo + progress bar now, no background video */
 }
 
-/* ════════════════════════════════════════════════════════════════
-   INIT — runs on page load
-════════════════════════════════════════════════════════════════ */
+/* INIT — runs on page load */
 document.addEventListener('DOMContentLoaded', () => {
-  /* Lock scroll while the loading screen covers the page — otherwise
-     any wheel/touch/keyboard scroll during the 3s intro silently
-     advances the pinned hero ScrollTrigger behind it, so by the time
-     the loading screen fades out you're dropped mid/end-animation
-     instead of seeing the icon fountain play from the start. */
+  /* Lock scroll while the loading screen covers the page, otherwise scrolling during the 3s intro silently advances the pinned hero animation behind it. */
   document.body.style.overflow = 'hidden';
 
   buildCards();
@@ -7179,19 +6330,14 @@ document.addEventListener('DOMContentLoaded', () => {
   showView('home');
   initStaticEventWiring();
 
-  /* The grids just built add a lot of height below the hero pin —
-     resync ScrollTrigger's start/end distances now that the real
-     document height is known (hero-animation.js calculated them
-     earlier, before this content existed). */
+  /* The grids just built add height below the hero pin, so resync ScrollTrigger now that the real document height is known. */
   if (window.ScrollTrigger) ScrollTrigger.refresh();
 
   setTimeout(() => {
     const ls = document.getElementById('loading-screen');
 
-    // Reset scroll BEFORE removing the overflow lock — the lock's
-    // removal is itself a layout shift (scrollbar reappears, 100vh
-    // values get re-measured), which can cause scroll-anchoring to
-    // jump us into the middle of the pinned hero range.
+    // Reset scroll before removing the overflow lock, since removing it
+    // is itself a layout shift that can jump scroll-anchoring mid-hero.
     window.scrollTo(0, 0);
     document.body.style.overflow = '';
     if (ls) ls.classList.add('hidden');
@@ -7221,19 +6367,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 150);
   });
 
-  // BUG FIX (report #4 — mobile, still overlapping after report #3): report
-  // #3 assumed the mobile address-bar collapse/expand reliably fires a
-  // plain `window` resize event, and wired the resync to that. In practice
-  // that event is inconsistent on iOS Safari specifically for this case —
-  // it can fire late, fire as a `scroll` event instead, or not fire at all,
-  // which means __sizePinWrap() (and therefore applyHeroProgress()) never
-  // runs and the stale-overlap bug reappears exactly as before, just now
-  // only on the browsers where `resize` doesn't fire reliably.
-  // window.visualViewport is the API actually built to track this — it's
-  // what changes when the address bar animates, independent of whether the
-  // browser also fires a window resize event — so listen there too, as a
-  // second, more reliable trigger for the same debounced resync. Feature-
-  // guarded since visualViewport isn't in every older browser.
+  // iOS Safari doesn't reliably fire a plain window resize when the address
+  // bar collapses/expands, so __sizePinWrap() can miss it. visualViewport
+  // tracks that change directly — listen there too as a second trigger for
+  // the same debounced resync. Feature-guarded for older browsers.
   if (window.visualViewport) {
     let vvResizeTimer;
     window.visualViewport.addEventListener('resize', () => {
