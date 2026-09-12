@@ -4122,6 +4122,52 @@
         padding: .7rem 1.5rem;
       }
     }
+
+/* ============================================
+   SKELETON LOADING — shimmering placeholders shown on portfolio cards, the
+   project-detail slider, the lightbox, showcase panels, and related-project
+   thumbnails while their real image is still loading.
+
+   How it works: each image-holding wrapper below (.card-thumb, .pslide,
+   .pslider-thumb, #plbImgSlot, .plb-thumb, .showcase-panel, .related-thumb)
+   already has position:relative + overflow:hidden for other reasons, so it
+   doubles as the skeleton surface — templates add a `skel-loading` class to
+   it whenever it holds a real photo, and `skel-img` to the <img> itself.
+   initSkeletons() (see main.js) listens for that image's load/error event,
+   then removes `skel-loading` from the wrapper and fades the image in.
+   ============================================ */
+    @keyframes skel-shimmer {
+      0% { background-position: 150% 0; }
+      100% { background-position: -150% 0; }
+    }
+
+    .skel-loading {
+      background-image: linear-gradient(100deg, var(--bg3) 20%, var(--glass3) 45%, var(--bg3) 70%);
+      background-size: 250% 100%;
+      animation: skel-shimmer 1.6s ease-in-out infinite;
+    }
+
+    /* Dark lightbox contexts get a navy-toned shimmer instead of the warm
+       cream one, so it doesn't flash bright against the dimmed backdrop. */
+    #plbImgSlot.skel-loading,
+    .plb-thumb.skel-loading {
+      background-image: linear-gradient(100deg, rgba(29, 45, 68, .55) 20%, rgba(255, 255, 255, .14) 45%, rgba(29, 45, 68, .55) 70%);
+      background-size: 250% 100%;
+    }
+
+    /* Images fade in once loaded rather than popping in over the shimmer. */
+    img.skel-img {
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+
+    img.skel-img.skel-loaded {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skel-loading { animation: none; }
+    }
   </style>
 </head>
 
@@ -5024,6 +5070,29 @@
     function itemPoster(item) { return isVideoItem(item) ? (item.poster || '') : item; }
 
     /* BUILD PORTFOLIO CARDS (home grid) — Each card thumbnail is an animated folder (see .folder-scene in portfolio.css). On hover, the folder opens and the three papers inside fan out — each paper shows a REAL thumbnail pulled from that project's `showcase` array (video items use their poster frame), so the folder previews actual delivered work instead of a flat placeholder colour. the folder's colours come from each project's own `color` / `color2` fields — no extra setup needed per project. */
+    /* SKELETON LOADING HELPER
+       Finds every not-yet-bound <img class="skel-img"> under `root`, waits for
+       it to load (or error out), then removes `skel-loading` from its nearest
+       shimmering wrapper and fades the image in. Templates decide which
+       wrappers/images opt in (see the "Skeleton loading" CSS comment) —
+       this just wires up the reveal. Safe to call repeatedly on the same
+       markup; already-bound images are skipped via data-skel-bound. */
+    function initSkeletons(root = document) {
+      root.querySelectorAll('img.skel-img:not([data-skel-bound])').forEach(img => {
+        img.setAttribute('data-skel-bound', '1');
+        const wrap = img.closest('.skel-loading');
+        const reveal = () => {
+          img.classList.add('skel-loaded');
+          if (wrap) wrap.classList.remove('skel-loading');
+        };
+        if (img.complete && img.naturalWidth > 0) reveal();
+        else {
+          img.addEventListener('load', reveal, { once: true });
+          img.addEventListener('error', reveal, { once: true });
+        }
+      });
+    }
+
     function buildCards() {
       const grid = document.getElementById('cardsGrid');
 
@@ -5040,8 +5109,8 @@
         const papers = [0, 1, 2].map(n => gallery[n] || p.thumbnail || gallery[0] || '');
 
         card.innerHTML = `
-      <div class="card-thumb" style="--folder-color:${p.color || ''};--folder-color2:${p.color2 || p.color || ''}">
-        <img class="card-image" src="${p.thumbnail}" alt="${p.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">
+      <div class="card-thumb skel-loading" style="--folder-color:${p.color || ''};--folder-color2:${p.color2 || p.color || ''}">
+        <img class="card-image skel-img" src="${p.thumbnail}" alt="${p.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">
         <div class="card-thumb-scrim"></div>
         <span class="card-tag">${p.category}</span>
         <span class="card-num">0${i + 1}</span>
@@ -5070,6 +5139,8 @@
         grid.appendChild(card);
 
       });
+
+      initSkeletons(grid);
     }
 
 /* Builds the "Why SlideCraft" cards grid. */
@@ -5139,6 +5210,7 @@
       // Build each slide
       const slidesHtml = items.map((item, i) => {
         let mediaEl = '';
+        let slideCls = ''; // extra class on the .pslide wrapper — only image slides get the skeleton shimmer
 
         if (!item) {
           // Placeholder slide
@@ -5179,8 +5251,9 @@
         </div>`;
         } else {
           // IMAGE SLIDE
+          slideCls = ' skel-loading';
           mediaEl = `
-        <img class="pslide-img"
+        <img class="pslide-img skel-img"
              src="${item}"
              loading="${i === 0 ? 'eager' : 'lazy'}"
              alt="${p.title} — image ${i + 1}"
@@ -5193,19 +5266,21 @@
         <div class="pslide-overlay"></div>`;
         }
 
-        return `<div class="pslide${i === 0 ? ' active' : ''}" data-idx="${i}">${mediaEl}</div>`;
+        return `<div class="pslide${i === 0 ? ' active' : ''}${slideCls}" data-idx="${i}">${mediaEl}</div>`;
       }).join('');
 
       // Build thumbnail strip
       const thumbsHtml = items.map((item, i) => {
         let thumbContent = '';
+        let thumbCls = ''; // extra class on .pslider-thumb — only set when it actually holds an <img>
 
         if (!item) {
           thumbContent = `<div class="pthumb-ph">${i + 1}</div>`;
         } else if (isVideoItem(item)) {
           // Video thumbnail: show poster image or plain placeholder + play icon
+          if (item.poster) thumbCls = ' skel-loading';
           thumbContent = item.poster
-            ? `<img src="${item.poster}" loading="lazy" alt="Video thumb ${i + 1}" draggable="false">
+            ? `<img class="skel-img" src="${item.poster}" loading="lazy" alt="Video thumb ${i + 1}" draggable="false">
            <div class="pthumb-video-overlay">
              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
            </div>`
@@ -5215,13 +5290,14 @@
              </div>
            </div>`;
         } else {
+          thumbCls = ' skel-loading';
           thumbContent = `
-        <img src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
+        <img class="skel-img" src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="pthumb-ph" style="display:none">${i + 1}</div>`;
         }
 
-        return `<div class="pslider-thumb${i === 0 ? ' active' : ''}" data-idx="${i}" style="position:relative">${thumbContent}</div>`;
+        return `<div class="pslider-thumb${i === 0 ? ' active' : ''}${thumbCls}" data-idx="${i}" style="position:relative">${thumbContent}</div>`;
       }).join('');
 
       // Glow color from project accent
@@ -5441,6 +5517,8 @@
       const item = _lb.items[_lb.idx];
       const p = _lb.p;
 
+      slot.classList.remove('skel-loading'); // reset — re-applied below only for real images
+
       if (!item) {
         slot.innerHTML = `<div class="plb-ph">
       <div class="plb-ph-letter">${p.title.charAt(0)}</div>
@@ -5456,9 +5534,12 @@
              style="max-height:72vh;width:100%;background:rgba(20,14,8,.5)"></video>`;
       } else {
         slot.innerHTML = `
-      <img class="plb-main-img" src="${item}" alt="${p.title}" draggable="false"
+      <img class="plb-main-img skel-img" src="${item}" alt="${p.title}" draggable="false"
            onerror="this.parentNode.innerHTML='<div class=\\"plb-ph\\"><div class=\\"plb-ph-letter\\">${p.title.charAt(0)}</div><div class=\\"plb-ph-text\\">Image unavailable</div></div>'">`;
+        slot.classList.add('skel-loading');
       }
+
+      initSkeletons(slot);
 
       if (title) title.textContent = p.title;
       if (ctr) ctr.textContent = `${String(_lb.idx + 1).padStart(2, '0')} / ${String(_lb.items.length).padStart(2, '0')}`;
@@ -5476,27 +5557,32 @@
 
       container.innerHTML = _lb.items.map((item, i) => {
         let content = '';
+        let thumbCls = ''; // extra class on .plb-thumb — only set when it actually holds an <img>
         if (!item) {
           content = `<div class="plb-thumb-ph">${i + 1}</div>`;
         } else if (isVideoItem(item)) {
+          if (item.poster) thumbCls = ' skel-loading';
           content = item.poster
-            ? `<img src="${item.poster}" loading="lazy" alt="Thumb ${i + 1}" draggable="false">
+            ? `<img class="skel-img" src="${item.poster}" loading="lazy" alt="Thumb ${i + 1}" draggable="false">
            <div class="plb-thumb-vid-icon">
              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
            </div>`
             : `<div class="plb-thumb-ph">▶</div>`;
         } else {
+          thumbCls = ' skel-loading';
           content = `
-        <img src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
+        <img class="skel-img" src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
              onerror="this.style.display='none';this.nextSibling.style.display='flex'">
         <div class="plb-thumb-ph" style="display:none">${i + 1}</div>`;
         }
-        return `<div class="plb-thumb${i === _lb.idx ? ' active' : ''}" data-idx="${i}" style="position:relative">${content}</div>`;
+        return `<div class="plb-thumb${i === _lb.idx ? ' active' : ''}${thumbCls}" data-idx="${i}" style="position:relative">${content}</div>`;
       }).join('');
 
       container.querySelectorAll('.plb-thumb').forEach((t, i) => {
         t.addEventListener('click', () => { _lb.idx = i; renderLbItem(); });
       });
+
+      initSkeletons(container);
     }
 
     function closePremiumLightbox() {
@@ -5550,14 +5636,17 @@
       const leftItem = items[1] || null;
       const rightItem = items[2] || items[0] || null;
 
-      // Render a panel — supports image or video
+      // Render a panel — supports image or video. panelSkelCls() reports whether
+      // this item will render as a real <img> so the caller can add skel-loading
+      // to the panel wrapper that holds it.
+      const panelSkelCls = (item) => (item && !isVideoItem(item)) ? ' skel-loading' : '';
       const panelMedia = (item, letter, sub) => {
         if (!item) {
           return `<div class="showcase-panel-placeholder"><div class="sp-letter">${letter}</div><div class="sp-sub">${sub}</div></div>`;
         } else if (isVideoItem(item)) {
           return `<video src="${item.src}" ${item.poster ? `poster="${item.poster}"` : ''} muted loop autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
         } else {
-          return `<img src="${item}" alt="${p.title}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+          return `<img class="skel-img" src="${item}" alt="${p.title}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
               <div class="showcase-panel-placeholder" style="display:none"><div class="sp-letter">${letter}</div><div class="sp-sub">${sub}</div></div>`;
         }
       };
@@ -5578,9 +5667,9 @@
     <div class="proj-showcase-particles">${particles}</div>
     <div class="proj-showcase-inner">
       <div class="showcase-panel-wrap">
-        <div class="showcase-panel float-left">${panelMedia(leftItem, p.title.charAt(0), 'Detail')}</div>
-        <div class="showcase-panel main-panel">${panelMedia(mainItem, p.title.charAt(0), p.tagline)}</div>
-        <div class="showcase-panel float-right">${panelMedia(rightItem, p.title.charAt(0), 'Preview')}</div>
+        <div class="showcase-panel float-left${panelSkelCls(leftItem)}">${panelMedia(leftItem, p.title.charAt(0), 'Detail')}</div>
+        <div class="showcase-panel main-panel${panelSkelCls(mainItem)}">${panelMedia(mainItem, p.title.charAt(0), p.tagline)}</div>
+        <div class="showcase-panel float-right${panelSkelCls(rightItem)}">${panelMedia(rightItem, p.title.charAt(0), 'Preview')}</div>
       </div>
       <div class="showcase-caption">
         <div class="showcase-caption-title">${p.title}</div>
@@ -5600,11 +5689,11 @@
 
       const cards = related.map(r => {
         const thumbEl = r.thumbnail
-          ? `<img class="related-thumb-img" src="${r.thumbnail}" alt="${r.title}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+          ? `<img class="related-thumb-img skel-img" src="${r.thumbnail}" alt="${r.title}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
           : '';
         return `
     <div class="related-card" onclick="openProject(${JSON.stringify(r).replace(/"/g, '&quot;')})">
-      <div class="related-thumb">
+      <div class="related-thumb${r.thumbnail ? ' skel-loading' : ''}">
         ${thumbEl}
         <div class="related-thumb-overlay"></div>
         <div class="related-thumb-placeholder" style="display:${r.thumbnail ? 'none' : 'flex'}">${r.title.charAt(0)}</div>
@@ -5718,7 +5807,11 @@
         <p style="color:var(--muted);font-size:.75rem">© 2026 SlideCraft</p>
       </footer>`;
 
-        // After HTML is injected, wire up the media slider
+        // After HTML is injected, wire up the media slider and the
+        // skeleton shimmer for every image on this project page (hero
+        // showcase panels, the work-examples slider + thumbs, related
+        // project cards).
+        initSkeletons(document.getElementById('view-project'));
         setTimeout(() => initSlider(p), 0);
       });
     }
