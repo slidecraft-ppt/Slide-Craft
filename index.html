@@ -6,6 +6,9 @@
   <script>
     if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
     window.scrollTo(0, 0);
+    // Progressive-enhancement flag: CSS only hides .reveal content when JS is actually running,
+    // so a JS failure can never leave sections permanently invisible.
+    document.documentElement.classList.add('js');
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -14,20 +17,19 @@
   <!-- SlideCraft — premium presentation design studio -->
 
   <title>SlideCraft — Premium Presentation Design Studio</title>
+  <meta name="description" content="SlideCraft is a premium presentation design studio — custom PowerPoint decks, Arduino projects, reports, posters and brand identity, delivered fast.">
 
   <!-- favicon -->
   <!-- <link rel="icon" type="image.webpWebsite_Logo.webp" href="images/favicon.webpWebsite_Logo.webp"> -->
 
   <!-- fonts: Cormorant Garamond (display) + Jost (body) -->
-  <link rel="icon" type="image.webpWebsite_Logo.webp" href="images/Site_Icon.webp">
+  <link rel="icon" type="image/webp" href="images/Site_Icon.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@200;300;400;500;600&family=Cinzel:wght@400;600&display=swap"
     rel="stylesheet">
-  <!-- hero scroll animation: icon fountain + title shrink -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- responsive.css loads last so its overrides win -->
+  <!-- GSAP + ScrollTrigger now load at the end of <body> (non-render-blocking, with a jsDelivr fallback) -->
   <style>
 /* Design tokens (CSS custom properties) — retheme the whole site from here. */
 
@@ -104,8 +106,16 @@
     }
 
     html {
-      scroll-behavior: smooth;
+      /* No CSS scroll-behavior:smooth here: it fights ScrollTrigger (pin refresh / scroll restore) and turns every
+         window.scrollTo(0,0) into a visible animated scroll. Smooth scrolling is requested explicitly in JS
+         (scrollIntoView({behavior:'smooth'})) wherever it is wanted. */
       overflow-x: hidden
+    }
+
+    /* Scroll lock for loader / mobile drawer / lightbox. It MUST live on <html>: because html already has
+       overflow-x:hidden, overflow set on <body> is not propagated to the viewport and locks nothing. */
+    html.scroll-locked {
+      overflow: hidden
     }
 
     body {
@@ -113,7 +123,7 @@
       background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
-      cursor: none;
+      cursor: auto;
       overflow-anchor: none;
       /* custom cursor is rendered via JS below */
       /* Removes the gray flash Android/iOS show on tap; buttons/links already have their own hover/active states for feedback */
@@ -123,6 +133,8 @@
     /* Custom cursor — Change cursor colors or remove the #cursor and #cursor-ring divs from HTML to use default cursor. */
     #cursor {
       position: fixed;
+      left: 0;
+      top: 0;
       width: 8px;
       height: 8px;
       background: var(--accent);
@@ -135,6 +147,8 @@
 
     #cursor-ring {
       position: fixed;
+      left: 0;
+      top: 0;
       width: 30px;
       height: 30px;
       border: 1px solid rgba(192, 57, 43, 0.4);
@@ -154,6 +168,30 @@
 
     body:has(a:hover, button:hover, [data-action]:hover, label:hover) #cursor-ring {
       opacity: 0
+    }
+
+    /* The custom cursor is opt-in: JS adds html.has-cursor only for fine, hover-capable pointers, and
+       html.cursor-active after the first real mouse move (so nothing is parked at 0,0 before that). */
+    html.has-cursor body {
+      cursor: none;
+    }
+
+    html:not(.cursor-active) #cursor,
+    html:not(.cursor-active) #cursor-ring {
+      opacity: 0;
+    }
+
+    @media (hover: none),
+    (pointer: coarse) {
+
+      #cursor,
+      #cursor-ring {
+        display: none !important;
+      }
+
+      html.has-cursor body {
+        cursor: auto;
+      }
     }
 
     /* Scrollbar — Change scrollbar colors or remove for default. */
@@ -374,7 +412,12 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       box-shadow: 0 4px 24px rgba(29, 45, 68, .08);
-      transition: all .3s ease;
+      /* was `transition: all` — that made every GSAP transform/opacity update on the navbar chase the scroll */
+      transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+
+    nav.is-scrolled {
+      background: rgba(245, 237, 224, 0.95);
     }
 
     .nav-logo {
@@ -563,12 +606,16 @@
       gap: 0;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .35s ease;
+      visibility: hidden;
+      overscroll-behavior: contain;
+      transition: opacity .35s ease, visibility 0s linear .35s;
     }
 
     .nav-drawer.open {
       opacity: 1;
       pointer-events: all;
+      visibility: visible;
+      transition: opacity .35s ease, visibility 0s;
     }
 
     .nav-drawer a {
@@ -1000,13 +1047,14 @@
       margin: 0 3rem
     }
 
-    .reveal {
+    /* :where(.js) keeps the original specificity but only hides content when JS is running */
+    :where(.js) .reveal {
       opacity: 0;
       transform: translateY(28px);
       transition: opacity .65s ease, transform .65s ease
     }
 
-    .reveal.revealed {
+    :where(.js) .reveal.revealed {
       opacity: 1;
       transform: translateY(0)
     }
@@ -1183,7 +1231,7 @@
       left: 0;
       width: 42%;
       height: 18px;
-      background: color-mix(in srgb, var(--folder-color, var(--accent)) 82%, black 18%);
+      background: var(--folder-color, var(--accent));
       border-radius: 7px 9px 0 0
     }
 
@@ -1194,7 +1242,7 @@
       right: 0;
       bottom: 0;
       top: 15px;
-      background: linear-gradient(160deg, color-mix(in srgb, var(--folder-color, var(--accent)) 82%, black 18%) 0%, var(--folder-color, var(--accent)) 100%);
+      background: var(--folder-color, var(--accent));
       border-radius: 3px 15px 15px 15px
     }
 
@@ -1233,7 +1281,7 @@
       right: 0;
       bottom: 0;
       top: 27px;
-      background: linear-gradient(160deg, color-mix(in srgb, var(--folder-color2, var(--folder-color, var(--accent))) 92%, white 8%) 0%, var(--folder-color2, var(--folder-color, var(--accent))) 55%, color-mix(in srgb, var(--folder-color, var(--accent)) 85%, black 15%) 100%);
+      background: var(--folder-color2, var(--folder-color, var(--accent)));
       border-radius: 5px 15px 15px 15px;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 6px 16px rgba(0, 0, 0, .2);
       transform-origin: bottom;
@@ -1967,12 +2015,17 @@
       box-shadow: 0 4px 16px rgba(37, 211, 102, .45), 0 2px 6px rgba(0, 0, 0, .15);
       opacity: 0;
       transform: translateY(20px) scale(0.95);
+      /* hidden state must not be clickable: an invisible WhatsApp button used to sit over the bottom-right corner */
+      visibility: hidden;
+      pointer-events: none;
       transition: all .35s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     .sticky-cta.show {
       opacity: 1;
       transform: translateY(0) scale(1);
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .sticky-cta:hover {
@@ -2380,6 +2433,7 @@
 
       background: rgba(255, 255, 255, .35);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
     .pricing-marquee-track {
@@ -2426,9 +2480,8 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      will-change: transform;
       transition: transform 0.12s ease;
-      /* parallax motion */
+      /* parallax motion (will-change is applied to the active slide only — see end of stylesheet) */
     }
 
     /* Zoom effect on hover (applied to active slide only) */
@@ -2753,7 +2806,9 @@
       padding: 2rem;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .35s ease;
+      visibility: hidden;
+      overscroll-behavior: contain;
+      transition: opacity .35s ease, visibility 0s linear .35s;
       background: rgba(14, 10, 5, .94);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px)
@@ -2761,7 +2816,9 @@
 
     #pslider-lightbox.open {
       opacity: 1;
-      pointer-events: all
+      pointer-events: all;
+      visibility: visible;
+      transition: opacity .35s ease, visibility 0s
     }
 
     .plb-inner {
@@ -2854,6 +2911,7 @@
       height: 48px;
       background: rgba(255, 252, 245, .1);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 252, 245, .18);
       border-radius: 50%;
       display: flex;
@@ -3111,6 +3169,7 @@
       left: 12px;
       background: rgba(245, 237, 224, .88);
       backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border: 1px solid var(--border);
       color: var(--muted);
       font-size: .6rem;
@@ -3326,6 +3385,12 @@
       padding: 1rem 3rem 2rem 0;
       scrollbar-width: none;
       cursor: grab;
+    }
+
+    /* scroll-snap fights JS-driven scrollLeft while dragging, so snapping is paused during a drag */
+    .testimonials-track.is-dragging {
+      scroll-snap-type: none;
+      cursor: grabbing;
     }
 
     .testimonials-track::-webkit-scrollbar {
@@ -4168,6 +4233,109 @@
     @media (prefers-reduced-motion: reduce) {
       .skel-loading { animation: none; }
     }
+
+    /* =====================================================================
+       BUG-FIX LAYER — additive rules added during the debug pass
+       ===================================================================== */
+
+    /* color-mix() progressive enhancement (base rules above carry a plain-colour fallback) */
+    @supports (background: color-mix(in srgb, red, blue)) {
+      .folder-tab {
+        background: color-mix(in srgb, var(--folder-color, var(--accent)) 82%, black 18%);
+      }
+
+      .folder-back {
+        background: linear-gradient(160deg, color-mix(in srgb, var(--folder-color, var(--accent)) 82%, black 18%) 0%, var(--folder-color, var(--accent)) 100%);
+      }
+
+      .folder-front {
+        background: linear-gradient(160deg, color-mix(in srgb, var(--folder-color2, var(--folder-color, var(--accent))) 92%, white 8%) 0%, var(--folder-color2, var(--folder-color, var(--accent))) 55%, color-mix(in srgb, var(--folder-color, var(--accent)) 85%, black 15%) 100%);
+      }
+    }
+
+    /* backdrop-filter fallback: slightly more opaque surfaces where blur is unavailable */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      nav { background: rgba(245, 237, 224, .96); }
+      .project-card, .why-card, .pricing-card, .testi-card, .related-card { background-color: rgba(255, 252, 245, .78); }
+      .arduino-section .pricing-card { background-color: rgba(15, 23, 42, .62); }
+      .pricing-marquee { background: rgba(255, 255, 255, .7); }
+      #pslider-lightbox { background: rgba(14, 10, 5, .97); }
+    }
+
+    /* Mobile Safari/Chrome: 100vh is the LARGE viewport, so bottom-anchored hero content hid behind the browser toolbar.
+       100svh is stable (doesn't change as the URL bar collapses, so no ScrollTrigger re-measure) — plain vh stays as fallback. */
+    @supports (height: 100svh) {
+      #hero-viewport {
+        height: 100svh;
+        min-height: 100svh;
+      }
+    }
+
+    /* GSAP / ScrollTrigger failed to load: show the static hero (same layout the reduced-motion path uses) */
+    html.no-hero-anim #hero-viewport { height: auto; min-height: 100vh; }
+    html.no-hero-anim .hero-icon { display: none; }
+    html.no-hero-anim .hero { flex-direction: column; gap: 2.5rem; }
+    html.no-hero-anim #hero-title-group { position: static; left: auto; top: auto; transform: none; width: auto; opacity: 1; }
+    html.no-hero-anim #hero-info-group { opacity: 1; }
+
+    /* only the active slide gets its own compositor layer (was: every slide, e.g. 26 on the report project) */
+    .pslide.active .pslide-img,
+    .pslide.active .pslide-video {
+      will-change: transform;
+    }
+
+    /* social icons: <a class="icon"> inside <li> */
+    .contact-social li { display: flex; }
+    .contact-social a.icon { text-decoration: none; }
+
+    .proj-cta-wrap { padding: 3rem; }
+
+    #pricing-anchor { scroll-margin-top: 90px; }
+
+    /* Keyboard focus — visible, on-brand, without changing hover/mouse styling */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .contact-form input:focus-visible,
+    .contact-form select:focus-visible,
+    .contact-form textarea:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(192, 57, 43, .25);
+    }
+
+    .nav-drawer a:focus-visible { outline-offset: -4px; }
+
+    /* slider arrows are normally revealed on hover only — keyboard users need them too */
+    .pslider-arrow:focus-visible,
+    .pslider-viewport:focus-within .pslider-arrow {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .pslider-viewport:focus-visible { outline-offset: -3px; }
+
+    /* Firefox has no ::-webkit-scrollbar — approximate the thin gold scrollbar */
+    @supports (-moz-appearance: none) {
+      html { scrollbar-width: thin; scrollbar-color: var(--gold) var(--bg3); }
+    }
+
+    @media (max-width: 768px) {
+      .proj-cta-wrap { padding: 2rem 1.25rem; }
+    }
+
+    /* Reduced motion: stop decorative infinite loops and entrance animations too */
+    @media (prefers-reduced-motion: reduce) {
+      #hero-viewport { height: auto; min-height: 100vh; }
+      .marquee-track, .pricing-marquee-track { animation: none; }
+      :where(.js) .reveal { opacity: 1; transform: none; transition: none; }
+      .hero-badge, .hero-h1, .hero-divider, .hero-btns, .hero-stats { animation: none; }
+      .hero-badge-dot, .nav-logo::before { animation: none; }
+      .proj-showcase-particle, .showcase-ambient::before { animation: none; }
+      #page-transition { transition: none; }
+    }
   </style>
 </head>
 
@@ -4207,9 +4375,9 @@
   <div id="page-transition"></div>
 
   <!-- navigation bar -->
-  <nav id="navbar">
+  <nav id="navbar" aria-label="Main">
     <!-- navbar logo: swap to an image logo by uncommenting the <img> below and dropping the text spans -->
-    <div class="nav-logo" data-action="home">
+    <div class="nav-logo" data-action="home" role="link" tabindex="0" aria-label="SlideCraft — home">
       <!-- image logo -->
       <img src="images/Website_Logo.webp" alt="SlideCraft Logo" class="navbar-logo-img">
 
@@ -4218,12 +4386,12 @@
     </div>
     <div class="nav-links" id="navLinks">
       <div class="nav-indicator" id="navIndicator"></div>
-      <a data-section="portfolio-anchor" data-action="scroll:portfolio-anchor">Portfolio</a>
-      <a data-section="why-anchor" data-action="scroll:why-anchor">Why Us</a>
-      <a data-section="pricing-anchor" data-action="scroll:pricing-anchor">Pricing</a>
-      <a data-section="testimonials-anchor" data-action="scroll:testimonials-anchor">Reviews</a>
-      <a data-section="faq-anchor" data-action="scroll:faq-anchor">FAQ</a>
-      <a data-section="contact-anchor" data-action="scroll:contact-anchor">Contact</a>
+      <a href="#portfolio-anchor" data-section="portfolio-anchor" data-action="scroll:portfolio-anchor">Portfolio</a>
+      <a href="#why-anchor" data-section="why-anchor" data-action="scroll:why-anchor">Why Us</a>
+      <a href="#pricing-anchor" data-section="pricing-anchor" data-action="scroll:pricing-anchor">Pricing</a>
+      <a href="#testimonials-anchor" data-section="testimonials-anchor" data-action="scroll:testimonials-anchor">Reviews</a>
+      <a href="#faq-anchor" data-section="faq-anchor" data-action="scroll:faq-anchor">FAQ</a>
+      <a href="#contact-anchor" data-section="contact-anchor" data-action="scroll:contact-anchor">Contact</a>
     </div>
     <div class="nav-actions">
       <button class="back-btn" id="backBtn" data-action="back">
@@ -4233,7 +4401,7 @@
         Back
       </button>
       <button class="nav-cta" data-action="scroll:pricing-anchor">Order Now</button>
-      <button class="nav-hamburger" id="navHamburger" data-action="drawer-toggle" aria-label="Menu">
+      <button class="nav-hamburger" id="navHamburger" type="button" data-action="drawer-toggle" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
         <span></span>
         <span></span>
         <span></span>
@@ -4242,25 +4410,25 @@
   </nav>
 
   <!-- mobile nav drawer -->
-  <div class="nav-drawer" id="navDrawer">
-    <a data-action="drawer-nav:portfolio-anchor">Portfolio</a>
-    <a data-action="drawer-nav:why-anchor">Why Us</a>
-    <a data-action="drawer-nav:pricing-anchor">Pricing</a>
-    <a data-action="drawer-nav:testimonials-anchor">Reviews</a>
-    <a data-action="drawer-nav:faq-anchor">FAQ</a>
-    <a data-action="drawer-nav:contact-anchor">Contact</a>
-    <a class="nav-drawer-cta" data-action="wa-drawer:nav">Order on WhatsApp →</a>
+  <div class="nav-drawer" id="navDrawer" aria-hidden="true">
+    <a href="#portfolio-anchor" data-action="drawer-nav:portfolio-anchor">Portfolio</a>
+    <a href="#why-anchor" data-action="drawer-nav:why-anchor">Why Us</a>
+    <a href="#pricing-anchor" data-action="drawer-nav:pricing-anchor">Pricing</a>
+    <a href="#testimonials-anchor" data-action="drawer-nav:testimonials-anchor">Reviews</a>
+    <a href="#faq-anchor" data-action="drawer-nav:faq-anchor">FAQ</a>
+    <a href="#contact-anchor" data-action="drawer-nav:contact-anchor">Contact</a>
+    <a class="nav-drawer-cta" href="https://wa.me/919998329419" target="_blank" rel="noopener noreferrer" data-action="wa-drawer:nav">Order on WhatsApp →</a>
   </div>
 
   <!-- sticky floating CTA -->
-  <button class="sticky-cta" id="stickyCTA" data-action="wa:sticky"><svg viewBox="0 0 24 24"
+  <button class="sticky-cta" id="stickyCTA" type="button" data-action="wa:sticky"><svg viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg">
       <path
         d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
     </svg>Order on WhatsApp</button>
 
   <!-- home view -->
-  <div class="view" id="view-home">
+  <div class="view active visible" id="view-home">
 
     <!-- #hero-title-group sits directly under #hero-viewport (not nested in #hero-inner) so it can be absolutely positioned and pinned in place while shrinking, instead of scrolling off with the flex flow -->
     <div id="hero-pin-wrap">
@@ -4498,21 +4666,21 @@
         </div>
         <div class="faq-inner reveal">
           <div class="faq-item" data-action="faq-toggle">
-            <div class="faq-question">
+            <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
               <span class="faq-question-text">How long does it take to complete a project?</span>
-              <span class="faq-icon">+</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
             </div>
             <div class="faq-answer">
-              <div class="faq-answer-inner">Presentations are usually delivered within<strong>24–48</strong>,hours. Arduino project
+              <div class="faq-answer-inner">Presentations are usually delivered within <strong>24–48 hours</strong>. Arduino project
                 timelines depend on complexity and the availability of required components. For reports, documentation,
                 or code-only work, please provide complete project details and requirements. Contact us with your
                 deadline, and we'll provide an estimated delivery timeframe.</div>
             </div>
           </div>
           <div class="faq-item" data-action="faq-toggle">
-            <div class="faq-question">
+            <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
               <span class="faq-question-text">Do you offer revisions if I'm not happy?</span>
-              <span class="faq-icon">+</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
             </div>
             <div class="faq-answer">
               <div class="faq-answer-inner">Absolutely. Every order includes <strong>free revisions</strong> until
@@ -4522,9 +4690,9 @@
             </div>
           </div>
           <div class="faq-item" data-action="faq-toggle">
-            <div class="faq-question">
+            <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
               <span class="faq-question-text">What do you need from me to get started?</span>
-              <span class="faq-icon">+</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
             </div>
             <div class="faq-answer">
               <div class="faq-answer-inner">Just the basics — your <strong>topic, key points or notes, and any reference
@@ -4534,9 +4702,9 @@
             </div>
           </div>
           <div class="faq-item" data-action="faq-toggle">
-            <div class="faq-question">
+            <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
               <span class="faq-question-text">What formats will I receive my files in?</span>
-              <span class="faq-icon">+</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
             </div>
             <div class="faq-answer">
               <div class="faq-answer-inner">Presentations are delivered as editable <strong>.pptx files plus a PDF
@@ -4546,9 +4714,9 @@
             </div>
           </div>
           <div class="faq-item" data-action="faq-toggle">
-            <div class="faq-question">
+            <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
               <span class="faq-question-text">How do I pay, and is it safe?</span>
-              <span class="faq-icon">+</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
             </div>
             <div class="faq-answer">
               <div class="faq-answer-inner">Payment is accepted via <strong>UPI, Google Pay, or PhonePe</strong> — fast
@@ -4587,8 +4755,8 @@
       </div>
 
       <form class="contact-form reveal" id="contactForm">
-        <input type="text" placeholder="Your Name" required>
-        <select required>
+        <input type="text" name="name" autocomplete="name" aria-label="Your name" placeholder="Your Name" required>
+        <select name="service" aria-label="Service" required>
           <option value="" disabled selected>Select a Service</option>
           <option>Presentation</option>
           <option>Arduino Project</option>
@@ -4600,40 +4768,42 @@
           <option>Report Design</option>
           <option>Other</option>
         </select>
-        <textarea placeholder="Tell us about your project…"></textarea>
+        <textarea name="details" aria-label="Project details" placeholder="Tell us about your project…"></textarea>
         <button class="btn-primary align-start" type="submit">Send via WhatsApp →</button>
       </form>
 
       <!-- social links: replace href="#" with your real profile URLs -->
       <ul class="contact-social reveal">
-        <a href="https://www.facebook.com/share/1Bge3Q35rY/" target="_blank">
-          <li class="icon facebook" >
-          <span class="tooltip">Facebook</span>
-          <svg viewBox="0 0 320 512" height="1.2em" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <li>
+          <a class="icon facebook" href="https://www.facebook.com/share/1Bge3Q35rY/" target="_blank" rel="noopener noreferrer" aria-label="SlideCraft on Facebook">
+            <span class="tooltip" aria-hidden="true">Facebook</span>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 320 512" height="1.2em" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z">
             </path>
           </svg>
-         </li>
-      </a>
-      <a href="https://www.instagram.com/slidecraft_.ppt?igsh=Nmc2eTd1N2Q2NHZt" target="_blank">
-        <li class="icon instagram" a herf="https://www.instagram.com/slidecraft_.ppt?igsh=Nmc2eTd1N2Q2NHZt">
-          <span class="tooltip">Instagram</span>
-          <svg xmlns="http://www.w3.org/2000/svg" height="1.2em" fill="currentColor" viewBox="0 0 16 16">
+          </a>
+        </li>
+        <li>
+          <a class="icon instagram" href="https://www.instagram.com/slidecraft_.ppt?igsh=Nmc2eTd1N2Q2NHZt" target="_blank" rel="noopener noreferrer" aria-label="SlideCraft on Instagram">
+            <span class="tooltip" aria-hidden="true">Instagram</span>
+            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" height="1.2em" fill="currentColor" viewBox="0 0 16 16">
             <path
               d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z">
             </path>
           </svg>
-        </li></a>
-        <a href="https://www.youtube.com/@SlideCraft_ppt" target="_blank">
-        <li class="icon youtube">
-          <span class="tooltip">YouTube</span>
-          <svg xmlns="http://www.w3.org/2000/svg" height="1.2em" fill="currentColor" viewBox="0 0 576 512">
+          </a>
+        </li>
+        <li>
+          <a class="icon youtube" href="https://www.youtube.com/@SlideCraft_ppt" target="_blank" rel="noopener noreferrer" aria-label="SlideCraft on YouTube">
+            <span class="tooltip" aria-hidden="true">YouTube</span>
+            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" height="1.2em" fill="currentColor" viewBox="0 0 576 512">
             <path
               d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232 337.6V174.4L361 256l-129 81.6z">
             </path>
           </svg>
-        </li></a>
+          </a>
+        </li>
       </ul>
     </section>
 
@@ -4642,12 +4812,12 @@
 
       <!-- footer logo: swap to an image logo by uncommenting the <img> below -->
       <!-- <img src="images/logo.webpWebsite_Logo.webp" alt="SlideCraft" style="height:30px;width:auto;opacity:.7"> -->
-      <img src="images/Website_Logo.webp" alt="SlideCraft Logo" class="footer-logo-img" data-action="home">
+      <img src="images/Website_Logo.webp" alt="SlideCraft Logo" class="footer-logo-img" data-action="home" role="link" tabindex="0">
 
       <div class="footer-links">
-        <a class="footer-link" data-action="scroll:portfolio-anchor">Portfolio</a>
-        <a class="footer-link" data-action="scroll:pricing-anchor">Pricing</a>
-        <a class="footer-link" data-action="wa:footer">WhatsApp</a>
+        <a class="footer-link" href="#portfolio-anchor" data-action="scroll:portfolio-anchor">Portfolio</a>
+        <a class="footer-link" href="#pricing-anchor" data-action="scroll:pricing-anchor">Pricing</a>
+        <a class="footer-link" href="https://wa.me/919998329419" target="_blank" rel="noopener noreferrer" data-action="wa:footer">WhatsApp</a>
       </div>
       <p class="footer-copy">© 2026 SlideCraft — All rights reserved</p>
     </footer>
@@ -4658,17 +4828,17 @@
   <div class="view" id="view-project"></div>
 
   <!-- fullscreen lightbox, shared across all projects, opens on slider image click -->
-  <div id="pslider-lightbox">
+  <div id="pslider-lightbox" role="dialog" aria-modal="true" aria-label="Project media viewer" aria-hidden="true">
     <div class="plb-inner" id="plbInner">
-      <button class="plb-close" id="plbClose">✕</button>
+      <button class="plb-close" id="plbClose" type="button" aria-label="Close viewer">✕</button>
       <div class="plb-img-wrap" id="plbImgWrap">
-        <button class="plb-arrow prev" id="plbPrev">
+        <button class="plb-arrow prev" id="plbPrev" type="button" aria-label="Previous image">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
         <div id="plbImgSlot"></div>
-        <button class="plb-arrow next" id="plbNext">
+        <button class="plb-arrow next" id="plbNext" type="button" aria-label="Next image">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M9 18l6-6-6-6" />
           </svg>
@@ -4681,6 +4851,11 @@
       <div class="plb-thumbs" id="plbThumbs"></div>
     </div>
   </div>
+  <!-- hero scroll animation: icon fountain + title shrink. cdnjs first, jsDelivr as a fallback if cdnjs is blocked/down. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>window.gsap || document.write('<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"><\/script>');</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>window.ScrollTrigger || document.write('<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"><\/script>');</script>
   <!-- main.js wires up data-action handlers and runs init; load it last -->
   <script>
 /* Global site configuration: WhatsApp number and slider/media settings. Edit these constants to reconfigure the site. */
@@ -4719,109 +4894,169 @@
     // Viewport width below which the mobile frame set is used instead of desktop's.
     const MOBILE_BREAKPOINT = 768;
 
+    // Shared reduced-motion query (used by smooth-scroll helpers, autoplay video, etc.)
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
+
     (function scrollFramesInit() {
       const canvas = document.getElementById('scroll-frames');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+      // alpha:false = cheaper compositing (frames are opaque and always cover the whole canvas)
+      const ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) return; // canvas unsupported — ambient gradient layers still provide a background
 
-      // Pick the frame sequence for this device. Mobile gets its own
-      // (smaller/lighter) set, but still scrubs frame-by-frame with
-      // scroll just like desktop.
+      // Desktop and mobile get separate sequences (picked once at load).
       const isSmallViewport = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
       const FRAME_CONFIG = isSmallViewport ? FRAME_CONFIG_MOBILE : FRAME_CONFIG_DESKTOP;
+      const total = FRAME_CONFIG.count;
 
-      // Accessibility / data-saver preferences fall back to a single
-      // static frame regardless of device.
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const isDataSaver = !!(navigator.connection && navigator.connection.saveData);
-      const useLightweightMode = prefersReducedMotion || isDataSaver;
+      // Accessibility / data-saver / very slow network → one static frame, no scrubbing, no 100-200 downloads.
+      const conn = navigator.connection || {};
+      const useLightweightMode = REDUCED_MOTION.matches || !!conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
 
-      const frames = [];
-      let loadedCount = 0;
-      let currentFrame = 0;
-      let ticking = false;
-      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const MAX_CANVAS_PIXELS = isSmallViewport ? 1.6e6 : 2.6e6; // cap backing-store size (memory + fill-rate)
+      const CONCURRENCY = isSmallViewport ? 3 : 6;               // parallel downloads, so page images aren't starved
+      const MAX_CONSECUTIVE_FAILS = 12;                           // stop requesting if the sequence is clearly missing
+
+      const frames = new Array(total); // loaded <img> elements
+      const status = new Uint8Array(total); // 0 = pending, 1 = loaded, 2 = failed
+      let currentFrame = 0, drawnFrame = -1, ticking = false, dead = false;
+      let cssW = 0, cssH = 0, maxScroll = 0, resizeRaf = 0;
 
       function framePath(i) {
         const n = String(i + 1).padStart(FRAME_CONFIG.pad, '0');
         return `${FRAME_CONFIG.folder}${FRAME_CONFIG.prefix}${n}${FRAME_CONFIG.ext}`;
       }
 
-      function resizeCanvas() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = window.innerWidth * dpr;
-        canvas.height = window.innerHeight * dpr;
-        drawFrame(currentFrame);
+      // Cached scroll range. Reading scrollHeight inside every scroll frame forced a layout right after
+      // ScrollTrigger had written styles; a ResizeObserver keeps it fresh instead (also covers view switches).
+      function measure() {
+        maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
       }
 
-      // Draws an image onto the canvas using "cover" fit, like CSS background-size:cover
+      // Returns true when the backing store was actually re-allocated.
+      function sizeCanvas(force) {
+        const w = window.innerWidth, h = window.innerHeight;
+        // Mobile browsers fire `resize` while scrolling as the URL bar collapses (height-only, ~50-100px).
+        // Re-allocating a full-screen canvas for that caused jank, so small height-only changes are ignored.
+        if (!force && w === cssW && Math.abs(h - cssH) < 160) return false;
+        cssW = w; cssH = h;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        if (w * h * dpr * dpr > MAX_CANVAS_PIXELS) dpr = Math.sqrt(MAX_CANVAS_PIXELS / (w * h));
+        canvas.width = Math.max(1, Math.round(w * dpr));
+        canvas.height = Math.max(1, Math.round(h * dpr));
+        return true;
+      }
+
+      // Nearest frame that is actually loaded, so scrubbing before the sequence finishes (or with
+      // missing frames) still shows something sensible instead of a blank canvas.
+      function nearestLoaded(idx) {
+        if (status[idx] === 1) return idx;
+        for (let d = 1; d < total; d++) {
+          const a = idx - d, b = idx + d;
+          if (a >= 0 && status[a] === 1) return a;
+          if (b < total && status[b] === 1) return b;
+        }
+        return -1;
+      }
+
+      // "cover" fit, like CSS background-size:cover. Skips work when the frame hasn't changed.
       function drawFrame(index) {
-        const img = frames[index];
-        if (!img || !img.complete || !img.naturalWidth) return;
-        const cw = canvas.width, ch = canvas.height;
+        const i = nearestLoaded(index);
+        if (i < 0 || i === drawnFrame) return;
+        const img = frames[i];
         const iw = img.naturalWidth, ih = img.naturalHeight;
+        if (!iw || !ih) return;
+        const cw = canvas.width, ch = canvas.height;
         const scale = Math.max(cw / iw, ch / ih);
         const dw = iw * scale, dh = ih * scale;
-        const dx = (cw - dw) / 2, dy = (ch - dh) / 2;
-        ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(img, dx, dy, dw, dh);
+        ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+        drawnFrame = i;
       }
 
       function frameForScroll() {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
-        return Math.min(FRAME_CONFIG.count - 1, Math.round(pct * (FRAME_CONFIG.count - 1)));
+        const pct = maxScroll > 0 ? Math.min(Math.max(window.scrollY / maxScroll, 0), 1) : 0;
+        return Math.min(total - 1, Math.round(pct * (total - 1)));
       }
 
       function onScroll() {
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(() => {
+          ticking = false;
           currentFrame = frameForScroll();
           drawFrame(currentFrame);
-          ticking = false;
         });
       }
 
-      if (useLightweightMode) {
-        // Lightweight path: load frame 1 only (from whichever config was
-        // picked above), draw once, no scroll redraws.
-        const img = new Image();
-        img.src = framePath(0);
-        img.onload = () => {
-          drawFrame(0);
-          canvas.classList.add('is-ready');
-        };
-        img.onerror = () => {
-          // Missing frame file — silently skip; ambient gradient layers
-          // above the canvas still provide a background either way.
-        };
-        frames.push(img);
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas, { passive: true });
-        return;
+      function onResize() {
+        if (resizeRaf) return;
+        resizeRaf = requestAnimationFrame(() => {
+          resizeRaf = 0;
+          measure();
+          if (sizeCanvas(false)) { drawnFrame = -1; }
+          currentFrame = frameForScroll();
+          drawFrame(currentFrame);
+        });
       }
 
-      // Full path: preload every frame in the selected sequence (desktop
-      // or mobile); canvas fades in once the sequence is usable.
-      for (let i = 0; i < FRAME_CONFIG.count; i++) {
+      function disable() {
+        dead = true;
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onResize);
+      }
+
+      function loadFrame(i, done) {
         const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => { frames[i] = img; status[i] = 1; img.onload = img.onerror = null; done(true); };
+        img.onerror = () => { status[i] = 2; img.onload = img.onerror = null; done(false); };
         img.src = framePath(i);
-        img.onload = () => {
-          loadedCount++;
-          if (i === 0) drawFrame(0);
-          if (loadedCount === 1) canvas.classList.add('is-ready');
-        };
-        img.onerror = () => {
-          // Missing frame file — silently skip; ambient gradient layers
-          // above the canvas still provide a background either way.
-        };
-        frames.push(img);
       }
 
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas, { passive: true });
-      window.addEventListener('scroll', onScroll, { passive: true });
+      // Coarse-to-fine order (0, last, every 32nd, 16th, ... every frame): the sequence is usable almost
+      // immediately and refines itself, instead of 200 simultaneous requests competing with page content.
+      function buildLoadOrder() {
+        const order = [], seen = new Uint8Array(total);
+        const push = i => { if (i >= 0 && i < total && !seen[i]) { seen[i] = 1; order.push(i); } };
+        push(0); push(total - 1);
+        for (let stride = 32; stride >= 1; stride >>= 1) for (let i = 0; i < total; i += stride) push(i);
+        return order;
+      }
+
+      measure();
+      sizeCanvas(true);
+      window.addEventListener('resize', onResize, { passive: true });
+      if ('ResizeObserver' in window) new ResizeObserver(() => { measure(); }).observe(document.body);
+
+      // Probe frame 1 first. If it is missing, the whole sequence is treated as unavailable: no further
+      // requests (no 200 × 404 in the console), canvas stays hidden, ambient gradient background remains.
+      const order = buildLoadOrder();
+      loadFrame(order[0], ok => {
+        if (!ok) { disable(); return; }
+        currentFrame = frameForScroll();
+        drawFrame(currentFrame);
+        canvas.classList.add('is-ready');
+        if (useLightweightMode) return;
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        let next = 1, inflight = 0, fails = 0;
+        const pump = () => {
+          while (!dead && inflight < CONCURRENCY && next < order.length && fails < MAX_CONSECUTIVE_FAILS) {
+            inflight++;
+            loadFrame(order[next++], loaded => {
+              inflight--;
+              fails = loaded ? 0 : fails + 1;
+              if (loaded) drawFrame(currentFrame);
+              pump();
+            });
+          }
+        };
+        // Start the bulk download after the page itself has finished loading
+        const begin = () => setTimeout(pump, 200);
+        if (document.readyState === 'complete') begin();
+        else window.addEventListener('load', begin, { once: true });
+      });
     })();
 
 /* All editable content data: portfolio PROJECTS, WHY_CARDS, and pricing tiers (PPT_PRICING / PROJECT_PRICING). */
@@ -5085,7 +5320,7 @@
           img.classList.add('skel-loaded');
           if (wrap) wrap.classList.remove('skel-loading');
         };
-        if (img.complete && img.naturalWidth > 0) reveal();
+        if (img.complete) reveal(); // loaded OR already failed — a failed image fires no further events
         else {
           img.addEventListener('load', reveal, { once: true });
           img.addEventListener('error', reveal, { once: true });
@@ -5134,7 +5369,11 @@
         </div>
       </div>`;
 
-        card.onclick = () => openProject(p);
+        // Opened through the delegated click/keyboard handler (initStaticEventWiring) so cards are keyboard accessible
+        card.setAttribute('data-action', `open-project:${i}`);
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `View ${p.title}`);
+        card.tabIndex = 0;
 
         grid.appendChild(card);
 
@@ -5182,7 +5421,7 @@
         ).join('')}
       </ul>
 
-      <button class="cta-learnmore" onclick="openWA('pricing-${p.tier.replace(/\s+/g, '-').toLowerCase()}')">
+      <button type="button" class="cta-learnmore" aria-label="Get started with the ${p.tier} plan" onclick="openWA('pricing-${p.tier.replace(/\s+/g, '-').toLowerCase()}')">
         <span class="circle" aria-hidden="true">
           <span class="icon arrow"></span>
         </span>
@@ -5201,6 +5440,17 @@
     let _sliderState = null;
     let _autoplayTimer = null;
     let _sliderKeyHandler = null;
+
+    /* Scrolls a horizontal thumbnail strip so `el` is centred — WITHOUT scrolling the page
+       (Element.scrollIntoView() also scrolled the whole page vertically to reveal the strip). */
+    function scrollStripTo(strip, el) {
+      if (!strip || !el) return;
+      const sr = strip.getBoundingClientRect(), er = el.getBoundingClientRect();
+      const target = strip.scrollLeft + (er.left - sr.left) - (strip.clientWidth - er.width) / 2;
+      const left = Math.max(0, target);
+      if (strip.scrollTo) strip.scrollTo({ left, behavior: REDUCED_MOTION.matches ? 'auto' : 'smooth' });
+      else strip.scrollLeft = left;
+    }
 
     /* * buildInteractiveSlider(p) — * Returns HTML string for the full media slider section. * Called from buildShowcaseGallery() → openProject(). */
     function buildInteractiveSlider(p) {
@@ -5297,7 +5547,7 @@
         <div class="pthumb-ph" style="display:none">${i + 1}</div>`;
         }
 
-        return `<div class="pslider-thumb${i === 0 ? ' active' : ''}${thumbCls}" data-idx="${i}" style="position:relative">${thumbContent}</div>`;
+        return `<div class="pslider-thumb${i === 0 ? ' active' : ''}${thumbCls}" data-idx="${i}" role="button" tabindex="0" aria-label="Show slide ${i + 1}" style="position:relative">${thumbContent}</div>`;
       }).join('');
 
       // Glow color from project accent
@@ -5315,7 +5565,7 @@
     </div>
     <div class="pslider-wrap" id="psliderWrap">
       <div class="pslider-glow" style="background:${glowBg}"></div>
-      <div class="pslider-viewport" id="psliderViewport">
+      <div class="pslider-viewport" id="psliderViewport" tabindex="0" role="group" aria-roledescription="carousel" aria-label="${p.title} examples — press Enter to enlarge">
         <div class="pslider-counter">
           <span id="psliderCurNum">01</span> / <span id="psliderTotNum">${String(count).padStart(2, '0')}</span>
         </div>
@@ -5392,7 +5642,8 @@
         if (animate) {
           s.isAnimating = true;
           setTimeout(() => {
-            if (_sliderState) _sliderState.isAnimating = false;
+            if (_sliderState !== s) return; // project view was closed / re-rendered meanwhile
+            s.isAnimating = false;
             playActiveVideo(idx); // play after transition completes
           }, 600);
         } else {
@@ -5404,7 +5655,7 @@
         if (!thumbsEl) return;
         thumbsEl.querySelectorAll('.pslider-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
         const active = thumbsEl.querySelector('.pslider-thumb.active');
-        if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        if (active) scrollStripTo(thumbsEl, active);
       }
 
       function updateCounter(idx) {
@@ -5421,8 +5672,17 @@
       });
 
       // Click viewport → open lightbox
-      viewport.addEventListener('click', () => {
+      viewport.addEventListener('click', e => {
+        // Arrows and the mute button live INSIDE the viewport — they must not also open the lightbox
+        if (e.target.closest('.pslider-arrow, .pslide-video-controls')) return;
+        if (!_sliderState) return;
         openPremiumLightbox(_sliderState.items, _sliderState.cur, p);
+      });
+      viewport.addEventListener('keydown', e => {
+        if (e.target === viewport && (e.key === 'Enter' || e.key === ' ') && _sliderState) {
+          e.preventDefault();
+          openPremiumLightbox(_sliderState.items, _sliderState.cur, p);
+        }
       });
 
       // Thumbnail clicks
@@ -5433,7 +5693,11 @@
       // Keyboard navigation
       if (_sliderKeyHandler) document.removeEventListener('keydown', _sliderKeyHandler);
       _sliderKeyHandler = e => {
+        // Only while the project page is showing, and never while the visitor is typing in a field
+        if (currentView !== 'project' || !_sliderState) return;
         if (document.getElementById('pslider-lightbox')?.classList.contains('open')) return;
+        const t = e.target;
+        if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
         if (e.key === 'ArrowLeft') { goTo(_sliderState.cur - 1); resetAutoplay(); }
         if (e.key === 'ArrowRight') { goTo(_sliderState.cur + 1); resetAutoplay(); }
       };
@@ -5497,15 +5761,20 @@
 
     /* FULLSCREEN LIGHTBOX MODULE — Opened when user clicks the main slider viewport. Supports both images and video in the lightbox. ESC key closes. Arrow keys navigate. Swipe on mobile. */
     let _lb = { items: [], idx: 0, p: null };
+    let _lbOpener = null; // element to return focus to when the lightbox closes
 
     function openPremiumLightbox(items, startIdx, p) {
       _lb.items = items && items.length > 0 ? items : [null];
       _lb.idx = startIdx || 0;
       _lb.p = p;
+      const lb = document.getElementById('pslider-lightbox');
+      _lbOpener = document.activeElement;
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      lockScroll('lightbox');
       renderLbThumbs();
       renderLbItem();
-      document.getElementById('pslider-lightbox').classList.add('open');
-      document.body.style.overflow = 'hidden';
+      document.getElementById('plbClose')?.focus({ preventScroll: true });
     }
 
     function renderLbItem() {
@@ -5533,10 +5802,13 @@
              muted controls autoplay loop playsinline
              style="max-height:72vh;width:100%;background:rgba(20,14,8,.5)"></video>`;
       } else {
-        slot.innerHTML = `
-      <img class="plb-main-img skel-img" src="${item}" alt="${p.title}" draggable="false"
-           onerror="this.parentNode.innerHTML='<div class=\\"plb-ph\\"><div class=\\"plb-ph-letter\\">${p.title.charAt(0)}</div><div class=\\"plb-ph-text\\">Image unavailable</div></div>'">`;
+        slot.innerHTML = `<img class="plb-main-img skel-img" src="${item}" alt="${p.title}" draggable="false">`;
         slot.classList.add('skel-loading');
+        // (was an inline onerror whose escaped quotes terminated the HTML attribute early → SyntaxError on failure)
+        slot.querySelector('img').addEventListener('error', () => {
+          slot.classList.remove('skel-loading');
+          slot.innerHTML = `<div class="plb-ph"><div class="plb-ph-letter">${p.title.charAt(0)}</div><div class="plb-ph-text">Image unavailable</div></div>`;
+        }, { once: true });
       }
 
       initSkeletons(slot);
@@ -5547,7 +5819,7 @@
       // Sync thumbnail highlights
       document.getElementById('plbThumbs')?.querySelectorAll('.plb-thumb').forEach((t, i) => {
         t.classList.toggle('active', i === _lb.idx);
-        if (i === _lb.idx) t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        if (i === _lb.idx) scrollStripTo(document.getElementById('plbThumbs'), t);
       });
     }
 
@@ -5572,10 +5844,10 @@
           thumbCls = ' skel-loading';
           content = `
         <img class="skel-img" src="${item}" loading="lazy" alt="Thumb ${i + 1}" draggable="false"
-             onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="plb-thumb-ph" style="display:none">${i + 1}</div>`;
         }
-        return `<div class="plb-thumb${i === _lb.idx ? ' active' : ''}${thumbCls}" data-idx="${i}" style="position:relative">${content}</div>`;
+        return `<div class="plb-thumb${i === _lb.idx ? ' active' : ''}${thumbCls}" data-idx="${i}" role="button" tabindex="0" aria-label="Show item ${i + 1}" style="position:relative">${content}</div>`;
       }).join('');
 
       container.querySelectorAll('.plb-thumb').forEach((t, i) => {
@@ -5586,10 +5858,15 @@
     }
 
     function closePremiumLightbox() {
-      document.getElementById('pslider-lightbox')?.classList.remove('open');
-      document.body.style.overflow = '';
+      const lb = document.getElementById('pslider-lightbox');
+      const wasOpen = !!lb && lb.classList.contains('open');
+      lb?.classList.remove('open');
+      lb?.setAttribute('aria-hidden', 'true');
+      unlockScroll('lightbox');
       // Stop any playing lightbox video
       document.getElementById('plbImgSlot')?.querySelectorAll('video').forEach(v => v.pause());
+      if (wasOpen && _lbOpener && document.contains(_lbOpener)) _lbOpener.focus({ preventScroll: true });
+      _lbOpener = null;
     }
 
     function lbPrev() { _lb.idx = ((_lb.idx - 1) + _lb.items.length) % _lb.items.length; renderLbItem(); }
@@ -5609,6 +5886,14 @@
         if (e.key === 'Escape') closePremiumLightbox();
         if (e.key === 'ArrowLeft') lbPrev();
         if (e.key === 'ArrowRight') lbNext();
+        if (e.key === 'Tab') { // keep keyboard focus inside the modal
+          const f = [...document.getElementById('pslider-lightbox').querySelectorAll('button, [tabindex="0"], video[controls]')]
+            .filter(el => el.offsetParent !== null);
+          if (!f.length) return;
+          const first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
       });
 
       // Touch swipe in lightbox
@@ -5644,9 +5929,9 @@
         if (!item) {
           return `<div class="showcase-panel-placeholder"><div class="sp-letter">${letter}</div><div class="sp-sub">${sub}</div></div>`;
         } else if (isVideoItem(item)) {
-          return `<video src="${item.src}" ${item.poster ? `poster="${item.poster}"` : ''} muted loop autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
+          return `<video src="${item.src}" ${item.poster ? `poster="${item.poster}"` : ''} muted loop playsinline preload="metadata" data-autoplay style="width:100%;height:100%;object-fit:cover"></video>`;
         } else {
-          return `<img class="skel-img" src="${item}" alt="${p.title}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+          return `<img class="skel-img" src="${item}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
               <div class="showcase-panel-placeholder" style="display:none"><div class="sp-letter">${letter}</div><div class="sp-sub">${sub}</div></div>`;
         }
       };
@@ -5692,7 +5977,7 @@
           ? `<img class="related-thumb-img skel-img" src="${r.thumbnail}" alt="${r.title}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
           : '';
         return `
-    <div class="related-card" onclick="openProject(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+    <div class="related-card" data-action="open-project:${PROJECTS.indexOf(r)}" role="button" tabindex="0" aria-label="View ${r.title}">
       <div class="related-thumb${r.thumbnail ? ' skel-loading' : ''}">
         ${thumbEl}
         <div class="related-thumb-overlay"></div>
@@ -5721,12 +6006,18 @@
     }
 
     /* PROJECT PAGE RENDERER */
+    let _stickyTimer = null;
     function openProject(p) {
+      if (!p) return;
       transitionTo(() => {
         showView('project');
+        teardownProjectView(); // stop previous videos / listeners before re-rendering (related-project navigation)
         window.scrollTo(0, 0);
         document.getElementById('backBtn').style.display = 'flex';
-        setTimeout(() => document.getElementById('stickyCTA').classList.add('show'), 1000);
+        clearTimeout(_stickyTimer);
+        _stickyTimer = setTimeout(() => {
+          if (currentView === 'project') document.getElementById('stickyCTA').classList.add('show');
+        }, 1000);
 
         document.getElementById('view-project').innerHTML = `
       <div class="proj-hero">
@@ -5789,21 +6080,21 @@
 
       <div class="proj-divider" style="margin-bottom:0"></div>
 
-      <div style="padding:3rem">
+      <div class="proj-cta-wrap">
         <div class="cta-banner reveal">
           <div class="section-label" style="justify-content:center;margin-bottom:1rem"><span></span>Order Now</div>
           <h2>Love This <em style="color:${p.color};font-family:'Cormorant Garamond',serif;font-style:italic">Style?</em></h2>
           <p>Get your own ${p.title}-calibre deck crafted with the same level of precision and artistry.</p>
           <div class="cta-btns">
-            <button class="btn-primary" style="background:${p.color};box-shadow:0 4px 20px ${p.color}33" onclick="openWA('project-cta-${p.id}')">Order on WhatsApp →</button>
-            <button class="btn-ghost" onclick="navigateBack()">View All Projects</button>
+            <button class="btn-primary" style="background:${p.color};box-shadow:0 4px 20px ${p.color}33" data-action="wa:project-cta-${p.id}">Order on WhatsApp →</button>
+            <button type="button" class="btn-ghost" data-action="back">View All Projects</button>
           </div>
         </div>
       </div>
 
       <footer style="border-top:1px solid var(--border);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-        <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.06em" onclick="navigateHome()">SLIDE<span style="color:var(--accent)">CRAFT</span></div>
-        <a style="color:var(--muted);font-size:.82rem;text-decoration:none;cursor:pointer" onclick="navigateBack()">← Back to Portfolio</a>
+        <a href="#portfolio-anchor" data-action="home" aria-label="SlideCraft — home" style="font-family:'Cinzel',serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.06em;color:inherit;text-decoration:none">SLIDE<span style="color:var(--accent)">CRAFT</span></a>
+        <a href="#portfolio-anchor" data-action="back" style="color:var(--muted);font-size:.82rem;text-decoration:none;cursor:pointer">← Back to Portfolio</a>
         <p style="color:var(--muted);font-size:.75rem">© 2026 SlideCraft</p>
       </footer>`;
 
@@ -5812,6 +6103,7 @@
         // showcase panels, the work-examples slider + thumbs, related
         // project cards).
         initSkeletons(document.getElementById('view-project'));
+        observeAutoplayVideos(document.getElementById('view-project'));
         setTimeout(() => initSlider(p), 0);
       });
     }
@@ -5819,140 +6111,217 @@
 /* Navigation helpers (view switching, scroll-to-section, back/home), the custom cursor, scroll effects (navbar/sticky CTA/nav indicator), and the mobile hamburger drawer. */
 
     /* NAVIGATION HELPERS */
-    function navigateHome() {
+
+    /* Which view is showing. Also drives the hero ScrollTrigger (it must stand down while the home view is hidden). */
+    let currentView = 'home';
+
+    /* Scroll lock — on <html>, because <body> overflow is NOT propagated to the viewport here (html has
+       overflow-x:hidden). Reference-counted so loader / drawer / lightbox can't unlock each other. */
+    const _scrollLocks = new Set();
+    function lockScroll(key) { _scrollLocks.add(key); document.documentElement.classList.add('scroll-locked'); }
+    function unlockScroll(key) {
+      _scrollLocks.delete(key);
+      if (!_scrollLocks.size) document.documentElement.classList.remove('scroll-locked');
+    }
+
+    function smoothScrollTo(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: REDUCED_MOTION.matches ? 'auto' : 'smooth', block: 'start' });
+    }
+
+    /* Switch back to the home view, then scroll to a section */
+    function goHomeView(sectionId) {
       transitionTo(() => {
         showView('home');
         document.getElementById('backBtn').style.display = 'none';
+        clearTimeout(_stickyTimer);
         document.getElementById('stickyCTA').classList.remove('show');
-        setTimeout(() => document.getElementById('portfolio-anchor').scrollIntoView({ behavior: 'smooth' }), 100);
+        setTimeout(() => smoothScrollTo(sectionId), 100);
       });
     }
-    function navigateBack() {
-      transitionTo(() => {
-        showView('home');
-        document.getElementById('backBtn').style.display = 'none';
-        document.getElementById('stickyCTA').classList.remove('show');
-        setTimeout(() => document.getElementById('portfolio-anchor').scrollIntoView({ behavior: 'smooth' }), 100);
-      });
+    function navigateHome() { goHomeView('portfolio-anchor'); }
+    function navigateBack() { goHomeView('portfolio-anchor'); }
+
+    /* Section navigation that works from ANY view (nav links / "Order Now" used to do nothing on project pages,
+       because the target section is display:none while a project is open) */
+    function goToSection(id) {
+      if (currentView !== 'home') goHomeView(id);
+      else smoothScrollTo(id);
     }
-    function scrollToSection(id) {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }
+    function scrollToSection(id) { goToSection(id); }
+
+    /* Page-transition wipe. Re-entrancy guarded; try/finally guarantees the full-screen overlay can never get stuck. */
+    let _transitioning = false;
     function transitionTo(cb) {
+      if (_transitioning) return;
+      _transitioning = true;
       const pt = document.getElementById('page-transition');
       pt.className = 'entering';
-      setTimeout(() => { cb(); pt.className = 'leaving'; setTimeout(() => pt.className = '', 500); }, 380);
+      setTimeout(() => {
+        try { cb(); }
+        finally {
+          pt.className = 'leaving';
+          setTimeout(() => { pt.className = ''; _transitioning = false; }, 500);
+        }
+      }, 380);
     }
+
     function showView(name) {
+      const prev = currentView;
+      currentView = name;
+      if (prev === 'project' && name !== 'project') teardownProjectView();
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active', 'visible'));
       const v = document.getElementById('view-' + name);
       v.classList.add('active');
+      document.documentElement.setAttribute('data-view', name);
       // Force a reflow so the browser registers display:block before
       // the opacity transition starts — without this the view stays invisible.
       void v.offsetHeight;
+      // Tell the hero ScrollTrigger the home view appeared/disappeared: it must not drive the navbar on project
+      // pages, and must re-measure once display:none → block (it measures 0 while hidden).
+      if (prev !== name && window.__heroSetActive) window.__heroSetActive(name === 'home');
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => { v.classList.add('visible'); initReveal(); });
+        requestAnimationFrame(() => { v.classList.add('visible'); initReveal(); schedulePageUI(); });
       });
     }
 
-    /* CUSTOM CURSOR */
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursor-ring');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 50);
-    });
-
-    /* SCROLL EFFECTS (navbar + sticky CTA + nav indicator) */
-
-    /* Move the indicator pill to sit under the currently-active nav link */
-    function updateNavIndicator() {
-      const isHome = document.getElementById('view-home').classList.contains('active');
-      const indicator = document.getElementById('navIndicator');
-      const navLinks = document.getElementById('navLinks');
-      if (!indicator || !navLinks) return;
-
-      if (!isHome) {
-        indicator.classList.remove('visible');
-        return;
+    /* Leaving / re-rendering a project page: stop media, drop listeners, free the DOM (it is rebuilt on every open) */
+    let _mediaObserver = null;
+    function teardownProjectView() {
+      clearAutoplay();
+      if (_sliderKeyHandler) { document.removeEventListener('keydown', _sliderKeyHandler); _sliderKeyHandler = null; }
+      _sliderState = null;
+      if (_mediaObserver) { _mediaObserver.disconnect(); _mediaObserver = null; }
+      closePremiumLightbox();
+      const pv = document.getElementById('view-project');
+      if (pv) {
+        pv.querySelectorAll('video').forEach(v => { v.pause(); v.removeAttribute('src'); v.load(); });
+        pv.innerHTML = '';
       }
-
-      const sections = [
-        { id: 'portfolio-anchor', section: 'portfolio-anchor' },
-        { id: 'why-anchor', section: 'why-anchor' },
-        { id: 'pricing-anchor', section: 'pricing-anchor' },
-        { id: 'testimonials-anchor', section: 'testimonials-anchor' },
-        { id: 'faq-anchor', section: 'faq-anchor' },
-        { id: 'contact-anchor', section: 'contact-anchor' },
-      ];
-
-      const scrollY = window.scrollY + 60; // offset for fixed nav height
-      let activeSection = null;
-
-      for (const s of sections) {
-        const el = document.getElementById(s.id);
-        if (el && el.offsetTop <= scrollY) activeSection = s.section;
-      }
-
-      if (!activeSection) {
-        indicator.classList.remove('visible');
-        return;
-      }
-
-      const activeLink = navLinks.querySelector(`[data-section="${activeSection}"]`);
-      if (!activeLink) { indicator.classList.remove('visible'); return; }
-
-      const navRect = navLinks.getBoundingClientRect();
-      const linkRect = activeLink.getBoundingClientRect();
-      indicator.style.left = (linkRect.left - navRect.left) + 'px';
-      indicator.style.width = linkRect.width + 'px';
-      indicator.classList.add('visible');
     }
 
-    window.addEventListener('scroll', () => {
-      const nav = document.getElementById('navbar');
-      nav.style.background = window.scrollY > 50
-        ? 'rgba(245,237,224,0.95)'
-        : 'rgba(245,237,224,0.8)';
-      if (document.getElementById('view-home').classList.contains('active')) {
-        document.getElementById('stickyCTA').classList.toggle('show', window.scrollY > 400);
+    /* Hero-showcase videos only play while on screen (they used to autoplay forever, even when hidden) */
+    function observeAutoplayVideos(root) {
+      const vids = root ? root.querySelectorAll('video[data-autoplay]') : [];
+      if (!vids.length || REDUCED_MOTION.matches || !('IntersectionObserver' in window)) return;
+      if (!_mediaObserver) {
+        _mediaObserver = new IntersectionObserver(entries => {
+          entries.forEach(en => { if (en.isIntersecting) en.target.play().catch(() => { }); else en.target.pause(); });
+        }, { threshold: 0.25 });
       }
-      updateNavIndicator();
-    });
+      vids.forEach(v => _mediaObserver.observe(v));
+    }
+
+    /* CUSTOM CURSOR — only for fine, hover-capable pointers. Never on touch (no stray dot at 0,0, no hidden native cursor). */
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    if (cursor && ring && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const root = document.documentElement;
+      root.classList.add('has-cursor');
+      let cx = 0, cy = 0, cursorRaf = 0;
+      // transform-based (compositor only) and rAF-throttled; the ring's CSS `transition: transform` provides the trailing lag
+      const paintCursor = () => {
+        cursorRaf = 0;
+        const t = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
+        cursor.style.transform = t;
+        ring.style.transform = t;
+      };
+      document.addEventListener('pointermove', e => {
+        if (e.pointerType && e.pointerType !== 'mouse') { root.classList.remove('cursor-active'); return; }
+        cx = e.clientX; cy = e.clientY;
+        root.classList.add('cursor-active');
+        if (!cursorRaf) cursorRaf = requestAnimationFrame(paintCursor);
+      }, { passive: true });
+      root.addEventListener('mouseleave', () => root.classList.remove('cursor-active'));
+    }
+
+    /* SCROLL EFFECTS (navbar + sticky CTA + nav indicator)
+       One rAF-throttled pass: all layout READS first, then all WRITES (the old handler ran on every scroll event,
+       queried the DOM repeatedly and interleaved offsetTop/getBoundingClientRect reads with style writes). */
+    const NAV_SECTION_IDS = ['portfolio-anchor', 'why-anchor', 'pricing-anchor', 'testimonials-anchor', 'faq-anchor', 'contact-anchor'];
+    const _navEl = document.getElementById('navbar');
+    const _navLinksEl = document.getElementById('navLinks');
+    const _navIndicatorEl = document.getElementById('navIndicator');
+    const _stickyEl = document.getElementById('stickyCTA');
+    let _pageUiQueued = false;
+
+    function schedulePageUI() {
+      if (_pageUiQueued) return;
+      _pageUiQueued = true;
+      requestAnimationFrame(() => { _pageUiQueued = false; updatePageUI(); });
+    }
+
+    function updatePageUI() {
+      const y = window.scrollY;
+      const isHome = currentView === 'home';
+
+      // ---- reads ----
+      let activeLink = null, left = 0, width = 0;
+      if (isHome && _navLinksEl && _navIndicatorEl) {
+        let activeId = null;
+        for (const id of NAV_SECTION_IDS) {
+          const el = document.getElementById(id);
+          if (el && el.getBoundingClientRect().top <= 60) activeId = id; // 60px = fixed-nav offset
+        }
+        if (activeId) activeLink = _navLinksEl.querySelector(`[data-section="${activeId}"]`);
+        if (activeLink) {
+          const nr = _navLinksEl.getBoundingClientRect(), lr = activeLink.getBoundingClientRect();
+          left = lr.left - nr.left; width = lr.width;
+        }
+      }
+
+      // ---- writes ----
+      _navEl.classList.toggle('is-scrolled', y > 50);
+      if (isHome) _stickyEl.classList.toggle('show', y > 400);
+      if (_navIndicatorEl) {
+        if (activeLink) {
+          _navIndicatorEl.style.left = left + 'px';
+          _navIndicatorEl.style.width = width + 'px';
+          _navIndicatorEl.classList.add('visible');
+        } else {
+          _navIndicatorEl.classList.remove('visible');
+        }
+      }
+    }
+    window.addEventListener('scroll', schedulePageUI, { passive: true });
+    window.addEventListener('resize', schedulePageUI, { passive: true });
 
     /* MOBILE HAMBURGER DRAWER */
-    function toggleDrawer() {
+    function setDrawer(open) {
       const drawer = document.getElementById('navDrawer');
       const hamburger = document.getElementById('navHamburger');
-      const isOpen = drawer.classList.contains('open');
-      drawer.classList.toggle('open', !isOpen);
-      hamburger.classList.toggle('open', !isOpen);
-      document.body.style.overflow = isOpen ? '' : 'hidden';
+      if (!drawer || !hamburger || drawer.classList.contains('open') === open) return;
+      const hadFocus = drawer.contains(document.activeElement);
+      drawer.classList.toggle('open', open);
+      hamburger.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', String(open));
+      drawer.setAttribute('aria-hidden', String(!open));
+      if (open) {
+        lockScroll('drawer');
+        drawer.querySelector('a')?.focus({ preventScroll: true });
+      } else {
+        unlockScroll('drawer');
+        if (hadFocus) hamburger.focus({ preventScroll: true });
+      }
+    }
+    function toggleDrawer() {
+      setDrawer(!document.getElementById('navDrawer').classList.contains('open'));
     }
 
     function drawerNav(sectionId) {
-      toggleDrawer();
+      setDrawer(false);
       // Small delay so drawer closes before scroll fires
-      setTimeout(() => {
-        const homeView = document.getElementById('view-home');
-        if (!homeView.classList.contains('active')) {
-          transitionTo(() => {
-            showView('home');
-            document.getElementById('backBtn').style.display = 'none';
-            document.getElementById('stickyCTA').classList.remove('show');
-            setTimeout(() => document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' }), 150);
-          });
-        } else {
-          document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 320);
+      setTimeout(() => goToSection(sectionId), 320);
+    }
+
+    /* Open an external URL in a new tab without handing it window.opener */
+    function openExternal(url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
 
 /* WhatsApp integration: builds and opens wa.me links for CTAs and the contact form. */
 
     /* WHATSAPP INTEGRATION — Add new source keys and messages to the msgs object. */
-    function openWA(source) {
+    function waMessage(source) {
       const msgs = {
         'nav': `Hi SlideCraft! I'd like to place an order.`,
         'hero': `Hi SlideCraft! I saw your website and I'd like to start a project.`,
@@ -5967,15 +6336,22 @@
         'pricing-academic-project': `Hi SlideCraft! I'm interested in the Academic Arduino Project (₹999).`,
         'pricing-competition-project': `Hi SlideCraft! I'm interested in the Competition Arduino Project (₹1999+).`,
       };
-      /* Fallback: if source starts with "pricing-", make a generic tier message */
+      source = source || '';
       let msg = msgs[source];
+      /* Fallback: if source starts with "pricing-", make a generic tier message */
       if (!msg && source.startsWith('pricing-')) {
         const tier = source.replace('pricing-', '').replace(/-/g, ' ');
         msg = `Hi SlideCraft! I'd like to enquire about the ${tier} plan.`;
       }
-      msg = msg || `Hi SlideCraft! I'd like to enquire about your services.`;
-      window.open(WA_BASE + encodeURIComponent(msg), '_blank');
+      /* Project-page CTA: mention which project the visitor was looking at (previously a generic message) */
+      if (!msg && source.startsWith('project-cta-')) {
+        const proj = PROJECTS.find(x => x.id === source.replace('project-cta-', ''));
+        if (proj) msg = `Hi SlideCraft! I saw the "${proj.title}" project on your website and I'd like something similar.`;
+      }
+      return msg || `Hi SlideCraft! I'd like to enquire about your services.`;
     }
+    function waUrl(source) { return WA_BASE + encodeURIComponent(waMessage(source)); }
+    function openWA(source) { openExternal(waUrl(source)); }
 
     function handleFormSubmit(e) {
       e.preventDefault();
@@ -5984,17 +6360,22 @@
       const service = form.querySelector('select')?.value || 'general enquiry';
       const message = form.querySelector('textarea')?.value || '';
       const waMsg = `Hi SlideCraft! I'm ${name}.\nService: ${service}\n${message ? 'Details: ' + message : ''}`;
-      window.open(WA_BASE + encodeURIComponent(waMsg), '_blank');
+      openExternal(WA_BASE + encodeURIComponent(waMsg));
     }
 
 /* Small shared UI behaviors: scroll-reveal animations, the hex-to-rgb color helper, testimonials drag-to-scroll, and FAQ accordion toggling. */
 
     /* SCROLL REVEAL (intersection observer) */
+    let _revealObs = null; // ONE shared observer (a new one used to be created on every view switch)
     function initReveal() {
-      const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
-      }, { threshold: 0.08 });
-      document.querySelectorAll('.reveal:not(.revealed)').forEach(el => obs.observe(el));
+      const els = document.querySelectorAll('.reveal:not(.revealed)');
+      if (!('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('revealed')); return; }
+      if (!_revealObs) {
+        _revealObs = new IntersectionObserver(entries => {
+          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); _revealObs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+      }
+      els.forEach(el => _revealObs.observe(el)); // observing an already-observed element is a no-op
     }
 
     /* UTILITY: hex color → "r,g,b" string for rgba() usage */
@@ -6003,19 +6384,21 @@
       return r ? `${parseInt(r[1], 16)},${parseInt(r[2], 16)},${parseInt(r[3], 16)}` : null;
     }
 
-    /* TESTIMONIALS DRAG-TO-SCROLL */
+    /* TESTIMONIALS DRAG-TO-SCROLL (mouse only — touch uses native scrolling) */
     (function () {
       const track = document.getElementById('testiTrack');
       if (!track) return;
       let isDown = false, startX, scrollLeft;
+      const stop = () => { isDown = false; track.style.userSelect = ''; track.classList.remove('is-dragging'); };
       track.addEventListener('mousedown', e => {
         isDown = true;
         track.style.userSelect = 'none';
+        track.classList.add('is-dragging'); // pauses scroll-snap so the drag doesn't fight it
         startX = e.pageX - track.offsetLeft;
         scrollLeft = track.scrollLeft;
       });
-      document.addEventListener('mouseup', () => { isDown = false; track.style.userSelect = ''; });
-      track.addEventListener('mouseleave', () => { isDown = false; });
+      document.addEventListener('mouseup', stop);
+      track.addEventListener('mouseleave', stop);
       track.addEventListener('mousemove', e => {
         if (!isDown) return;
         e.preventDefault();
@@ -6025,18 +6408,34 @@
     })();
 
     /* FAQ TOGGLE */
+    function setFaqOpen(item, open) {
+      const q = item.querySelector('.faq-question');
+      const a = item.querySelector('.faq-answer');
+      item.classList.toggle('open', open);
+      if (q) q.setAttribute('aria-expanded', String(open));
+      // exact content height instead of the old fixed 400px cap (which could clip long answers on narrow screens)
+      if (a) a.style.maxHeight = open ? a.scrollHeight + 'px' : '';
+    }
     function toggleFaq(item) {
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => setFaqOpen(el, false));
+      if (!wasOpen) setFaqOpen(item, true);
     }
 
 /* SLIDECRAFT — HERO SCROLL ANIMATION — Icon fountain (Canva/Figma/PowerPoint/Arduino/Word fly in) + title shrink, driven by scroll position while the hero is pinned. Merged from the standalone drop-in build into the real site's #navbar / .hero markup. FIXED (see audit): 1. sizePinWrap() accounts for the pinned element's own 100vh, so the pin holds for the FULL scroll distance configured by iconStageHeight + infoFadeDistance instead of releasing at roughly half that distance. 2. #navbar flies in (translateY + fade) during the same window the info-group fades in, instead of just sitting static on screen. It's hidden on load and only becomes interactive once faded in. 3. TITLE ANCHORING REWORKED: the title group used to be animated with a small px `translateY` offset while sitting in normal flex flow inside #hero-inner. Combined with the pin + real page scroll, that let it drift/scroll off the top of the screen instead of staying put. #hero-title-group is now a direct child of #hero-viewport (see index.html) and absolutely positioned via `top: <percent>` — it starts anchored low ("fixed on the bottom") and eases to a slightly higher resting spot while shrinking (--ts), driven by the SAME iconProgress that drives the icon fountain, so title shrink / icon fly-in / and (indirectly, since background-frames.js reads real scroll position) the background-frame scrub all move together. Background frame sequence is left alone — already handled separately by background-frames.js + #scroll-frames, and it reads scroll position proportionally so it keeps working correctly with the larger pin height. QUICK CUSTOMIZATION GUIDE — everything below is cross-referenced here. ICON FILES → HERO_ICONS ("ICON FILES" tag) ICON POSITION → iconConfig[iconName].end.x / .end.y ("ICON POSITION" tag) ICON SIZE → iconConfig[iconName].end.scale ("ICON SIZE" tag) + .hero-icon { width / height } in css/hero-animation.css ICON SPREAD → SPREAD_ORIGIN (where they burst FROM) + arcLift ("SPREAD" tag) ICON START SIZE → SPREAD_ORIGIN.scale (how tiny icons are before bursting) TITLE POSITION → HERO_ANIMATION_CONFIG.titleStartY / titleEndY ("TITLE POSITION" tag) both are % of viewport HEIGHT (0=top, 100=bottom) TITLE SIZE → HERO_ANIMATION_CONFIG.titleStartScale / titleEndScale MOBILE SPREAD → spreadFactor() (how much the fan shrinks on phones) MOBILE ICON POSITION → iconConfig[iconName].mobile.x / .y / .scale / .rotation ("MOBILE ICON POSITION" tag) — set per-icon, only used at/under MOBILE_BREAKPOINT; leave an icon's "mobile" key out to keep using the auto spreadFactor() scaling. MOBILE TITLE POSITION/SIZE → MOBILE_TITLE_CONFIG below ("MOBILE TITLE" tag) NAVBAR FLY-IN → navEl gsap.set() calls below ("NAVBAR" tag) Search for the ALL-CAPS tags in quotes above to jump straight to each knob. */
-(function () {
+function initHeroAnimation() {
   "use strict";
 
-  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+    // CDN blocked / offline: fall back to the static hero (CSS html.no-hero-anim) instead of leaving
+    // #hero-info-group (CTA buttons + stats) stuck at opacity:0 forever.
+    document.documentElement.classList.add("no-hero-anim");
+    console.warn("[SlideCraft] GSAP/ScrollTrigger failed to load — hero scroll animation disabled, static hero shown.");
+    return;
+  }
   gsap.registerPlugin(ScrollTrigger);
+  // Ignore height-only resizes on touch devices (mobile URL-bar show/hide) — they caused needless refreshes mid-scroll.
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   /* SELECTORS — matches the real site's markup (index.html) */
   const SEL = {
@@ -6060,7 +6459,11 @@
 
   Object.keys(HERO_ICONS).forEach(function (key) {
     const img = document.getElementById("icon-" + key + "-img");
-    if (img) img.src = HERO_ICONS[key];
+    if (img) {
+      // a missing icon file shouldn't leave a broken-image glyph / alt text floating in the hero
+      img.addEventListener("error", function () { img.style.visibility = "hidden"; }, { once: true });
+      img.src = HERO_ICONS[key];
+    }
   });
 
   /* ANIMATION CONFIG — tune the feel of the sequence here. */
@@ -6101,8 +6504,12 @@
 
   /* MOBILE BREAKPOINT — shared by icon position overrides and title position/scale overrides below. */
   const MOBILE_BREAKPOINT = 768;
+  // Cached viewport width: reading window.innerWidth inside a scroll-driven update can force layout.
+  // Refreshed on resize and on every ScrollTrigger refresh.
+  let vw = window.innerWidth;
+  window.addEventListener("resize", function () { vw = window.innerWidth; }, { passive: true });
   function isMobile() {
-    return window.innerWidth <= MOBILE_BREAKPOINT;
+    return vw <= MOBILE_BREAKPOINT;
   }
 
   /* "MOBILE TITLE" — title group anchor/scale on phones (≤ MOBILE_BREAKPOINT). Same shape as titleStartY/titleEndY/titleStartScale/titleEndScale above, just a separate set of numbers used only on mobile. Set enabled:false to make mobile just reuse the desktop numbers. */
@@ -6188,7 +6595,7 @@
 
   /* "MOBILE SPREAD" — how tightly the fan pulls in on small screens when an icon has no "mobile" override. 1024px+ = full desktop spread. 480px and below = pulled in to 55% of the desktop spread. */
   function spreadFactor() {
-    const w = window.innerWidth;
+    const w = vw;
     if (w >= 1024) return 1;
     if (w <= 480) return 0.55;
     return 0.55 + (w - 480) / (1024 - 480) * 0.45;
@@ -6251,6 +6658,9 @@
   }
 
   /* TITLE GROUP: anchored via `top: <percent of viewport height>` (see hero-animation.css — #hero-title-group is `position:absolute` against #hero-viewport now), NOT a px translateY offset. This is what keeps it "fixed on the bottom" and shrinking in place instead of scrolling off the top: at progress 0 it's near the bottom (titleStartY), and it only eases up to titleEndY (still comfortably on-screen) as the SAME iconProgress that drives the icon fountain advances. Uses MOBILE_TITLE_CONFIG's numbers on phones (unless disabled). */
+  // Cached element refs (these were document.querySelector()'d on EVERY scroll update)
+  const titleEl = document.querySelector(SEL.titleGroup);
+  const infoEl = document.querySelector(SEL.infoGroup);
   const titleEase = gsap.parseEase("power2.out");
   /* "TITLE FADE-OUT" — the title only has iconArriveFraction (0–0.7) of the icon stage to travel/shrink; the remaining 0.7–1.0 is just a hold while the icons settle (see localProgress()). We reuse that hold window to fade the title group OUT, so by iconProgress===1 (icon stage fully complete) it's already invisible — BEFORE #hero-info-group starts fading in during the next (fade) phase. Without this the shrunk title was sitting at rest directly on top of the description/buttons/stats as they faded in underneath it. */
   function titleOpacityFor(iconProgress) {
@@ -6264,7 +6674,7 @@
     const eased = titleEase(iconProgress);
     const ty = gsap.utils.interpolate(cfg.titleStartY, cfg.titleEndY, eased);
     const ts = gsap.utils.interpolate(cfg.titleStartScale, cfg.titleEndScale, eased);
-    const el = document.querySelector(SEL.titleGroup);
+    const el = titleEl;
     if (!el) return;
     el.style.setProperty("--ty", ty + "%");
     el.style.setProperty("--ts", ts);
@@ -6274,17 +6684,32 @@
   /* "NAVBAR" — fixed site nav (css/navigation.css). Hidden/translated above the viewport while icons are fountaining out, then flies in (translateY + fade) during the SAME window the info-group fades in (fadeProgress), i.e. only once the icon stage is fully complete and the user keeps scrolling. Left interaction-disabled while off-screen so it can't eat clicks/taps meant for content behind it. */
   const navEl = document.querySelector(SEL.navbar);
   const NAV_HIDDEN_YPCT = -160;
+  // quickSetter = no per-frame tween/parse overhead; pointer-events only written when it actually changes
+  const setNavY = navEl ? gsap.quickSetter(navEl, "yPercent") : null;
+  const setNavOpacity = navEl ? gsap.quickSetter(navEl, "opacity") : null;
+  let navInteractive = null;
   if (navEl) {
     gsap.set(navEl, { yPercent: NAV_HIDDEN_YPCT, opacity: 0 });
     navEl.style.pointerEvents = "none";
+    navInteractive = false;
   }
   function updateNavbar(fadeProgress) {
     if (!navEl) return;
-    gsap.set(navEl, {
-      yPercent: NAV_HIDDEN_YPCT + fadeProgress * Math.abs(NAV_HIDDEN_YPCT),
-      opacity: fadeProgress
-    });
-    navEl.style.pointerEvents = fadeProgress > 0.05 ? "auto" : "none";
+    setNavY(NAV_HIDDEN_YPCT + fadeProgress * Math.abs(NAV_HIDDEN_YPCT));
+    setNavOpacity(fadeProgress);
+    const interactive = fadeProgress > 0.05;
+    if (interactive !== navInteractive) {
+      navInteractive = interactive;
+      navEl.style.pointerEvents = interactive ? "auto" : "none";
+    }
+  }
+  // Project pages: the navbar (Back button, logo, Order Now) must be fully visible regardless of hero scroll progress.
+  function showNavbarStatic() {
+    if (!navEl) return;
+    setNavY(0);
+    setNavOpacity(1);
+    navInteractive = true;
+    navEl.style.pointerEvents = "auto";
   }
 
   /* SCROLLTRIGGER — SINGLE PIN, TWO PHASES — Phase A — ICON SCROLL GATE: icons fly in / hold, title anchors up + shrinks. Phase B — INFO FADE: description/CTAs/stats fade in, navbar flies in. Icons + title hold their final spot. Pin releases once Phase B completes and normal page scroll continues (hero scrolls away naturally — no forced "exit" transform needed on top of that). */
@@ -6295,14 +6720,19 @@
   // ScrollTrigger.refresh() happens, not just from onUpdate — otherwise
   // icons/title/navbar/#hero-info-group can drift out of sync with the
   // real scroll position.
+  // false while the home view is hidden (a project page is open). The pinned hero is display:none then, so its
+  // ScrollTrigger measurements are meaningless and it must NOT keep driving (= hiding) the navbar.
+  let heroActive = true;
+  const setInfoOpacity = infoEl ? gsap.quickSetter(infoEl, "opacity") : null;
+
   function applyHeroProgress(overall) {
+    if (!heroActive) return;
     const iconProgress = Math.max(0, Math.min(1, overall / iconFrac));
     updateIcons(iconProgress);
     updateTitle(iconProgress);
 
     const fadeProgress = Math.max(0, Math.min(1, (overall - iconFrac) / (1 - iconFrac)));
-    const infoEl = document.querySelector(SEL.infoGroup);
-    if (infoEl) gsap.set(infoEl, { opacity: fadeProgress });
+    if (setInfoOpacity) setInfoOpacity(fadeProgress);
 
     // Navbar flies in alongside the info-group, only after icons finish.
     updateNavbar(fadeProgress);
@@ -6334,6 +6764,7 @@
     // ScrollTrigger.refresh() calls too, and those were leaving
     // icons/title/navbar stale otherwise.
     ScrollTrigger.addEventListener("refresh", function () {
+      vw = window.innerWidth;
       applyHeroProgress(heroST.progress);
     });
   }
@@ -6347,6 +6778,7 @@ window.__heroAnimReset = function () {
   if (heroST) applyHeroProgress(heroST.progress);
 };
   /* FIX: previously this set pinWrap height to just (iconStageHeight + infoFadeDistance) * 100vh, which made the ACTUAL scrollable pin distance (pinWrap.height − pinnedElement.height, since #hero-viewport is 100vh) only HALF of the intended distance — causing the pin to release early / the whole sequence to feel rushed. Adding the pinned element's own 1 (100vh) fixes the math so the real scroll distance matches iconStageHeight + infoFadeDistance exactly. */
+  const SUPPORTS_SVH = !!(window.CSS && CSS.supports && CSS.supports("height", "100svh"));
   function sizePinWrap() {
     // Reduced motion: no pin was created, so there's no pin distance to
     // size — leave #hero-pin-wrap at its natural (content) height.
@@ -6354,7 +6786,8 @@ window.__heroAnimReset = function () {
     const totalVh = 1 + HERO_ANIMATION_CONFIG.iconStageHeight + HERO_ANIMATION_CONFIG.infoFadeDistance;
     const wrap = document.querySelector(SEL.pinWrap);
     if (!wrap) return;
-    wrap.style.height = (totalVh * 100) + "vh";
+    // svh when supported so the pin distance matches #hero-viewport (100svh) and doesn't change as the mobile URL bar moves
+    wrap.style.height = (totalVh * 100) + (SUPPORTS_SVH ? "svh" : "vh");
     ScrollTrigger.refresh();
     // Mobile address bar show/hide fires a resize too, not just the
     // initial load, so re-sync explicitly every time this runs.
@@ -6365,12 +6798,32 @@ window.__heroAnimReset = function () {
   // this function is scoped inside the IIFE otherwise.
   window.__sizePinWrap = sizePinWrap;
 
+  // Called by showView(): the hero lives in the home view. While a project page is open the hero must stand down
+  // (navbar forced visible); when home comes back, ScrollTrigger measured it as display:none (zero height), so
+  // re-measure now that it is visible again — otherwise the pin/animation is broken after navigating back.
+  window.__heroSetActive = function (active) {
+    heroActive = !!active;
+    if (!heroActive) { showNavbarStatic(); return; }
+    ScrollTrigger.refresh();
+    if (heroST) applyHeroProgress(heroST.progress);
+  };
+
   // Initialize icons + title at rest (progress 0) before any scroll happens.
  updateIcons(0);
   updateTitle(0);
    updateNavbar(0);
 
-})();
+}
+// Isolation: if the hero animation throws for any reason, fall back to the static hero instead of aborting the rest
+// of this script (which would also skip all site initialisation) or leaving the navbar hidden.
+try {
+  initHeroAnimation();
+} catch (err) {
+  document.documentElement.classList.add("no-hero-anim");
+  const _nav = document.getElementById("navbar");
+  if (_nav) { _nav.style.opacity = ""; _nav.style.transform = ""; _nav.style.pointerEvents = ""; }
+  console.error("[SlideCraft] Hero animation failed to initialise — static hero shown.", err);
+}
 
 /* Wires up all data-action attributes from the static HTML (replacing old inline onclick/onsubmit/onerror handlers) and runs page initialization on DOMContentLoaded. Load this file last. */
 
@@ -6380,41 +6833,77 @@ function initStaticEventWiring() {
   document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-action]');
     if (!el) return;
-    const [action, param] = el.dataset.action.split(':');
+    const raw = el.dataset.action;
+    const sep = raw.indexOf(':');
+    const action = sep === -1 ? raw : raw.slice(0, sep);
+    const param = sep === -1 ? undefined : raw.slice(sep + 1);
+    // <a href="#section"> links: JS handles the navigation, so don't let the browser jump or change the URL hash
+    if (el.tagName === 'A') e.preventDefault();
     switch (action) {
       case 'home': navigateHome(); break;
       case 'back': navigateBack(); break;
-      case 'scroll': scrollToSection(param); break;
+      case 'scroll': goToSection(param); break;
       case 'wa': openWA(param); break;
-      case 'wa-drawer': openWA(param); toggleDrawer(); break;
+      case 'wa-drawer': openWA(param); setDrawer(false); break;
       case 'drawer-toggle': toggleDrawer(); break;
       case 'drawer-nav': drawerNav(param); break;
-      case 'faq-toggle': toggleFaq(el); break;
+      case 'open-project': openProject(PROJECTS[Number(param)]); break;
+      case 'faq-toggle': if (e.target.closest('.faq-question')) toggleFaq(el); break; // clicks inside the answer no longer collapse it
     }
   });
 
+  /* Keyboard: Enter/Space activates focusable non-<button> controls (cards, FAQ rows, thumbnails, logo links);
+     Escape closes the mobile drawer. */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setDrawer(false);
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const el = e.target.closest && e.target.closest('[role="button"], [role="link"]');
+    if (!el || el !== e.target) return;
+    if (e.key === ' ' && el.getAttribute('role') === 'link') return;
+    e.preventDefault();
+    el.click();
+  });
 
-  /* Contact form → WhatsApp submit (was onsubmit="handleFormSubmit(event)") */
+  /* Resize housekeeping (rAF-throttled): drawer must not stay open/locked after growing past the mobile
+     breakpoint, and an open FAQ answer needs its height recomputed when text reflows. */
+  let wiringRaf = 0;
+  window.addEventListener('resize', () => {
+    if (wiringRaf) return;
+    wiringRaf = requestAnimationFrame(() => {
+      wiringRaf = 0;
+      if (window.innerWidth > MOBILE_BREAKPOINT) setDrawer(false);
+      document.querySelectorAll('.faq-item.open .faq-answer').forEach(a => { a.style.maxHeight = a.scrollHeight + 'px'; });
+    });
+  }, { passive: true });
+
+  /* Plain <a> WhatsApp links get their real prefilled-message URL (open-in-new-tab / copy-link now work) */
+  document.querySelectorAll('a[data-action^="wa"]').forEach(a => {
+    const raw = a.dataset.action;
+    a.href = waUrl(raw.slice(raw.indexOf(':') + 1));
+  });
+
+  /* Contact form → WhatsApp submit */
   const contactForm = document.getElementById('contactForm');
   if (contactForm) contactForm.addEventListener('submit', handleFormSubmit);
 
-  /* Loading screen logo: fall back to text logo if the image fails to load */
+  /* Loading screen logo: fall back to text logo if the image fails to load. The error may already have fired
+     before this runs (image requests start at parse time), so check the current state too. */
   const loaderLogoImg = document.getElementById('loaderLogoImg');
   if (loaderLogoImg) {
-    loaderLogoImg.addEventListener('error', () => {
+    const showFallback = () => {
       loaderLogoImg.style.display = 'none';
       const fallback = document.querySelector('.loader-logo-fallback');
       if (fallback) fallback.classList.add('visible');
-    });
+    };
+    if (loaderLogoImg.complete && loaderLogoImg.naturalWidth === 0) showFallback();
+    else loaderLogoImg.addEventListener('error', showFallback, { once: true });
   }
-
-  /* Loading screen is a static logo + progress bar now, no background video */
 }
 
 /* INIT — runs on page load */
 document.addEventListener('DOMContentLoaded', () => {
-  /* Lock scroll while the loading screen covers the page, otherwise scrolling during the 3s intro silently advances the pinned hero animation behind it. */
-  document.body.style.overflow = 'hidden';
+  /* Lock scroll while the loading screen covers the page (uses <html> — see lockScroll()). */
+  lockScroll('loader');
 
   buildCards();
   buildWhy();
@@ -6426,54 +6915,44 @@ document.addEventListener('DOMContentLoaded', () => {
   /* The grids just built add height below the hero pin, so resync ScrollTrigger now that the real document height is known. */
   if (window.ScrollTrigger) ScrollTrigger.refresh();
 
-  setTimeout(() => {
+  /* Loading screen: same 3s minimum as before, but it now also waits (up to 8s) for window load + web fonts,
+     instead of revealing a half-loaded page on slow connections. */
+  const LOADER_MIN_MS = 3000, LOADER_MAX_MS = 8000;
+  const pageLoaded = new Promise(res => {
+    if (document.readyState === 'complete') res(); else window.addEventListener('load', res, { once: true });
+  });
+  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready.catch(() => { }) : Promise.resolve();
+  const minWait = new Promise(res => setTimeout(res, LOADER_MIN_MS));
+  const maxWait = new Promise(res => setTimeout(res, LOADER_MAX_MS));
+  let finished = false;
+
+  function finishLoading() {
+    if (finished) return;
+    finished = true;
     const ls = document.getElementById('loading-screen');
 
-    // Reset scroll before removing the overflow lock, since removing it
-    // is itself a layout shift that can jump scroll-anchoring mid-hero.
+    // Reset scroll before removing the lock, since removing it is itself a layout shift.
     window.scrollTo(0, 0);
-    document.body.style.overflow = '';
+    unlockScroll('loader');
     if (ls) ls.classList.add('hidden');
 
-    // Re-assert scroll position + resync ScrollTrigger once that
-    // layout shift has actually finished settling.
+    // Re-assert scroll position + resync ScrollTrigger once that layout shift has actually settled.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         window.scrollTo(0, 0);
         if (window.ScrollTrigger) ScrollTrigger.refresh();
+        if (window.__heroAnimReset) window.__heroAnimReset();
+        schedulePageUI();
       });
-    });
-    // main.js — inside the setTimeout, in the final rAF
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-        if (window.__heroAnimReset) window.__heroAnimReset(); // <-- belt & suspenders
-      });
-    });
-  }, 3000);
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.__sizePinWrap) window.__sizePinWrap();
-    }, 150);
-  });
-
-  // iOS Safari doesn't reliably fire a plain window resize when the address
-  // bar collapses/expands, so __sizePinWrap() can miss it. visualViewport
-  // tracks that change directly — listen there too as a second trigger for
-  // the same debounced resync. Feature-guarded for older browsers.
-  if (window.visualViewport) {
-    let vvResizeTimer;
-    window.visualViewport.addEventListener('resize', () => {
-      clearTimeout(vvResizeTimer);
-      vvResizeTimer = setTimeout(() => {
-        if (window.__sizePinWrap) window.__sizePinWrap();
-      }, 150);
     });
   }
+  Promise.race([Promise.all([pageLoaded, fontsReady, minWait]), maxWait]).then(finishLoading);
+
+  /* Resize handling: ScrollTrigger refreshes itself on resize (and our 'refresh' listener resyncs the hero).
+     The old extra debounced resize + visualViewport listeners forced a SECOND refresh on every resize and a
+     refresh on every mobile URL-bar movement, which made the pinned hero jump while scrolling. */
 });
+
   </script>
 </body>
 
